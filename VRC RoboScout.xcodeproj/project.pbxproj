@@ -7,13 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3D0BE6F929A3F0C700C3EA8A /* TeamLookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0BE6F829A3F0C700C3EA8A /* TeamLookup.swift */; };
+		3D2FDAF529A7A4A6009E9740 /* WorldSkillsRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */; };
 		3DB11E4E299543D9001DDB02 /* VRC_RoboScoutApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E4D299543D9001DDB02 /* VRC_RoboScoutApp.swift */; };
-		3DB11E50299543D9001DDB02 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E4F299543D9001DDB02 /* ContentView.swift */; };
+		3DB11E50299543D9001DDB02 /* Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E4F299543D9001DDB02 /* Favorites.swift */; };
 		3DB11E52299543DC001DDB02 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DB11E51299543DC001DDB02 /* Assets.xcassets */; };
-		3DB11E56299543DC001DDB02 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DB11E55299543DC001DDB02 /* Preview Assets.xcassets */; };
 		3DB11E60299543DC001DDB02 /* VRC_RoboScoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E5F299543DC001DDB02 /* VRC_RoboScoutTests.swift */; };
 		3DB11E6A299543DC001DDB02 /* VRC_RoboScoutUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E69299543DC001DDB02 /* VRC_RoboScoutUITests.swift */; };
 		3DB11E6C299543DC001DDB02 /* VRC_RoboScoutUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E6B299543DC001DDB02 /* VRC_RoboScoutUITestsLaunchTests.swift */; };
+		3DB11E7A299FB736001DDB02 /* CoreXLSX in Frameworks */ = {isa = PBXBuildFile; productRef = 3DB11E79299FB736001DDB02 /* CoreXLSX */; };
+		3DC3F47529ACFF6000C5EA86 /* TrueSkill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC3F47429ACFF6000C5EA86 /* TrueSkill.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,17 +37,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3D0BE6F829A3F0C700C3EA8A /* TeamLookup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamLookup.swift; sourceTree = "<group>"; };
+		3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldSkillsRankings.swift; sourceTree = "<group>"; };
 		3DB11E4A299543D9001DDB02 /* VRC RoboScout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VRC RoboScout.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB11E4D299543D9001DDB02 /* VRC_RoboScoutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRC_RoboScoutApp.swift; sourceTree = "<group>"; };
-		3DB11E4F299543D9001DDB02 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		3DB11E4F299543D9001DDB02 /* Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favorites.swift; sourceTree = "<group>"; };
 		3DB11E51299543DC001DDB02 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3DB11E53299543DC001DDB02 /* VRC_RoboScout.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VRC_RoboScout.entitlements; sourceTree = "<group>"; };
-		3DB11E55299543DC001DDB02 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		3DB11E5B299543DC001DDB02 /* VRC RoboScoutTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "VRC RoboScoutTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB11E5F299543DC001DDB02 /* VRC_RoboScoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRC_RoboScoutTests.swift; sourceTree = "<group>"; };
 		3DB11E65299543DC001DDB02 /* VRC RoboScoutUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "VRC RoboScoutUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB11E69299543DC001DDB02 /* VRC_RoboScoutUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRC_RoboScoutUITests.swift; sourceTree = "<group>"; };
 		3DB11E6B299543DC001DDB02 /* VRC_RoboScoutUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRC_RoboScoutUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		3DC3F47429ACFF6000C5EA86 /* TrueSkill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrueSkill.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DB11E7A299FB736001DDB02 /* CoreXLSX in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,6 +78,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3D0BE6F729A3F09F00C3EA8A /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 		3DB11E41299543D9001DDB02 = {
 			isa = PBXGroup;
 			children = (
@@ -95,21 +108,16 @@
 		3DB11E4C299543D9001DDB02 /* VRC RoboScout */ = {
 			isa = PBXGroup;
 			children = (
+				3D0BE6F729A3F09F00C3EA8A /* Preview Content */,
 				3DB11E4D299543D9001DDB02 /* VRC_RoboScoutApp.swift */,
-				3DB11E4F299543D9001DDB02 /* ContentView.swift */,
+				3DB11E4F299543D9001DDB02 /* Favorites.swift */,
 				3DB11E51299543DC001DDB02 /* Assets.xcassets */,
 				3DB11E53299543DC001DDB02 /* VRC_RoboScout.entitlements */,
-				3DB11E54299543DC001DDB02 /* Preview Content */,
+				3D0BE6F829A3F0C700C3EA8A /* TeamLookup.swift */,
+				3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */,
+				3DC3F47429ACFF6000C5EA86 /* TrueSkill.swift */,
 			);
 			path = "VRC RoboScout";
-			sourceTree = "<group>";
-		};
-		3DB11E54299543DC001DDB02 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				3DB11E55299543DC001DDB02 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		3DB11E5E299543DC001DDB02 /* VRC RoboScoutTests */ = {
@@ -145,6 +153,9 @@
 			dependencies = (
 			);
 			name = "VRC RoboScout";
+			packageProductDependencies = (
+				3DB11E79299FB736001DDB02 /* CoreXLSX */,
+			);
 			productName = "VRC RoboScout";
 			productReference = 3DB11E4A299543D9001DDB02 /* VRC RoboScout.app */;
 			productType = "com.apple.product-type.application";
@@ -217,6 +228,9 @@
 				Base,
 			);
 			mainGroup = 3DB11E41299543D9001DDB02;
+			packageReferences = (
+				3DB11E78299FB736001DDB02 /* XCRemoteSwiftPackageReference "CoreXLSX" */,
+			);
 			productRefGroup = 3DB11E4B299543D9001DDB02 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -233,7 +247,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3DB11E56299543DC001DDB02 /* Preview Assets.xcassets in Resources */,
 				3DB11E52299543DC001DDB02 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -259,8 +272,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3DB11E50299543D9001DDB02 /* ContentView.swift in Sources */,
+				3DB11E50299543D9001DDB02 /* Favorites.swift in Sources */,
+				3DC3F47529ACFF6000C5EA86 /* TrueSkill.swift in Sources */,
 				3DB11E4E299543D9001DDB02 /* VRC_RoboScoutApp.swift in Sources */,
+				3D0BE6F929A3F0C700C3EA8A /* TeamLookup.swift in Sources */,
+				3D2FDAF529A7A4A6009E9740 /* WorldSkillsRankings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -425,10 +441,11 @@
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -437,7 +454,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "sunkensplashstudios.VRC-RoboScout";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -463,10 +482,11 @@
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -475,7 +495,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "sunkensplashstudios.VRC-RoboScout";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -612,6 +634,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3DB11E78299FB736001DDB02 /* XCRemoteSwiftPackageReference "CoreXLSX" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/CoreOffice/CoreXLSX.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3DB11E79299FB736001DDB02 /* CoreXLSX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3DB11E78299FB736001DDB02 /* XCRemoteSwiftPackageReference "CoreXLSX" */;
+			productName = CoreXLSX;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3DB11E42299543D9001DDB02 /* Project object */;
 }
