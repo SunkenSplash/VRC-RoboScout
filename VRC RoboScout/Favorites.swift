@@ -14,51 +14,61 @@ struct FavoriteTeam: Identifiable {
 
 struct FavoriteRow: View {
     
+    @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteTeams
     
-    var team: FavoriteTeam
+    var team: String
 
     var body: some View {
-        Menu(team.number) {
-            Button("View Info") {
+        Menu(team) {
+            /*Button("View Info") {
                 
-            }
+            }*/
             Button("Remove Favorite") {
                 favorites.favorite_teams.removeAll(where: {
-                    $0.number == team.number
+                    $0 == team
                 })
+                favorites.sort()
+                defaults.set(favorites.favorite_teams, forKey: "favorite_teams")
             }
         }
     }
 }
 
 class FavoriteTeams: ObservableObject {
-    @Published var favorite_teams: [FavoriteTeam]
+    @Published var favorite_teams: [String]
     
-    init(favorite_teams: [FavoriteTeam]) {
-        self.favorite_teams = favorite_teams
+    init(favorite_teams: [String]) {
+        self.favorite_teams = favorite_teams.sorted()
     }
     
     public func as_array() -> [String] {
         var out_list = [String]()
         for team in self.favorite_teams {
-            out_list.append(team.number)
+            out_list.append(team)
         }
         return out_list
+    }
+    
+    public func sort() {
+        self.favorite_teams = self.favorite_teams.sorted()
     }
 }
 
 struct Favorites: View {
     
+    @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteTeams
-    
+        
     var body: some View {
         NavigationStack {
-            VStack {
-                List($favorites.favorite_teams) { team in
-                    FavoriteRow(team: team.wrappedValue)
-                        .environmentObject(favorites)
-                        }
+            Form {
+                Section("Favorite Teams") {
+                    List($favorites.favorite_teams) { team in
+                        FavoriteRow(team: team.wrappedValue)
+                            .environmentObject(favorites)
+                    }
+                }
             }.background(.clear)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
@@ -68,7 +78,7 @@ struct Favorites: View {
                     }
                 }
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbarBackground(Color.accentColor, for: .navigationBar)
+                .toolbarBackground(settings.tabColor(), for: .navigationBar)
                 .toolbarBackground(.visible, for: .navigationBar)
         }
     }

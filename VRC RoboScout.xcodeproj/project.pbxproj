@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3D0BE6F929A3F0C700C3EA8A /* TeamLookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0BE6F829A3F0C700C3EA8A /* TeamLookup.swift */; };
 		3D2FDAF529A7A4A6009E9740 /* WorldSkillsRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */; };
+		3DA0AE5C29B2251B009D4782 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA0AE5B29B2251B009D4782 /* Settings.swift */; };
 		3DB11E4E299543D9001DDB02 /* VRC_RoboScoutApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E4D299543D9001DDB02 /* VRC_RoboScoutApp.swift */; };
 		3DB11E50299543D9001DDB02 /* Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E4F299543D9001DDB02 /* Favorites.swift */; };
 		3DB11E52299543DC001DDB02 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DB11E51299543DC001DDB02 /* Assets.xcassets */; };
@@ -39,6 +40,7 @@
 /* Begin PBXFileReference section */
 		3D0BE6F829A3F0C700C3EA8A /* TeamLookup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamLookup.swift; sourceTree = "<group>"; };
 		3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldSkillsRankings.swift; sourceTree = "<group>"; };
+		3DA0AE5B29B2251B009D4782 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		3DB11E4A299543D9001DDB02 /* VRC RoboScout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VRC RoboScout.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB11E4D299543D9001DDB02 /* VRC_RoboScoutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRC_RoboScoutApp.swift; sourceTree = "<group>"; };
 		3DB11E4F299543D9001DDB02 /* Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favorites.swift; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 		3DB11E41299543D9001DDB02 = {
 			isa = PBXGroup;
 			children = (
+				3DA0AE5B29B2251B009D4782 /* Settings.swift */,
 				3DB11E4C299543D9001DDB02 /* VRC RoboScout */,
 				3DB11E5E299543DC001DDB02 /* VRC RoboScoutTests */,
 				3DB11E68299543DC001DDB02 /* VRC RoboScoutUITests */,
@@ -272,6 +275,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DA0AE5C29B2251B009D4782 /* Settings.swift in Sources */,
 				3DB11E50299543D9001DDB02 /* Favorites.swift in Sources */,
 				3DC3F47529ACFF6000C5EA86 /* TrueSkill.swift in Sources */,
 				3DB11E4E299543D9001DDB02 /* VRC_RoboScoutApp.swift in Sources */,

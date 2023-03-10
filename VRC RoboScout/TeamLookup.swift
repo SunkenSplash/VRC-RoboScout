@@ -35,12 +35,8 @@ struct TeamLookup: View {
     @State private var avg_rank: Double = 0.0
     @State private var showLoading: Bool = false
     
+    @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteTeams
-    
-    func displayRoundedTenths(number: Double) -> String
-    {
-        return String(format: "%.1f", round(number * 10.0) / 10.0);
-    }
     
     func fetch_info(team_number: String) {
         hideKeyboard()
@@ -75,7 +71,7 @@ struct TeamLookup: View {
                         }
                     }
                 VStack {
-                    if showLoading == true {
+                    if showLoading {
                         ProgressView()
                     }
                 }.frame(height: 10)
@@ -124,7 +120,7 @@ struct TeamLookup: View {
                         Text(fetched ? "\(world_skills.combined)" : "")
                     }
                     HStack {
-                        Menu ("Match Statistics") {
+                        Menu("Match Statistics") {
                             Text("Average Qualifiers Ranking: \(displayRoundedTenths(number: avg_rank))")
                             Text("CCWM: \(displayRoundedTenths(number: vrc_data_analysis.ccwm))")
                             Text("Total Wins: \(vrc_data_analysis.total_wins)")
@@ -145,13 +141,15 @@ struct TeamLookup: View {
                             fetch_info(team_number: team_number)
                         }
                         for favorite_team in favorites.favorite_teams {
-                            if favorite_team.number == team.number {
+                            if favorite_team == team.number {
                                 return
                             }
                         }
                         showLoading = true
                         Task {
-                            favorites.favorite_teams.append(FavoriteTeam(number: team_number))
+                            favorites.favorite_teams.append(team_number)
+                            favorites.sort()
+                            defaults.set(favorites.favorite_teams, forKey: "favorite_teams")
                             showLoading = false
                         }
                     }.font(.system(size: 19)).frame(alignment: .center).padding(40)
@@ -166,7 +164,7 @@ struct TeamLookup: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color.accentColor, for: .navigationBar)
+            .toolbarBackground(settings.tabColor(), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
         }
     }

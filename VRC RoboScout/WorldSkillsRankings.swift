@@ -130,6 +130,7 @@ var region_id_map: [String: Int] = [
 
 struct WorldSkillsRankings: View {
     
+    @EnvironmentObject var theme: UserSettings
     @EnvironmentObject var favorites: FavoriteTeams
     
     @State private var display_skills = "World Skills"
@@ -218,7 +219,7 @@ struct WorldSkillsRankings: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color.accentColor, for: .navigationBar)
+            .toolbarBackground(theme.tabColor(), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
         }
     }

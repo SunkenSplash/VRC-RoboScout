@@ -9,6 +9,7 @@ import SwiftUI
 import CoreXLSX
 
 let API = RobotEventsAPI()
+let defaults = UserDefaults.standard
 
 #if canImport(UIKit)
 extension View {
@@ -18,15 +19,104 @@ extension View {
 }
 #endif
 
+func displayRoundedTenths(number: Double) -> String {
+    return String(format: "%.1f", round(number * 10.0) / 10.0);
+}
+
+extension String: Identifiable {
+    public typealias ID = Int
+    public var id: Int {
+        return hash
+    }
+}
+
+public extension UIColor {
+
+    class func StringFromUIColor(color: UIColor) -> String {
+        let components = color.cgColor.components
+        return "[\(components![0]), \(components![1]), \(components![2]), \(components![3])]"
+    }
+    
+    class func UIColorFromString(string: String) -> UIColor {
+        let componentsString = string.replacingOccurrences(of: "[", with: "").replacingOccurrences(of: "]", with: "")
+        let components = componentsString.components(separatedBy: ", ")
+        return UIColor(red: CGFloat((components[0] as NSString).floatValue),
+                     green: CGFloat((components[1] as NSString).floatValue),
+                      blue: CGFloat((components[2] as NSString).floatValue),
+                     alpha: CGFloat((components[3] as NSString).floatValue))
+    }
+    
+}
+
+class UserSettings: ObservableObject {
+    private var colorString: String
+    private var minimalistic: Bool
+    private var adam_score: Bool
+    
+    init() {
+        self.colorString = defaults.object(forKey: "color") as? String ?? UIColor.StringFromUIColor(color: .systemRed)
+        defaults.object(forKey: "minimalistic") as? Int ?? 0 == 1 ? (self.minimalistic = true) : (self.minimalistic = false)
+        defaults.object(forKey: "adam_score") as? Int ?? 0 == 1 ? (self.adam_score = true) : (self.adam_score = false)
+    }
+    
+    func readUserDefaults() {
+        self.colorString = defaults.object(forKey: "color") as? String ?? UIColor.StringFromUIColor(color: .systemRed)
+        defaults.object(forKey: "minimalistic") as? Int ?? 0 == 1 ? (self.minimalistic = true) : (self.minimalistic = false)
+        defaults.object(forKey: "adam_score") as? Int ?? 0 == 1 ? (self.adam_score = true) : (self.adam_score = false)
+    }
+    
+    func updateUserDefaults() {
+        defaults.set(UIColor.StringFromUIColor(color: UIColor.UIColorFromString(string: self.colorString)), forKey: "color")
+        defaults.set(self.minimalistic ? 1 : 0, forKey: "minimalistic")
+        defaults.set(self.adam_score ? 1 : 0, forKey: "adam_score")
+    }
+    
+    func setColor(color: SwiftUI.Color) {
+        self.colorString = UIColor.StringFromUIColor(color: UIColor(color))
+    }
+    
+    func setMinimalistic(state: Bool) {
+        self.minimalistic = state
+    }
+    
+    func setAdamScore(state: Bool) {
+        self.adam_score = state
+        defaults.set(self.adam_score ? 1 : 0, forKey: "adam_score")
+    }
+    
+    func accentColor() -> SwiftUI.Color {
+        if defaults.object(forKey: "color") as? String != nil {
+            return Color(UIColor.UIColorFromString(string: defaults.object(forKey: "color") as! String))
+        }
+        else {
+            return Color(UIColor.systemRed)
+        }
+        
+    }
+    
+    func tabColor() -> SwiftUI.Color {
+        if defaults.object(forKey: "minimalistic") as? Int ?? 0 == 1 {
+            return Color(UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0))
+        }
+        else {
+            return self.accentColor()
+        }
+    }
+    
+    func getMinimalistic() -> Bool {
+        return defaults.object(forKey: "minimalistic") as? Int ?? 0 == 1
+    }
+    
+    func getAdamScore() -> Bool {
+        return defaults.object(forKey: "adam_score") as? Int ?? 0 == 1
+    }
+}
+
 @main
 struct VRC_RoboScout: App {
     
-    @StateObject var favorites = FavoriteTeams(favorite_teams: [
-        FavoriteTeam(number: "2733J"),
-        FavoriteTeam(number: "229V"),
-        FavoriteTeam(number: "515R"),
-        FavoriteTeam(number: "2775V")
-    ])
+    @StateObject var favorites = FavoriteTeams(favorite_teams: defaults.object(forKey: "favorite_teams") as? [String] ?? [String]())
+    @StateObject var settings = UserSettings()
     
     var body: some Scene {
         WindowGroup {
@@ -34,25 +124,65 @@ struct VRC_RoboScout: App {
                 TabView {
                     Favorites()
                         .tabItem {
-                            Label("Favorites", systemImage: "star")
-                                .foregroundColor(.red)
-                        }.environmentObject(favorites)
+                            if settings.getMinimalistic() {
+                                Image(systemName: "star")
+                            }
+                            else {
+                                Label("Favorites", systemImage: "star")
+                            }
+                        }
+                        .environmentObject(favorites)
+                        .environmentObject(settings)
+                        .tint(settings.accentColor())
                     WorldSkillsRankings()
                         .tabItem {
-                            Label("World Skills", systemImage: "globe")
-                                .foregroundColor(.red)
-                        }.environmentObject(favorites)
+                            if settings.getMinimalistic() {
+                                Image(systemName: "globe")
+                            }
+                            else {
+                                Label("World Skills", systemImage: "globe")
+                            }
+                        }
+                        .environmentObject(favorites)
+                        .environmentObject(settings)
+                        .tint(settings.accentColor())
                     TrueSkill()
                         .tabItem {
-                            Label("TrueSkill", systemImage: "trophy")
-                                .foregroundColor(.red)
-                        }.environmentObject(favorites)
+                            if settings.getMinimalistic() {
+                                Image(systemName: "trophy")
+                            }
+                            else {
+                                Label("TrueSkill", systemImage: "trophy")
+                            }
+                        }
+                        .environmentObject(favorites)
+                        .environmentObject(settings)
+                        .tint(settings.accentColor())
                     TeamLookup()
                         .tabItem {
-                            Label("Team Lookup", systemImage: "magnifyingglass")
-                                .foregroundColor(.red)
-                        }.environmentObject(favorites)
-                }
+                            if settings.getMinimalistic() {
+                                Image(systemName: "magnifyingglass")
+                            }
+                            else {
+                                Label("Team Lookup", systemImage: "magnifyingglass")
+                            }
+                        }
+                        .environmentObject(favorites)
+                        .environmentObject(settings)
+                        .tint(settings.accentColor())
+                    Settings()
+                        .tabItem {
+                            if settings.getMinimalistic() {
+                                Image(systemName: "gear")
+                            }
+                            else {
+                                Label("Settings", systemImage: "gear")
+                            }
+                        }
+                        .environmentObject(favorites)
+                        .environmentObject(settings)
+                        .tint(settings.accentColor())
+                }.tint(settings.accentColor())
             }
         }
     }
@@ -61,11 +191,13 @@ struct VRC_RoboScout: App {
 public class RobotEventsAPI {
     
     public var world_skills_cache: [[String: Any]]
-    public var vrc_data_analysis_cache: [String: Any]
+    public var vrc_data_analysis_cache: [VRCDataAnalysis]
+    public var vrc_data_analysis_cache_dict: [String: Any]
     
     public init() {
         self.world_skills_cache = [[String: Any]]()
-        self.vrc_data_analysis_cache = [String: Any]()
+        self.vrc_data_analysis_cache = [VRCDataAnalysis]()
+        self.vrc_data_analysis_cache_dict = [String: Any]()
     }
     
     public static func url() -> String {
@@ -209,13 +341,18 @@ public class RobotEventsAPI {
             return
         }
         do {
+            self.vrc_data_analysis_cache = [VRCDataAnalysis]()
+            self.vrc_data_analysis_cache_dict = [String: Any]()
             let wb = try file.parseWorkbooks()[0]
             let ws = try file.parseWorksheet(at: try file.parseWorksheetPathsAndNames(workbook: wb)[0].path)
+            var abs_ranking = 0
+            var prev_count = 0
             for row in ws.data?.rows ?? [] {
                 if row.cells.count < 12 {
                     continue
                 }
-                self.vrc_data_analysis_cache[row.cells[3].value!] = [
+                self.vrc_data_analysis_cache_dict[row.cells[3].value!] = [
+                    "abs_ranking": "\(abs_ranking)",
                     "tsranking": row.cells[0].value!,
                     "tsranking_change": row.cells[1].value!,
                     "name": row.cells[4].value!,
@@ -227,7 +364,16 @@ public class RobotEventsAPI {
                     "total_losses": row.cells[10].value!,
                     "total_ties": row.cells[11].value!
                 ]
+                if self.vrc_data_analysis_cache_dict.count > prev_count {
+                    abs_ranking += 1
+                }
+                prev_count = self.vrc_data_analysis_cache_dict.count
             }
+            for (team, values) in self.vrc_data_analysis_cache_dict as! [String: [String: String]] {
+                self.vrc_data_analysis_cache.append(VRCDataAnalysis(team: Team(number: team, fetch: false), data: values))
+            }
+            self.vrc_data_analysis_cache = self.vrc_data_analysis_cache.sorted(by: { $0.abs_ranking < $1.abs_ranking })
+            self.vrc_data_analysis_cache.remove(at: 0)
         } catch {
             print("Error opening worksheet")
         }
@@ -235,10 +381,10 @@ public class RobotEventsAPI {
     }
     
     public func vrc_data_analysis_for(team: Team) -> VRCDataAnalysis {
-        if self.vrc_data_analysis_cache.count == 0 {
+        if self.vrc_data_analysis_cache_dict.count == 0 {
             return VRCDataAnalysis(team: team)
         }
-        return VRCDataAnalysis(team: team, data: self.vrc_data_analysis_cache[team.number] as! [String : Any])
+        return VRCDataAnalysis(team: team, data: self.vrc_data_analysis_cache_dict[team.number] as! [String : Any])
     }
     
 }
@@ -246,6 +392,7 @@ public class RobotEventsAPI {
 public class VRCDataAnalysis {
     
     public var team: Team
+    public var abs_ranking: Int
     public var tsranking: Int
     public var tsranking_change: Int
     public var name: String
@@ -259,16 +406,17 @@ public class VRCDataAnalysis {
     
     public init(team: Team, data: [String: Any] = [:]) {
         self.team = team
-        self.tsranking = (data["tsranking"] != nil) ? Int(data["tsranking"] as! String)! : 0
-        self.tsranking_change = (data["tsranking_change"] != nil) ? Int(data["tsranking_change"] as! String)! : 0
+        self.abs_ranking = (data["tsranking"] != nil) ? Int(data["abs_ranking"] as! String) ?? 0 : 0
+        self.tsranking = (data["tsranking"] != nil) ? Int(data["tsranking"] as! String) ?? 0 : 0
+        self.tsranking_change = (data["tsranking_change"] != nil) ? Int(data["tsranking_change"] as! String) ?? 0 : 0
         self.name = (data["name"] != nil) ? data["name"] as! String : ""
         self.region = (data["region"] != nil) ? data["region"] as! String : ""
         self.country = (data["country"] != nil) ? data["country"] as! String : ""
-        self.trueskill = (data["trueskill"] != nil) ? Double(data["trueskill"] as! String)! : 0.0
-        self.ccwm = (data["ccwm"] != nil) ? Double(data["ccwm"] as! String)! : 0.0
-        self.total_wins = (data["total_wins"] != nil) ? Int(data["total_wins"] as! String)! : 0
-        self.total_losses = (data["total_losses"] != nil) ? Int(data["total_losses"] as! String)! : 0
-        self.total_ties = (data["total_ties"] != nil) ? Int(data["total_ties"] as! String)! : 0
+        self.trueskill = (data["trueskill"] != nil) ? Double(data["trueskill"] as! String) ?? 0.0 : 0.0
+        self.ccwm = (data["ccwm"] != nil) ? Double(data["ccwm"] as! String) ?? 0.0 : 0.0
+        self.total_wins = (data["total_wins"] != nil) ? Int(data["total_wins"] as! String) ?? 0 : 0
+        self.total_losses = (data["total_losses"] != nil) ? Int(data["total_losses"] as! String) ?? 0 : 0
+        self.total_ties = (data["total_ties"] != nil) ? Int(data["total_ties"] as! String) ?? 0 : 0
     }
     
     public func toString() -> String {
