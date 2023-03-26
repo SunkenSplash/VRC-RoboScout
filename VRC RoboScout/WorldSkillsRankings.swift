@@ -38,7 +38,7 @@ class WorldSkillsTeams: ObservableObject {
     
     var world_skills_teams: [WorldSkillsTeam]
     
-    init(begin: Int, end: Int, region: Int = 0, filter_array: [String] = [], fetch: Bool = false) {
+    init(begin: Int, end: Int, region: Int = 0, letter: Character = "0", filter_array: [String] = [], fetch: Bool = false) {
         if fetch || API.world_skills_cache.count == 0 {
             API.update_world_skills_cache(season: 173)
         }
@@ -62,7 +62,18 @@ class WorldSkillsTeams: ObservableObject {
         else if region != 0 {
             var rank = 1
             for team in API.world_skills_cache {
-                if region != 0 && region != (team["team"] as! [String: Any])["eventRegionId"] as! Int {
+                if region != (team["team"] as! [String: Any])["eventRegionId"] as! Int {
+                    continue
+                }
+                self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: rank, additional_ranking: team["rank"] as! Int, driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
+                rank += 1
+            }
+        }
+        // Letter
+        else if letter != "0" {
+            var rank = 1
+            for team in API.world_skills_cache {
+                if letter != ((team["team"] as! [String: Any])["team"] as! String).last {
                     continue
                 }
                 self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: rank, additional_ranking: team["rank"] as! Int, driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
@@ -137,18 +148,29 @@ struct WorldSkillsRankings: View {
     @State private var start = 1
     @State private var end = 200
     @State private var region_id = 0
+    @State private var letter: Character = "0"
     @State private var current_index = 100
     @State private var world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200, fetch: false)
     
     var body: some View {
         NavigationStack {
             Menu("Filter") {
+                Button("Favorites") {
+                    display_skills = "Favorites Skills"
+                    start = 1
+                    end = 200
+                    region_id = 0
+                    letter = "0"
+                    current_index = 100
+                    world_skills_rankings = WorldSkillsTeams(begin: 1, end: API.world_skills_cache.count, filter_array: favorites.as_array(), fetch: false)
+                }
                 Menu("Region") {
                     Button("World") {
                         display_skills = "World Skills"
                         start = 1
                         end = 200
                         region_id = 0
+                        letter = "0"
                         current_index = 100
                         world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200, fetch: false)
                     }
@@ -158,24 +180,30 @@ struct WorldSkillsRankings: View {
                             start = 1
                             end = 200
                             region_id = id
+                            letter = "0"
                             current_index = 100
                             world_skills_rankings = WorldSkillsTeams(begin: 1, end: API.world_skills_cache.count, region: id, fetch: false)
                         }
                     }
                 }
-                Button("Favorites") {
-                    display_skills = "Favorites Skills"
-                    start = 1
-                    end = 200
-                    region_id = 0
-                    current_index = 100
-                    world_skills_rankings = WorldSkillsTeams(begin: 1, end: API.world_skills_cache.count, filter_array: favorites.as_array(), fetch: false)
+                Menu("Letter") {
+                    ForEach(["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"], id: \.self) { char in
+                        Button(char) {
+                            display_skills = "\(char) Skills"
+                            start = 1
+                            end = 200
+                            letter = char.first!
+                            current_index = 100
+                            world_skills_rankings = WorldSkillsTeams(begin: 1, end: API.world_skills_cache.count, letter: char.first!, fetch: false)
+                        }
+                    }
                 }
                 Button("Clear Filters") {
                     display_skills = "World Skills"
                     start = 1
                     end = 200
                     region_id = 0
+                    letter = "0"
                     current_index = 100
                     world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200, fetch: false)
                 }
@@ -185,7 +213,7 @@ struct WorldSkillsRankings: View {
             ScrollViewReader { proxy in
                 List($world_skills_rankings.world_skills_teams) { team in
                     WorldSkillsRow(team_world_skills: team.wrappedValue).id(team.wrappedValue.ranking).onAppear{
-                        if region_id != 0 {
+                        if region_id != 0 || letter != "0" {
                             return
                         }
                         let cache_size = API.world_skills_cache.count

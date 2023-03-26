@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreML
 
 struct TeamInfo: Identifiable {
     let id = UUID()
@@ -27,22 +28,51 @@ struct TeamInfoRow: View {
 
 struct TeamLookup: View {
     @State var team_number: String = ""
+    @State var favorited: Bool = false
     @State var fetch: Bool = false
     @State var fetched: Bool = false
     @State private var team: Team = Team(id: 0, fetch: false)
-    @State private var vrc_data_analysis = VRCDataAnalysis(team: Team(id: 0, fetch: false))
+    @State private var vrc_data_analysis = VRCDataAnalysis()
     @State private var world_skills = WorldSkills(team: Team(id: 0, fetch: false))
     @State private var avg_rank: Double = 0.0
     @State private var showLoading: Bool = false
+    @State private var showingAlert = false
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteTeams
     
-    func fetch_info(team_number: String) {
+    let adam_score_map = [
+        "Low",
+        "Low Mid",
+        "Mid",
+        "High Mid",
+        "High",
+        "Very High"
+    ]
+    
+    func adam_score() -> String {
+        guard let model = try? AdamScore(configuration: MLModelConfiguration()) else {
+            print("Error loading AdamScore model")
+            return "Error"
+        }
+        guard let score = try? model.prediction(world_skills_ranking: Double(world_skills.ranking), trueskill_ranking: Double(vrc_data_analysis.trueskill_ranking), average_qualification_ranking: avg_rank, ccwm: Double(vrc_data_analysis.ccwm), winrate: Double(vrc_data_analysis.total_wins) / Double(vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties)) else {
+            print("Runtime error with AdamScore model")
+            return "Error"
+        }
+        return adam_score_map[Int(score.adamscore)]
+    }
+    
+    func fetch_info(number: String) {
         hideKeyboard()
+        
+        if !(number.last ?? "0").isLetter {
+            return
+        }
+        
         showLoading = true
         Task {
-            team = Team(number: team_number)
+            team_number = number.uppercased()
+            team = Team(number: number)
             if team.id == 0 || team.registered == false {
                 showLoading = false
                 return
@@ -51,6 +81,13 @@ struct TeamLookup: View {
             vrc_data_analysis = API.vrc_data_analysis_for(team: team)
             world_skills = API.world_skills_for(team: team)
             avg_rank = team.average_ranking(season: 173)
+            
+            favorited = false
+            for favorite_team in favorites.favorite_teams {
+                if favorite_team == team.number {
+                    favorited = true
+                }
+            }
         
             showLoading = false
             fetched = true
@@ -59,17 +96,77 @@ struct TeamLookup: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                TextField(
-                    "2733J",
-                    text: $team_number
-                ).frame(alignment: .center).padding(20).multilineTextAlignment(.center).font(.system(size: 36))
-                    .onAppear{
-                        if fetch {
-                            fetch_info(team_number: team_number)
-                            fetch = false
+            VStack() {
+                HStack {
+                    Image(systemName: "star").font(.system(size: 25)).padding(20).hidden()
+                    TextField(
+                        "2733J",
+                        text: $team_number,
+                        onEditingChanged: { _ in
+                            team = Team(id: 0, fetch: false)
+                            vrc_data_analysis = VRCDataAnalysis()
+                            world_skills = WorldSkills(team: Team(id: 0, fetch: false))
+                            avg_rank = 0.0
+                            fetched = false
+                            favorited = false
+                        },
+                        onCommit: {
+                            showLoading = true
+                            fetch_info(number: team_number)
                         }
-                    }
+                    ).frame(alignment: .center).padding(20).multilineTextAlignment(.center).font(.system(size: 36))
+                        .onAppear{
+                            if fetch {
+                                fetch_info(number: team_number)
+                                fetch = false
+                            }
+                        }
+                    Button(action: {
+                        
+                        if team_number == "" {
+                            return
+                        }
+                        
+                        showLoading = true
+                        
+                        hideKeyboard()
+                        team_number = team_number.uppercased()
+                        if team.number != team_number {
+                            fetch_info(number: team_number)
+                            showLoading = true
+                        }
+                        
+                        if team.number != team_number {
+                            return
+                        }
+                        
+                        for favorite_team in favorites.favorite_teams {
+                            if favorite_team == team.number {
+                                favorites.favorite_teams.removeAll(where: {
+                                    $0 == team.number
+                                })
+                                favorites.sort()
+                                defaults.set(favorites.favorite_teams, forKey: "favorite_teams")
+                                favorited = false
+                                return
+                            }
+                        }
+                        Task {
+                            favorites.favorite_teams.append(team_number)
+                            favorites.sort()
+                            defaults.set(favorites.favorite_teams, forKey: "favorite_teams")
+                            favorited = true
+                            showLoading = false
+                        }
+                    }, label: {
+                        if favorited {
+                            Image(systemName: "star.fill").font(.system(size: 25))
+                        }
+                        else {
+                            Image(systemName: "star").font(.system(size: 25))
+                        }
+                    }).padding(20)
+                }
                 VStack {
                     if showLoading {
                         ProgressView()
@@ -97,17 +194,17 @@ struct TeamLookup: View {
                         Text(fetched ? "\(team.city), \(team.region)" : "")
                     }
                     HStack {
-                        Menu("TrueSkill") {
-                            Text("Rank #\(vrc_data_analysis.tsranking)")
-                            Text((vrc_data_analysis.tsranking_change >= 0 ? "Up " : "Down ") + "\(abs(vrc_data_analysis.tsranking_change))" + " places since last update")
+                        Menu("TrueSkill Ranking") {
+                            Text(fetched && $vrc_data_analysis.wrappedValue.trueskill_ranking != 0 ? "\(displayRoundedTenths(number: vrc_data_analysis.trueskill)) TrueSkill" : "Please import TrueSkill data")
+                            Text((vrc_data_analysis.trueskill_ranking_change >= 0 ? "Up " : "Down ") + "\(abs(vrc_data_analysis.trueskill_ranking_change))" + " places since last update")
                         }
                         Spacer()
-                        Text(fetched ? "\(displayRoundedTenths(number: vrc_data_analysis.trueskill))" : "")
+                        Text(fetched && $vrc_data_analysis.wrappedValue.trueskill_ranking != 0 ? "\(vrc_data_analysis.trueskill_ranking)" : "")
                     }
                     HStack {
                         Text("World Skills Ranking")
                         Spacer()
-                        Text(fetched ? "\(world_skills.ranking)" : "")
+                        Text(fetched && world_skills.ranking != 0 ? "\(world_skills.ranking)" : "")
                     }
                     HStack {
                         Menu("World Skills Score") {
@@ -117,44 +214,32 @@ struct TeamLookup: View {
                             Text("\(world_skills.highest_programming) Highest Programming")
                         }
                         Spacer()
-                        Text(fetched ? "\(world_skills.combined)" : "")
+                        Text(fetched && world_skills.ranking != 0 ? "\(world_skills.combined)" : "")
                     }
                     HStack {
                         Menu("Match Statistics") {
                             Text("Average Qualifiers Ranking: \(displayRoundedTenths(number: avg_rank))")
                             Text("CCWM: \(displayRoundedTenths(number: vrc_data_analysis.ccwm))")
+                            Text("Winrate: " + ((vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties > 0) ? ((displayRoundedTenths(number: Double(vrc_data_analysis.total_wins) / Double(vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties) * 100.0)) + "%") : ""))
                             Text("Total Wins: \(vrc_data_analysis.total_wins)")
                             Text("Total Losses: \(vrc_data_analysis.total_losses)")
                             Text("Total Ties: \(vrc_data_analysis.total_ties)")
                         }
                         Spacer()
-                        Text(fetched ? "\(vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties) Matches" : "")
+                        Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 ? "\(vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties) Matches" : "")
+                    }
+                    if settings.getAdamScore() {
+                        HStack {
+                            Button("AdamScore™") {
+                                showingAlert = true
+                            }.alert("AdamScore™ takes into account TrueSkill, world skills, average qualifiers ranking, CCWM, and winrate to rate teams with a machine learning model trained on data from Adam, Team Jelly's scout.", isPresented: $showingAlert) {
+                                Button("OK", role: .cancel) { }
+                            }
+                            Spacer()
+                            Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 && world_skills.ranking != 0 ? adam_score() : "")
+                        }
                     }
                 }
-                HStack {
-                    Button("Fetch Info") {
-                        fetch_info(team_number: team_number)
-                    }.font(.system(size: 19)).frame(alignment: .center).padding(40)
-                    Button("Add Favorite") {
-                        hideKeyboard()
-                        if team.number != team_number {
-                            fetch_info(team_number: team_number)
-                        }
-                        for favorite_team in favorites.favorite_teams {
-                            if favorite_team == team.number {
-                                return
-                            }
-                        }
-                        showLoading = true
-                        Task {
-                            favorites.favorite_teams.append(team_number)
-                            favorites.sort()
-                            defaults.set(favorites.favorite_teams, forKey: "favorite_teams")
-                            showLoading = false
-                        }
-                    }.font(.system(size: 19)).frame(alignment: .center).padding(40)
-                }
-                
             }
             .toolbar {
                 ToolbarItem(placement: .principal) {

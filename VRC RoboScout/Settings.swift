@@ -50,6 +50,7 @@ struct Settings: View {
                         exit(0)
                     }
                 }
+                Section("Developed by Team Jelly 2733J") {}
             }.background(.clear)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
