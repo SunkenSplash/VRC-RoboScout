@@ -10,17 +10,59 @@ import SwiftUI
 struct Settings: View {
     
     @EnvironmentObject var settings: UserSettings
-    @EnvironmentObject var favorites: FavoriteTeams
+    @EnvironmentObject var favorites: FavoriteStorage
     @State var selected_color = UserSettings().accentColor()
-    @State var minimalistic = defaults.object(forKey: "minimalistic") as? Int ?? 0 == 1 ? true : false
-    @State var adam_score = defaults.object(forKey: "adam_score") as? Int ?? 0 == 1 ? true : false
+    @State var minimalistic = UserSettings().getMinimalistic()
+    @State var adam_score = UserSettings().getAdamScore()
+    @State var selected_season_id = UserSettings().getSelectedSeasonID()
+    @State var showLoading = false
+    
+    func format_season_option(raw: String) -> String {
+        var season = raw
+        season = season.replacingOccurrences(of: "VRC ", with: "")
+        
+        let season_split = season.split(separator: "-")
+        
+        if season_split.count == 1 {
+            return season
+        }
+        
+        return "\(season_split[0])-\(season_split[1].dropFirst(2))"
+    }
     
     var body: some View {
         NavigationStack {
+            VStack {
+                if showLoading {
+                    ProgressView()
+                }
+            }.frame(height: 20)
             Form {
                 Section("Data Analysis") {
                     Toggle("AdamScore™", isOn: $adam_score).onChange(of: adam_score) { _ in
                         settings.setAdamScore(state: adam_score)
+                    }
+                }
+                Section("Season") {
+                    // Create a picker with the seasons from API.season_id_map
+                    HStack{
+                        Spacer()
+                        Picker("Season", selection: $selected_season_id) {
+                            ForEach(API.season_id_map.keys.sorted().reversed(), id: \.self) { season_id in
+                                Text(format_season_option(raw: API.season_id_map[season_id] ?? "Unknown")).tag(season_id)
+                            }
+                        }.labelsHidden()
+                            .onChange(of: selected_season_id) { _ in
+                                settings.setSelectedSeasonID(id: selected_season_id)
+                                showLoading = true
+                                DispatchQueue.global(qos: .userInteractive).async {
+                                    DispatchQueue.main.async {
+                                        API.update_world_skills_cache()
+                                        self.showLoading = false
+                                    }
+                                }
+                            }
+                        Spacer()
                     }
                 }
                 Section("Appearance") {
@@ -37,10 +79,15 @@ struct Settings: View {
                     }
                 }
                 Section("Danger") {
-                    Button("Clear favorites") {
+                    Button("Clear favorite teams") {
                         defaults.set([String](), forKey: "favorite_teams")
                         favorites.favorite_teams = [String]()
-                        print("Favorites cleared")
+                        print("Favorite teams cleared")
+                    }
+                    Button("Clear favorite events") {
+                        defaults.set([String](), forKey: "favorite_events")
+                        favorites.favorite_events = [String]()
+                        print("Favorite events clearned")
                     }
                     Button("Reset all data") {
                         let domain = Bundle.main.bundleIdentifier!
@@ -50,13 +97,14 @@ struct Settings: View {
                         exit(0)
                     }
                 }
-                Section("Developed by Team Jelly 2733J") {}
+                Section("Developed by Teams Ace 229V and Jelly 2733J") {}
             }.background(.clear)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
                         Text("Settings")
                             .fontWeight(.medium)
                             .font(.system(size: 19))
+                            .foregroundColor(settings.navTextColor())
                     }
                 }
                 .navigationBarTitleDisplayMode(.inline)

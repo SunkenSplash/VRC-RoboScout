@@ -39,7 +39,7 @@ struct TeamLookup: View {
     @State private var showingAlert = false
     
     @EnvironmentObject var settings: UserSettings
-    @EnvironmentObject var favorites: FavoriteTeams
+    @EnvironmentObject var favorites: FavoriteStorage
     
     let adam_score_map = [
         "Low",
@@ -65,32 +65,41 @@ struct TeamLookup: View {
     func fetch_info(number: String) {
         hideKeyboard()
         
-        if !(number.last ?? "0").isLetter {
-            return
-        }
-        
         showLoading = true
-        Task {
-            team_number = number.uppercased()
-            team = Team(number: number)
-            if team.id == 0 || team.registered == false {
-                showLoading = false
+        team_number = number.uppercased()
+        
+        DispatchQueue.global(qos: .userInteractive).async { [self] in
+            
+            let fetched_team = Team(number: number)
+                        
+            if fetched_team.id == 0 {
+                DispatchQueue.main.async {
+                    showLoading = false
+                }
                 return
             }
             
-            vrc_data_analysis = API.vrc_data_analysis_for(team: team)
-            world_skills = API.world_skills_for(team: team)
-            avg_rank = team.average_ranking(season: 173)
+            let fetced_vrc_data_analysis = API.vrc_data_analysis_for(team: fetched_team, fetch: false)
+            let fetched_world_skills = API.world_skills_for(team: fetched_team)
+            let fetched_avg_rank = fetched_team.average_ranking()
             
-            favorited = false
+            var is_favorited = false
             for favorite_team in favorites.favorite_teams {
-                if favorite_team == team.number {
-                    favorited = true
+                if favorite_team == fetched_team.number {
+                    is_favorited = true
                 }
             }
-        
-            showLoading = false
-            fetched = true
+                        
+            DispatchQueue.main.async {
+                team = fetched_team
+                vrc_data_analysis = fetced_vrc_data_analysis
+                world_skills = fetched_world_skills
+                avg_rank = fetched_avg_rank
+                favorited = is_favorited
+                
+                showLoading = false
+                fetched = true
+            }
         }
     }
     
@@ -100,7 +109,7 @@ struct TeamLookup: View {
                 HStack {
                     Image(systemName: "star").font(.system(size: 25)).padding(20).hidden()
                     TextField(
-                        "2733J",
+                        "229V",
                         text: $team_number,
                         onEditingChanged: { _ in
                             team = Team(id: 0, fetch: false)
@@ -109,6 +118,7 @@ struct TeamLookup: View {
                             avg_rank = 0.0
                             fetched = false
                             favorited = false
+                            showLoading = false
                         },
                         onCommit: {
                             showLoading = true
@@ -145,7 +155,7 @@ struct TeamLookup: View {
                                 favorites.favorite_teams.removeAll(where: {
                                     $0 == team.number
                                 })
-                                favorites.sort()
+                                favorites.sort_teams()
                                 defaults.set(favorites.favorite_teams, forKey: "favorite_teams")
                                 favorited = false
                                 return
@@ -153,7 +163,7 @@ struct TeamLookup: View {
                         }
                         Task {
                             favorites.favorite_teams.append(team_number)
-                            favorites.sort()
+                            favorites.sort_teams()
                             defaults.set(favorites.favorite_teams, forKey: "favorite_teams")
                             favorited = true
                             showLoading = false
@@ -239,6 +249,11 @@ struct TeamLookup: View {
                             Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 && world_skills.ranking != 0 ? adam_score() : "")
                         }
                     }
+                    HStack {
+                        NavigationLink(destination: Events(team_number: team.number).environmentObject(settings)) {
+                            Text("Events")
+                        }
+                    }
                 }
             }
             .toolbar {
@@ -246,6 +261,7 @@ struct TeamLookup: View {
                     Text("Team Lookup")
                         .fontWeight(.medium)
                         .font(.system(size: 19))
+                        .foregroundColor(settings.navTextColor())
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

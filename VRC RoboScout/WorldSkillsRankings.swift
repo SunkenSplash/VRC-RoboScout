@@ -39,8 +39,8 @@ class WorldSkillsTeams: ObservableObject {
     var world_skills_teams: [WorldSkillsTeam]
     
     init(begin: Int, end: Int, region: Int = 0, letter: Character = "0", filter_array: [String] = [], fetch: Bool = false) {
-        if fetch || API.world_skills_cache.count == 0 {
-            API.update_world_skills_cache(season: 173)
+        if fetch && API.world_skills_cache.count == 0 {
+            API.update_world_skills_cache()
         }
         var end = end
         self.world_skills_teams = [WorldSkillsTeam]()
@@ -83,6 +83,9 @@ class WorldSkillsTeams: ObservableObject {
         // World
         else {
             for i in begin - 1...end - 1 {
+                if API.world_skills_cache.count == 0 {
+                    return
+                }
                 let team = API.world_skills_cache[i]
                 self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: team["rank"] as! Int, additional_ranking: 0, driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
             }
@@ -141,8 +144,8 @@ var region_id_map: [String: Int] = [
 
 struct WorldSkillsRankings: View {
     
-    @EnvironmentObject var theme: UserSettings
-    @EnvironmentObject var favorites: FavoriteTeams
+    @EnvironmentObject var settings: UserSettings
+    @EnvironmentObject var favorites: FavoriteStorage
     
     @State private var display_skills = "World Skills"
     @State private var start = 1
@@ -151,6 +154,7 @@ struct WorldSkillsRankings: View {
     @State private var letter: Character = "0"
     @State private var current_index = 100
     @State private var world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200, fetch: false)
+    @State private var season_id = RoboScoutAPI.selected_season_id()
     
     var body: some View {
         NavigationStack {
@@ -162,7 +166,7 @@ struct WorldSkillsRankings: View {
                     region_id = 0
                     letter = "0"
                     current_index = 100
-                    world_skills_rankings = WorldSkillsTeams(begin: 1, end: API.world_skills_cache.count, filter_array: favorites.as_array(), fetch: false)
+                    world_skills_rankings = WorldSkillsTeams(begin: 1, end: API.world_skills_cache.count, filter_array: favorites.teams_as_array(), fetch: false)
                 }
                 Menu("Region") {
                     Button("World") {
@@ -210,6 +214,18 @@ struct WorldSkillsRankings: View {
             }.fontWeight(.medium)
                 .font(.system(size: 19))
                 .padding(20)
+                .onAppear{
+                    if RoboScoutAPI.selected_season_id() != self.season_id {
+                        display_skills = "World Skills"
+                        start = 1
+                        end = 200
+                        region_id = 0
+                        letter = "0"
+                        current_index = 100
+                        world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200, fetch: false)
+                        self.season_id = RoboScoutAPI.selected_season_id()
+                    }
+                }
             ScrollViewReader { proxy in
                 List($world_skills_rankings.world_skills_teams) { team in
                     WorldSkillsRow(team_world_skills: team.wrappedValue).id(team.wrappedValue.ranking).onAppear{
@@ -217,6 +233,9 @@ struct WorldSkillsRankings: View {
                             return
                         }
                         let cache_size = API.world_skills_cache.count
+                        if cache_size == 0 {
+                            return
+                        }
                         if team.wrappedValue.ranking == current_index + 100 {
                             current_index += 50
                             start = start + 50 > cache_size ? cache_size - 50 : start + 50
@@ -244,10 +263,11 @@ struct WorldSkillsRankings: View {
                     Text($display_skills.wrappedValue)
                         .fontWeight(.medium)
                         .font(.system(size: 19))
+                        .foregroundColor(settings.navTextColor())
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(theme.tabColor(), for: .navigationBar)
+            .toolbarBackground(settings.tabColor(), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
         }
     }
