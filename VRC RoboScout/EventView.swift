@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-struct EventDivision: Identifiable {
-    let id = UUID()
-    let number: String
-}
-
 struct EventDivisionRow: View {
     
     @EnvironmentObject var settings: UserSettings
@@ -50,7 +45,7 @@ struct EventView: View {
     @EnvironmentObject var favorites: FavoriteStorage
     
     @State private var event: Event
-    @State private var team: Team
+    @State private var team: Team?
     @State private var teams_map = [String: String]()
     @State private var event_teams = [Team]()
     @State private var event_teams_list = [String]()
@@ -58,7 +53,7 @@ struct EventView: View {
     @State private var event_divisions: EventDivisions
     @State private var favorited = false
     
-    init(event: Event, team: Team) {
+    init(event: Event, team: Team? = nil) {
         self.event = event
         self.team = team
         self.event_divisions = EventDivisions(event_divisions: event.divisions.map{ "\($0.id)&&\($0.name)" })
@@ -135,9 +130,9 @@ struct EventView: View {
                         NavigationLink(destination: EventTeams(event: event, teams_map: $teams_map, event_teams: $event_teams, event_teams_list: $event_teams_list).environmentObject(settings)) {
                             Text("Teams")
                         }
-                        if team.id != 0 {
-                            NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: event, team: team).environmentObject(settings)) {
-                                Text("\(team.number) Match List")
+                        if team != nil {
+                            NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: event, team: team!).environmentObject(settings)) {
+                                Text("\(team!.number) Match List")
                             }
                         }
                     }
@@ -175,6 +170,6 @@ struct EventView: View {
 
 struct EventView_Previews: PreviewProvider {
     static var previews: some View {
-        EventView(event: Event(id: 0, fetch: false), team: Team(id: 0, fetch: false))
+        EventView(event: Event(id: 0, fetch: false))
     }
 }

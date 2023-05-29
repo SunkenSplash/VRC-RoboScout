@@ -7,20 +7,15 @@
 
 import SwiftUI
 
-struct TeamEvent: Identifiable {
-    let id = UUID()
-    let sku: String
-}
-
 struct EventRow: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
     
     private var event: Event
-    private var team: Team
+    private var team: Team?
     
-    init(event: Event, team: Team) {
+    init(event: Event, team: Team? = nil) {
         self.event = event
         self.team = team
     }
@@ -50,14 +45,14 @@ class TeamEvents: ObservableObject {
     @Published var event_indexes: [String]
     @Published var events: [Event]
     
-    init(team: Team = Team(id: 0, fetch: false)) {
+    init(team: Team? = nil) {
         event_indexes = [String]()
         events = [Event]()
-        if team.id == 0 {
+        if team == nil {
             return
         }
-        team.fetch_events()
-        events = team.events
+        team!.fetch_events()
+        events = team!.events
         var count = 0
         for _ in events {
             event_indexes.append(String(count))
@@ -68,27 +63,27 @@ class TeamEvents: ObservableObject {
 }
 
 
-struct Events: View {
+struct TeamEventsView: View {
     
     @EnvironmentObject var settings: UserSettings
     @State private var events: TeamEvents
-    @State private var team: Team
-    @State private var team_number: String
+    @State private var team: Team?
+    @State private var team_number: String?
     @State private var showLoading = true
     
-    init(team_number: String) {
-        self.team = Team(id: 0, fetch: false)
+    init(team_number: String?) {
+        self.team = nil
         self.team_number = team_number
         self.events = TeamEvents()
     }
     
-    func fetch_events() {
+    func fetch_team_events() {
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            if self.team.number != "" && !self.events.events.isEmpty {
+            if self.team != nil && !self.events.events.isEmpty {
                 return
             }
             
-            let fetched_team = Team(number: self.team_number)
+            let fetched_team = Team(number: self.team_number ?? "")
             let fetched_events = TeamEvents(team: fetched_team)
             
             DispatchQueue.main.async {
@@ -108,11 +103,11 @@ struct Events: View {
                 EventRow(event: events.events[Int(event_index)!], team: team)
             }
         }.task{
-            fetch_events()
+            fetch_team_events()
         }.background(.clear)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("\(self.team_number) Events")
+                    Text("\(self.team_number ?? "") Events")
                         .fontWeight(.medium)
                         .font(.system(size: 19))
                         .foregroundColor(settings.navTextColor())
@@ -125,9 +120,9 @@ struct Events: View {
     }
 }
 
-struct Events_Previews: PreviewProvider {
+struct TeamEventsView_Previews: PreviewProvider {
     static var previews: some View {
-        Events(team_number: "2733J")
+        TeamEventsView(team_number: "2733J")
     }
 }
 

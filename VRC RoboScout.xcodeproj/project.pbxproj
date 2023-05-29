@@ -20,7 +20,7 @@
 		3D1E57FE29F18F4600DA6296 /* GetAdamScoreHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E57FD29F18F4600DA6296 /* GetAdamScoreHandler.swift */; };
 		3D2FDAF529A7A4A6009E9740 /* WorldSkillsRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */; };
 		3D3219C729D0BD5500EF5500 /* Importer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219C629D0BD5500EF5500 /* Importer.swift */; };
-		3D3219C929D1CFF300EF5500 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219C829D1CFF300EF5500 /* Events.swift */; };
+		3D3219C929D1CFF300EF5500 /* TeamEventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219C829D1CFF300EF5500 /* TeamEventsView.swift */; };
 		3D3219CB29D1EA0D00EF5500 /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219CA29D1EA0D00EF5500 /* EventView.swift */; };
 		3D3219CD29D1EF1D00EF5500 /* EventInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219CC29D1EF1D00EF5500 /* EventInformation.swift */; };
 		3D3219CF29D31BD500EF5500 /* EventTeams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219CE29D31BD500EF5500 /* EventTeams.swift */; };
@@ -90,7 +90,7 @@
 		3D1E57FD29F18F4600DA6296 /* GetAdamScoreHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetAdamScoreHandler.swift; sourceTree = "<group>"; };
 		3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldSkillsRankings.swift; sourceTree = "<group>"; };
 		3D3219C629D0BD5500EF5500 /* Importer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Importer.swift; sourceTree = "<group>"; };
-		3D3219C829D1CFF300EF5500 /* Events.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
+		3D3219C829D1CFF300EF5500 /* TeamEventsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamEventsView.swift; sourceTree = "<group>"; };
 		3D3219CA29D1EA0D00EF5500 /* EventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
 		3D3219CC29D1EF1D00EF5500 /* EventInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventInformation.swift; sourceTree = "<group>"; };
 		3D3219CE29D31BD500EF5500 /* EventTeams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTeams.swift; sourceTree = "<group>"; };
@@ -207,7 +207,7 @@
 				3DB11E4D299543D9001DDB02 /* VRC_RoboScoutApp.swift */,
 				3D3219C629D0BD5500EF5500 /* Importer.swift */,
 				3DB11E4F299543D9001DDB02 /* Favorites.swift */,
-				3D3219C829D1CFF300EF5500 /* Events.swift */,
+				3D3219C829D1CFF300EF5500 /* TeamEventsView.swift */,
 				3D3219CA29D1EA0D00EF5500 /* EventView.swift */,
 				3D3219CC29D1EF1D00EF5500 /* EventInformation.swift */,
 				3D3219CE29D31BD500EF5500 /* EventTeams.swift */,
@@ -430,7 +430,7 @@
 				3D3219D129D3327500EF5500 /* EventTeamMatches.swift in Sources */,
 				3DB11E4E299543D9001DDB02 /* VRC_RoboScoutApp.swift in Sources */,
 				3D0BE6F929A3F0C700C3EA8A /* Lookup.swift in Sources */,
-				3D3219C929D1CFF300EF5500 /* Events.swift in Sources */,
+				3D3219C929D1CFF300EF5500 /* TeamEventsView.swift in Sources */,
 				3D386C3529F19DAB00035B3B /* RoboScoutAPI.swift in Sources */,
 				3D3219CD29D1EF1D00EF5500 /* EventInformation.swift in Sources */,
 				3D2FDAF529A7A4A6009E9740 /* WorldSkillsRankings.swift in Sources */,

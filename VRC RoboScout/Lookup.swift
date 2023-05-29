@@ -57,13 +57,96 @@ struct Lookup: View {
     }
 }
 
+class EventSearch: ObservableObject {
+    @Published var event_indexes: [String]
+    @Published var events: [Event]
+    
+    init(name_query: String? = nil, page: Int = 1) {
+        event_indexes = [String]()
+        events = [Event]()
+        if name_query == nil || name_query == "" {
+            event_indexes = [String]()
+            events = [Event]()
+            return
+        }
+        let sku_array = RoboScoutAPI.robotevents_competition_scraper(params: ["name": name_query!, "seasonId": RoboScoutAPI.selected_season_id(), "page": page, "from_date": "01-Jan-1970"])
+        let data = RoboScoutAPI.robotevents_request(request_url: "/seasons/\(RoboScoutAPI.selected_season_id())/events", params: ["sku": sku_array])
+        
+        for event_data in data {
+            events.append(Event(fetch: false, data: event_data))
+        }
+        
+        var count = 0
+        for _ in events {
+            event_indexes.append(String(count))
+            count += 1
+        }
+        event_indexes.reverse()
+    }
+}
+
 struct EventLookup: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
     
+    @State private var events: EventSearch = EventSearch()
+    @State private var name_query: String = ""
+    @State private var page: Int = 1
+    @State private var showLoading = false
+    
+    func event_query(name_query: String, page: Int = 1) {
+        showLoading = true
+        DispatchQueue.global(qos: .userInteractive).async { [self] in
+            let fetched_events = EventSearch(name_query: name_query, page: page)
+            
+            DispatchQueue.main.async {
+                self.events = fetched_events
+                self.showLoading = false
+            }
+        }
+    }
+    
     var body: some View {
-        Text("events")
+        VStack {
+            TextField(
+                "Event Name",
+                text: $name_query,
+                onCommit: {
+                    showLoading = true
+                    event_query(name_query: name_query)
+                }
+            ).frame(alignment: .center).multilineTextAlignment(.center).font(.system(size: 36)).padding(11)
+            VStack {
+                if showLoading {
+                    ProgressView()
+                }
+            }.frame(height: 10)
+            List(events.event_indexes) { event_index in
+                EventRow(event: events.events[Int(event_index)!])
+            }
+            HStack {
+                Spacer()
+                Button(action: {
+                    showLoading = true
+                    events = EventSearch()
+                    page -= 1
+                    event_query(name_query: name_query, page: page)
+                }, label: {
+                    Image(systemName: "arrow.left").font(.system(size: 25))
+                }).disabled(page <= 1 || showLoading).opacity((events.events.isEmpty && !showLoading) ? 0 : 1).padding(20)
+                Text(String(describing: page)).font(.system(size: 25)).opacity((events.events.isEmpty && !showLoading) ? 0 : 1).padding()
+                Button(action: {
+                    showLoading = true
+                    events = EventSearch()
+                    page += 1
+                    event_query(name_query: name_query, page: page)
+                }, label: {
+                    Image(systemName: "arrow.right").font(.system(size: 25))
+                }).disabled(events.events.count < 20 || showLoading).opacity((events.events.isEmpty && !showLoading) ? 0 : 1).padding(20)
+                Spacer()
+            }
+        }
     }
 }
 
@@ -291,7 +374,7 @@ struct TeamLookup: View {
                     }
                 }
                 HStack {
-                    NavigationLink(destination: Events(team_number: team.number).environmentObject(settings)) {
+                    NavigationLink(destination: TeamEventsView(team_number: team.number).environmentObject(settings)) {
                         Text("Events")
                     }
                 }
@@ -300,7 +383,7 @@ struct TeamLookup: View {
     }
 }
 
-struct TeamLookup_Previews: PreviewProvider {
+struct Lookup_Previews: PreviewProvider {
     static var previews: some View {
         Lookup()
     }

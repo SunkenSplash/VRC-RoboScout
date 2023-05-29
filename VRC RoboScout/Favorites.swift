@@ -15,7 +15,7 @@ struct FavoriteTeamsRow: View {
     var team: String
 
     var body: some View {
-        NavigationLink(destination: Events(team_number: team).environmentObject(settings)) {
+        NavigationLink(destination: TeamEventsView(team_number: team).environmentObject(settings)) {
             Text(team)
         }
     }
@@ -36,7 +36,7 @@ struct FavoriteEventsRow: View {
     }
 
     var body: some View {
-        NavigationLink(destination: EventView(event: (data[sku] ?? Event(sku: sku, fetch: false)), team: Team(id: 0, fetch: false)).environmentObject(settings)) {
+        NavigationLink(destination: EventView(event: (data[sku] ?? Event(sku: sku, fetch: false))).environmentObject(settings)) {
             VStack {
                 Text((data[sku] ?? Event(sku: sku, fetch: false)).name).frame(maxWidth: .infinity, alignment: .leading).frame(height: 20)
                 Spacer().frame(height: 5)

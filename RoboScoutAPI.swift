@@ -114,7 +114,59 @@ public class RoboScoutAPI {
     }
     
     public static func robotevents_competition_scraper(params: [String: Any] = [:]) -> [String] {
-        return [String]()
+        
+        var request_url = "https://www.robotevents.com/robot-competitions/vex-robotics-competition"
+        var params = params
+        
+        if params["page"] == nil {
+            params["page"] = 1
+        }
+        
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        var components = URLComponents(string: request_url)!
+        components.queryItems = params.map { (key, value) in
+            URLQueryItem(name: key, value: String(describing: value))
+        }
+        
+        request_url = components.url?.description ?? request_url
+        
+        for (key, value) in params {
+            if value is [CustomStringConvertible] {
+                for (index, elem) in (value as! [CustomStringConvertible]).enumerated() {
+                    request_url += String(format: "&%@[%d]=%@", key, index, elem.description)
+                }
+            }
+        }
+        
+        var sku_array = [String]()
+        
+        let request = NSMutableURLRequest(url: URL(string: request_url)!)
+        request.setValue(String(format: "Bearer %@", self.robotevents_access_key()), forHTTPHeaderField: "Authorization")
+        request.httpMethod = "GET"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) { (response_data, response, error) in
+            if response_data != nil {
+                print(String(format: "RobotEvents Scraper (page %d): %@", params["page"] as? Int ?? 0, components.url?.description ?? request_url))
+                let html = String(data: response_data!, encoding: .utf8)!
+                
+                let regex = try! NSRegularExpression(pattern: "https://www\\.robotevents\\.com/robot-competitions/vex-robotics-competition/RE-VRC([+-]?(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*))(?:[Ee]([+-]?\\d+))?([+-]?(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*))(?:[Ee]([+-]?\\d+))?html", options: [.caseInsensitive])
+                let range = NSRange(location: 0, length: html.count)
+                let matches = regex.matches(in: html, options: [], range: range)
+                
+                for match in matches {
+                    sku_array.append(String(html[Range(match.range, in: html)!]).replacingOccurrences(of: "https://www.robotevents.com/robot-competitions/vex-robotics-competition/", with: "").replacingOccurrences(of: ".html", with: ""))
+                }
+                
+                semaphore.signal()
+            } else if let error = error {
+                print("ERROR " + error.localizedDescription)
+            }
+        }
+        task.resume()
+        _ = semaphore.wait(timeout: DispatchTime.distantFuture)
+        return sku_array
     }
     
     public static func vrc_data_analysis_request(request_url: String) -> [String: Any] {
