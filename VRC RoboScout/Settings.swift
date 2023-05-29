@@ -11,6 +11,8 @@ struct Settings: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    @EnvironmentObject var navigation_bar_manager: NavigationBarManager
+    
     @State var selected_color = UserSettings().accentColor()
     @State var minimalistic = UserSettings().getMinimalistic()
     @State var adam_score = UserSettings().getAdamScore()
@@ -31,7 +33,7 @@ struct Settings: View {
     }
     
     var body: some View {
-        NavigationStack {
+        VStack {
             VStack {
                 if showLoading {
                     ProgressView()
@@ -41,11 +43,11 @@ struct Settings: View {
                 Section("Data Analysis") {
                     Toggle("AdamScore™", isOn: $adam_score).onChange(of: adam_score) { _ in
                         settings.setAdamScore(state: adam_score)
+                        settings.updateUserDefaults()
                     }
                 }
                 Section("Season") {
-                    // Create a picker with the seasons from API.season_id_map
-                    HStack{
+                    HStack {
                         Spacer()
                         Picker("Season", selection: $selected_season_id) {
                             ForEach(API.season_id_map.keys.sorted().reversed(), id: \.self) { season_id in
@@ -54,6 +56,7 @@ struct Settings: View {
                         }.labelsHidden()
                             .onChange(of: selected_season_id) { _ in
                                 settings.setSelectedSeasonID(id: selected_season_id)
+                                settings.updateUserDefaults()
                                 showLoading = true
                                 DispatchQueue.global(qos: .userInteractive).async {
                                     DispatchQueue.main.async {
@@ -87,7 +90,7 @@ struct Settings: View {
                     Button("Clear favorite events") {
                         defaults.set([String](), forKey: "favorite_events")
                         favorites.favorite_events = [String]()
-                        print("Favorite events clearned")
+                        print("Favorite events cleared")
                     }
                     Button("Reset all data") {
                         let domain = Bundle.main.bundleIdentifier!
@@ -98,18 +101,9 @@ struct Settings: View {
                     }
                 }
                 Section("Developed by Teams Ace 229V and Jelly 2733J") {}
-            }.background(.clear)
-                .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        Text("Settings")
-                            .fontWeight(.medium)
-                            .font(.system(size: 19))
-                            .foregroundColor(settings.navTextColor())
-                    }
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbarBackground(settings.tabColor(), for: .navigationBar)
-                .toolbarBackground(.visible, for: .navigationBar)
+            }.onAppear{
+                navigation_bar_manager.title = "Settings"
+            }
         }
     }
 }

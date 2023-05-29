@@ -59,7 +59,7 @@ struct EventSkillsRankings: View {
             ForEach(event_skills_rankings_list.rankings_indexes, id: \.self) { rank in
                 VStack {
                     HStack {
-                        Text(teams_map[String(team_ranking(rank: rank).team.id)]!).font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 60, alignment: .leading)
+                        Text(teams_map[String(team_ranking(rank: rank).team.id)] ?? "").font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 60, alignment: .leading)
                         Text(event.get_team(id: team_ranking(rank: rank).team.id).name).frame(alignment: .leading)
                         Spacer()
                     }.frame(height: 20)
@@ -69,44 +69,33 @@ struct EventSkillsRankings: View {
                                 Text("#\(team_ranking(rank: rank).rank)").frame(alignment: .leading).font(.system(size: 15))
                                 Spacer()
                             }
-                            /*HStack {
-                                Text("\(team_ranking(rank: rank).wins)-\(team_ranking(rank: rank).losses)-\(team_ranking(rank: rank).ties)").frame(alignment: .leading).font(.system(size: 15))
+                            HStack {
+                                Text("\(team_ranking(rank: rank).combined_score)").frame(alignment: .leading).font(.system(size: 15))
                                 Spacer()
-                            }*/
+                            }
                         }.frame(width: 60)
-                        /*Spacer()
+                        Spacer()
                         VStack {
                             HStack {
-                                Text("WP: \(team_ranking(rank: rank).wp)").frame(alignment: .leading).font(.system(size: 12))
+                                Text("PROG: \(team_ranking(rank: rank).programming_attempts)").frame(alignment: .leading).font(.system(size: 15))
                                 Spacer()
                             }
                             HStack {
-                                Text("HIGH: \(team_ranking(rank: rank).high_score)").frame(alignment: .leading).font(.system(size: 12))
+                                Text("\(team_ranking(rank: rank).programming_score)").frame(alignment: .leading).font(.system(size: 15))
                                 Spacer()
                             }
                         }.frame(width: 80)
                         Spacer()
                         VStack {
                             HStack {
-                                Text("AP: \(team_ranking(rank: rank).ap)").frame(alignment: .leading).font(.system(size: 12))
+                                Text("DRIVER: \(team_ranking(rank: rank).driver_attempts)").frame(alignment: .leading).font(.system(size: 15))
                                 Spacer()
                             }
                             HStack {
-                                Text("AVG: " + displayRounded(number: team_ranking(rank: rank).average_points)).frame(alignment: .leading).font(.system(size: 12))
+                                Text("\(team_ranking(rank: rank).driver_score)").frame(alignment: .leading).font(.system(size: 15))
                                 Spacer()
                             }
                         }.frame(width: 80)
-                        Spacer()
-                        VStack {
-                            HStack {
-                                Text("SP: \(team_ranking(rank: rank).sp)").frame(alignment: .leading).font(.system(size: 12))
-                                Spacer()
-                            }
-                            HStack {
-                                Text("TTL: \(team_ranking(rank: rank).total_points)").frame(alignment: .leading).font(.system(size: 12))
-                                Spacer()
-                            }
-                        }.frame(width: 80)*/
                     }
                 }
             }

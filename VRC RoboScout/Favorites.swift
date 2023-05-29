@@ -81,6 +81,7 @@ struct Favorites: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    @EnvironmentObject var navigation_bar_manager: NavigationBarManager
     
     @State var event_sku_map = [String: Event]()
     @State var showEvents = false
@@ -116,7 +117,7 @@ struct Favorites: View {
     }
         
     var body: some View {
-        NavigationStack {
+        VStack {
             Form {
                 Section($favorites.favorite_teams.count > 0 ? "Favorite Teams" : "Add favorite teams in the team lookup!") {
                     List($favorites.favorite_teams) { team in
@@ -139,19 +140,9 @@ struct Favorites: View {
                 if event_sku_map.count != favorites.favorite_events.count {
                     generate_event_sku_map()
                 }
-            }.background(.clear)
-                .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        Text("Favorites")
-                            .fontWeight(.medium)
-                            .font(.system(size: 19))
-                            .foregroundColor(settings.navTextColor())
-                    }
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbarBackground(settings.tabColor(), for: .navigationBar)
-                .toolbarBackground(.visible, for: .navigationBar)
-            
+            }
+        }.onAppear{
+            navigation_bar_manager.title = "Favorites"
         }
     }
 }

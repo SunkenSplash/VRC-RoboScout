@@ -141,11 +141,11 @@ struct EventView: View {
                             }
                         }
                     }
-                    /*Section("Skills") {
+                    Section("Skills") {
                         NavigationLink(destination: EventSkillsRankings(event: event, teams_map: teams_map).environmentObject(settings)) {
                             Text("Skills Rankings")
                         }
-                    }*/
+                    }
                     Section("Divisions") {
                         List($event_divisions.event_divisions) { division in
                             EventDivisionRow(teams_map: $teams_map, division: division.wrappedValue, event: event)

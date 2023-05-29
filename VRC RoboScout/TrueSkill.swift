@@ -88,9 +88,13 @@ class TrueSkillTeams: ObservableObject {
         }
         // World
         else {
-            for i in begin - 1...end {
+            for var i in begin - 1...end {
                 if API.vrc_data_analysis_cache.count == 0 || API.vrc_data_analysis_cache.count == i {
                     return
+                }
+                if i == API.vrc_data_analysis_cache.count {
+                    i -= 1
+                    continue
                 }
                 let team = API.vrc_data_analysis_cache[i]
                 self.trueskill_teams.append(TrueSkillTeam(number: team["number"] as! String, trueskill: team["trueskill"] as! Double, abs_ranking: team["abs_ranking"] as! Int, ranking: team["trueskill_ranking"] as! Int, ranking_change: team["trueskill_ranking_change"] as! Int, ccwm: team["ccwm"] as! Double, total_wins: team["total_wins"] as! Int, total_losses: team["total_losses"] as! Int , total_ties: team["total_ties"] as! Int))
@@ -152,6 +156,7 @@ struct TrueSkill: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    @EnvironmentObject var navigation_bar_manager: NavigationBarManager
     
     @State private var display_trueskill = "World TrueSkill"
     @State private var start = 1
@@ -165,105 +170,94 @@ struct TrueSkill: View {
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                HStack {
-                    Menu("Filter") {
-                        Button("Favorites") {
-                            display_trueskill = "Favorites TrueSkill"
+        VStack {
+            HStack {
+                Menu("Filter") {
+                    Button("Favorites") {
+                        display_trueskill = "Favorites TrueSkill"
+                        start = 1
+                        end = 200
+                        region = ""
+                        letter = "0"
+                        current_index = 100
+                        trueskill_rankings = TrueSkillTeams(begin: 1, end: API.vrc_data_analysis_cache.count, filter_array: favorites.teams_as_array(), fetch: false)
+                    }
+                    Menu("Region") {
+                        Button("World") {
+                            display_trueskill = "World TrueSkill"
                             start = 1
                             end = 200
                             region = ""
                             letter = "0"
                             current_index = 100
-                            trueskill_rankings = TrueSkillTeams(begin: 1, end: API.vrc_data_analysis_cache.count, filter_array: favorites.teams_as_array(), fetch: false)
-                        }
-                        Menu("Region") {
-                            Button("World") {
-                                display_trueskill = "World TrueSkill"
-                                start = 1
-                                end = 200
-                                region = ""
-                                letter = "0"
-                                current_index = 100
-                                trueskill_rankings = TrueSkillTeams(begin: 1, end: 200, fetch: false)
-                            }
-                            ForEach(region_list.sorted(by: <)) { region_str in
-                                Button(region_str) {
-                                    display_trueskill = "\(region_str) TrueSkill"
-                                    start = 1
-                                    end = 200
-                                    region = region_str
-                                    letter = "0"
-                                    current_index = 100
-                                    trueskill_rankings = TrueSkillTeams(begin: 1, end: API.vrc_data_analysis_cache.count, region: region_str, fetch: false)
-                                }
-                            }
-                        }
-                        Menu("Letter") {
-                            ForEach(["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"], id: \.self) { char in
-                                Button(char) {
-                                    display_trueskill = "\(char) TrueSkill"
-                                    start = 1
-                                    end = 200
-                                    letter = char.first!
-                                    current_index = 100
-                                    trueskill_rankings = TrueSkillTeams(begin: 1, end: API.vrc_data_analysis_cache.count, letter: char.first!, fetch: false)
-                                }
-                            }
-                        }
-                        Button("Clear Filters") {
-                            display_trueskill = "World TrueSkill"
-                            start = 1
-                            end = 200
-                            region = ""
-                            current_index = 100
                             trueskill_rankings = TrueSkillTeams(begin: 1, end: 200, fetch: false)
                         }
+                        ForEach(region_list.sorted(by: <)) { region_str in
+                            Button(region_str) {
+                                display_trueskill = "\(region_str) TrueSkill"
+                                start = 1
+                                end = 200
+                                region = region_str
+                                letter = "0"
+                                current_index = 100
+                                trueskill_rankings = TrueSkillTeams(begin: 1, end: API.vrc_data_analysis_cache.count, region: region_str, fetch: false)
+                            }
+                        }
                     }
-                }.fontWeight(.medium)
-                    .font(.system(size: 19))
-                    .padding(20)
-                ScrollViewReader { proxy in
-                    List($trueskill_rankings.trueskill_teams) { team in
-                        TrueSkillRow(team_trueskill: team.wrappedValue).id(team.wrappedValue.abs_ranking).onAppear{
-                            if region != "" || letter != "0" {
-                                return
+                    Menu("Letter") {
+                        ForEach(["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"], id: \.self) { char in
+                            Button(char) {
+                                display_trueskill = "\(char) TrueSkill"
+                                start = 1
+                                end = 200
+                                letter = char.first!
+                                current_index = 100
+                                trueskill_rankings = TrueSkillTeams(begin: 1, end: API.vrc_data_analysis_cache.count, letter: char.first!, fetch: false)
                             }
-                            let cache_size = API.vrc_data_analysis_cache.count
-                            if Int(team.wrappedValue.abs_ranking) == current_index + 100 {
-                                current_index += 50
-                                start = start + 50 > cache_size ? cache_size - 50 : start + 50
-                                end = end + 50 > cache_size ? cache_size : end + 50
-                                Task {
-                                    trueskill_rankings = TrueSkillTeams(begin: start, end: end)
-                                    proxy.scrollTo(current_index - 25)
-                                }
+                        }
+                    }
+                    Button("Clear Filters") {
+                        display_trueskill = "World TrueSkill"
+                        start = 1
+                        end = 200
+                        region = ""
+                        current_index = 100
+                        trueskill_rankings = TrueSkillTeams(begin: 1, end: 200, fetch: false)
+                    }
+                }
+            }.fontWeight(.medium)
+                .font(.system(size: 19))
+                .padding(20)
+            ScrollViewReader { proxy in
+                List($trueskill_rankings.trueskill_teams) { team in
+                    TrueSkillRow(team_trueskill: team.wrappedValue).id(team.wrappedValue.abs_ranking).onAppear{
+                        if region != "" || letter != "0" {
+                            return
+                        }
+                        let cache_size = API.vrc_data_analysis_cache.count
+                        if Int(team.wrappedValue.abs_ranking) == current_index + 100 {
+                            current_index += 50
+                            start = start + 50 > cache_size ? cache_size - 50 : start + 50
+                            end = end + 50 > cache_size ? cache_size : end + 50
+                            Task {
+                                trueskill_rankings = TrueSkillTeams(begin: start, end: end)
+                                proxy.scrollTo(current_index - 25)
                             }
-                            else if Int(team.wrappedValue.abs_ranking) == current_index - 100 + 1 && Int(team.wrappedValue.abs_ranking) != 1 {
-                                current_index -= 50
-                                start = start - 50 < 1 ? 1 : start - 50
-                                end = end - 50 < 1 ? 1 + 50 : end - 50
-                                Task {
-                                    trueskill_rankings = TrueSkillTeams(begin: start, end: end)
-                                    proxy.scrollTo(current_index + 25)
-                                }
+                        }
+                        else if Int(team.wrappedValue.abs_ranking) == current_index - 100 + 1 && Int(team.wrappedValue.abs_ranking) != 1 {
+                            current_index -= 50
+                            start = start - 50 < 1 ? 1 : start - 50
+                            end = end - 50 < 1 ? 1 + 50 : end - 50
+                            Task {
+                                trueskill_rankings = TrueSkillTeams(begin: start, end: end)
+                                proxy.scrollTo(current_index + 25)
                             }
                         }
                     }
                 }
-                .background(.clear)
-                .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        Text($display_trueskill.wrappedValue)
-                            .fontWeight(.medium)
-                            .font(.system(size: 19))
-                            .foregroundColor(settings.navTextColor())
-                    }
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbarBackground(settings.tabColor(), for: .navigationBar)
-                .toolbarBackground(.visible, for: .navigationBar)
+            }
+            .onAppear{
+                navigation_bar_manager.title = $display_trueskill.wrappedValue
             }
         }
     }

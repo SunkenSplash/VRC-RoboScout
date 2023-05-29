@@ -98,12 +98,10 @@ class UserSettings: ObservableObject {
     
     func setAdamScore(state: Bool) {
         self.adam_score = state
-        defaults.set(self.adam_score ? 1 : 0, forKey: "adam_score")
     }
 
     func setSelectedSeasonID(id: Int) {
         self.selected_season_id = id
-        defaults.set(self.selected_season_id, forKey: "selected_season_id")
     }
     
     func accentColor() -> SwiftUI.Color {

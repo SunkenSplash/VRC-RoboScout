@@ -7,10 +7,19 @@
 
 import SwiftUI
 
+class NavigationBarManager: ObservableObject {
+    @Published var title: String
+    init(title: String) {
+        self.title = title
+    }
+}
+
 struct Importer: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    
+    @StateObject var navigation_bar_manager = NavigationBarManager(title: "Favorites")
     
     @State private var enter = false
     @State private var trueskill_progress = 0.0
@@ -118,9 +127,8 @@ struct Importer: View {
     }
         
     var body: some View {
-        
-        if trueskill_progress != 1.0 && !cont {
-            NavigationStack {
+        NavigationStack {
+            if trueskill_progress != 1.0 && !cont {
                 VStack {
                     Spacer()
                     HStack {
@@ -173,11 +181,8 @@ struct Importer: View {
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbarBackground(settings.tabColor(), for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
-                
             }
-        }
-        else {
-            NavigationView {
+            else {
                 TabView {
                     Favorites()
                         .tabItem {
@@ -190,6 +195,7 @@ struct Importer: View {
                         }
                         .environmentObject(favorites)
                         .environmentObject(settings)
+                        .environmentObject(navigation_bar_manager)
                         .tint(settings.accentColor())
                     WorldSkillsRankings()
                         .tabItem {
@@ -202,6 +208,7 @@ struct Importer: View {
                         }
                         .environmentObject(favorites)
                         .environmentObject(settings)
+                        .environmentObject(navigation_bar_manager)
                         .tint(settings.accentColor())
                     TrueSkill()
                         .tabItem {
@@ -214,18 +221,20 @@ struct Importer: View {
                         }
                         .environmentObject(favorites)
                         .environmentObject(settings)
+                        .environmentObject(navigation_bar_manager)
                         .tint(settings.accentColor())
-                    TeamLookup()
+                    Lookup()
                         .tabItem {
                             if settings.getMinimalistic() {
                                 Image(systemName: "magnifyingglass")
                             }
                             else {
-                                Label("Team Lookup", systemImage: "magnifyingglass")
+                                Label("Lookup", systemImage: "magnifyingglass")
                             }
                         }
                         .environmentObject(favorites)
                         .environmentObject(settings)
+                        .environmentObject(navigation_bar_manager)
                         .tint(settings.accentColor())
                     Settings()
                         .tabItem {
@@ -238,8 +247,26 @@ struct Importer: View {
                         }
                         .environmentObject(favorites)
                         .environmentObject(settings)
+                        .environmentObject(navigation_bar_manager)
                         .tint(settings.accentColor())
+                }.onAppear {
+                    let tabBarAppearance = UITabBarAppearance()
+                    tabBarAppearance.configureWithDefaultBackground()
+                    UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
                 }.tint(settings.accentColor())
+                    .background(.clear)
+                            .toolbar {
+                                ToolbarItem(placement: .principal) {
+                                    Text(navigation_bar_manager.title)
+                                        .fontWeight(.medium)
+                                        .font(.system(size: 19))
+                                        .foregroundColor(settings.navTextColor())
+                                }
+                            }
+                            .navigationBarTitleDisplayMode(.inline)
+                            .toolbarBackground(settings.tabColor(), for: .navigationBar)
+                            .toolbarBackground(.visible, for: .navigationBar)
+                
             }
         }
     }

@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3D01A8C329DF3D55000BBDEB /* EventDivisionRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D01A8C229DF3D55000BBDEB /* EventDivisionRankings.swift */; };
-		3D0BE6F929A3F0C700C3EA8A /* TeamLookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0BE6F829A3F0C700C3EA8A /* TeamLookup.swift */; };
+		3D0BE6F929A3F0C700C3EA8A /* Lookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0BE6F829A3F0C700C3EA8A /* Lookup.swift */; };
 		3D17B4CC29F1967A007F5D78 /* AdamScore.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 3D17B4CB29F1967A007F5D78 /* AdamScore.mlmodel */; };
 		3D17B4CD29F1967A007F5D78 /* AdamScore.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 3D17B4CB29F1967A007F5D78 /* AdamScore.mlmodel */; };
 		3D1E57AA29F17D3500DA6296 /* EventDivisionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E57A929F17D3500DA6296 /* EventDivisionView.swift */; };
@@ -79,7 +79,7 @@
 
 /* Begin PBXFileReference section */
 		3D01A8C229DF3D55000BBDEB /* EventDivisionRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDivisionRankings.swift; sourceTree = "<group>"; };
-		3D0BE6F829A3F0C700C3EA8A /* TeamLookup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamLookup.swift; sourceTree = "<group>"; };
+		3D0BE6F829A3F0C700C3EA8A /* Lookup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lookup.swift; sourceTree = "<group>"; };
 		3D17B4CB29F1967A007F5D78 /* AdamScore.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = AdamScore.mlmodel; path = CoreML/AdamScore.mlmodel; sourceTree = SOURCE_ROOT; };
 		3D1E57A929F17D3500DA6296 /* EventDivisionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDivisionView.swift; sourceTree = "<group>"; };
 		3D1E57EC29F18D0400DA6296 /* GetAdamScore.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GetAdamScore.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -217,7 +217,7 @@
 				3D919AEE29F6F70C00E1724F /* EventSkillsRankings.swift */,
 				3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */,
 				3DC3F47429ACFF6000C5EA86 /* TrueSkill.swift */,
-				3D0BE6F829A3F0C700C3EA8A /* TeamLookup.swift */,
+				3D0BE6F829A3F0C700C3EA8A /* Lookup.swift */,
 				3DA0AE5B29B2251B009D4782 /* Settings.swift */,
 				3D17B4CB29F1967A007F5D78 /* AdamScore.mlmodel */,
 			);
@@ -429,7 +429,7 @@
 				3D17B4CC29F1967A007F5D78 /* AdamScore.mlmodel in Sources */,
 				3D3219D129D3327500EF5500 /* EventTeamMatches.swift in Sources */,
 				3DB11E4E299543D9001DDB02 /* VRC_RoboScoutApp.swift in Sources */,
-				3D0BE6F929A3F0C700C3EA8A /* TeamLookup.swift in Sources */,
+				3D0BE6F929A3F0C700C3EA8A /* Lookup.swift in Sources */,
 				3D3219C929D1CFF300EF5500 /* Events.swift in Sources */,
 				3D386C3529F19DAB00035B3B /* RoboScoutAPI.swift in Sources */,
 				3D3219CD29D1EF1D00EF5500 /* EventInformation.swift in Sources */,

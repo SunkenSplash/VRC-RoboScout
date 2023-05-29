@@ -146,6 +146,7 @@ struct WorldSkillsRankings: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    @EnvironmentObject var navigation_bar_manager: NavigationBarManager
     
     @State private var display_skills = "World Skills"
     @State private var start = 1
@@ -157,7 +158,7 @@ struct WorldSkillsRankings: View {
     @State private var season_id = RoboScoutAPI.selected_season_id()
     
     var body: some View {
-        NavigationStack {
+        VStack {
             Menu("Filter") {
                 Button("Favorites") {
                     display_skills = "Favorites Skills"
@@ -258,13 +259,8 @@ struct WorldSkillsRankings: View {
                 }
             }
             .background(.clear)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text($display_skills.wrappedValue)
-                        .fontWeight(.medium)
-                        .font(.system(size: 19))
-                        .foregroundColor(settings.navTextColor())
-                }
+            .onAppear{
+                navigation_bar_manager.title = $display_skills.wrappedValue
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(settings.tabColor(), for: .navigationBar)
