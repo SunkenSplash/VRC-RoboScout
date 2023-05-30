@@ -9,15 +9,7 @@
 /* Begin PBXBuildFile section */
 		3D01A8C329DF3D55000BBDEB /* EventDivisionRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D01A8C229DF3D55000BBDEB /* EventDivisionRankings.swift */; };
 		3D0BE6F929A3F0C700C3EA8A /* Lookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0BE6F829A3F0C700C3EA8A /* Lookup.swift */; };
-		3D17B4CC29F1967A007F5D78 /* AdamScore.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 3D17B4CB29F1967A007F5D78 /* AdamScore.mlmodel */; };
-		3D17B4CD29F1967A007F5D78 /* AdamScore.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 3D17B4CB29F1967A007F5D78 /* AdamScore.mlmodel */; };
 		3D1E57AA29F17D3500DA6296 /* EventDivisionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E57A929F17D3500DA6296 /* EventDivisionView.swift */; };
-		3D1E57EF29F18D0400DA6296 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D1E57EE29F18D0400DA6296 /* Intents.framework */; };
-		3D1E57F229F18D0400DA6296 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E57F129F18D0400DA6296 /* IntentHandler.swift */; };
-		3D1E57F629F18D0400DA6296 /* GetAdamScore.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3D1E57EC29F18D0400DA6296 /* GetAdamScore.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		3D1E57FB29F18D4A00DA6296 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E57FA29F18D4A00DA6296 /* Intents.intentdefinition */; };
-		3D1E57FC29F18D8D00DA6296 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E57FA29F18D4A00DA6296 /* Intents.intentdefinition */; };
-		3D1E57FE29F18F4600DA6296 /* GetAdamScoreHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E57FD29F18F4600DA6296 /* GetAdamScoreHandler.swift */; };
 		3D2FDAF529A7A4A6009E9740 /* WorldSkillsRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */; };
 		3D3219C729D0BD5500EF5500 /* Importer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219C629D0BD5500EF5500 /* Importer.swift */; };
 		3D3219C929D1CFF300EF5500 /* TeamEventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219C829D1CFF300EF5500 /* TeamEventsView.swift */; };
@@ -26,10 +18,11 @@
 		3D3219CF29D31BD500EF5500 /* EventTeams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219CE29D31BD500EF5500 /* EventTeams.swift */; };
 		3D3219D129D3327500EF5500 /* EventTeamMatches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219D029D3327500EF5500 /* EventTeamMatches.swift */; };
 		3D386C3529F19DAB00035B3B /* RoboScoutAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D386C3429F19DAB00035B3B /* RoboScoutAPI.swift */; };
-		3D386C3629F19DAB00035B3B /* RoboScoutAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D386C3429F19DAB00035B3B /* RoboScoutAPI.swift */; };
 		3D50E10829C8915C002FE201 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D50E10729C8915C002FE201 /* Launch Screen.storyboard */; };
 		3D919AEF29F6F70C00E1724F /* EventSkillsRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D919AEE29F6F70C00E1724F /* EventSkillsRankings.swift */; };
 		3DA0AE5C29B2251B009D4782 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA0AE5B29B2251B009D4782 /* Settings.swift */; };
+		3DAFC80E2A2640EB00A0C41A /* CoreML in Resources */ = {isa = PBXBuildFile; fileRef = 3DAFC80D2A2640EB00A0C41A /* CoreML */; };
+		3DAFC8132A26420600A0C41A /* AdamScore 500.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 3DAFC8122A26420500A0C41A /* AdamScore 500.mlpackage */; };
 		3DB11E4E299543D9001DDB02 /* VRC_RoboScoutApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E4D299543D9001DDB02 /* VRC_RoboScoutApp.swift */; };
 		3DB11E50299543D9001DDB02 /* Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E4F299543D9001DDB02 /* Favorites.swift */; };
 		3DB11E52299543DC001DDB02 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DB11E51299543DC001DDB02 /* Assets.xcassets */; };
@@ -40,13 +33,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		3D1E57F429F18D0400DA6296 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3DB11E42299543D9001DDB02 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 3D1E57EB29F18D0400DA6296;
-			remoteInfo = GetAdamScore;
-		};
 		3DB11E5C299543DC001DDB02 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3DB11E42299543D9001DDB02 /* Project object */;
@@ -70,7 +56,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				3D1E57F629F18D0400DA6296 /* GetAdamScore.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -80,14 +65,8 @@
 /* Begin PBXFileReference section */
 		3D01A8C229DF3D55000BBDEB /* EventDivisionRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDivisionRankings.swift; sourceTree = "<group>"; };
 		3D0BE6F829A3F0C700C3EA8A /* Lookup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lookup.swift; sourceTree = "<group>"; };
-		3D17B4CB29F1967A007F5D78 /* AdamScore.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = AdamScore.mlmodel; path = CoreML/AdamScore.mlmodel; sourceTree = SOURCE_ROOT; };
 		3D1E57A929F17D3500DA6296 /* EventDivisionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDivisionView.swift; sourceTree = "<group>"; };
-		3D1E57EC29F18D0400DA6296 /* GetAdamScore.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GetAdamScore.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D1E57EE29F18D0400DA6296 /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
-		3D1E57F129F18D0400DA6296 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
-		3D1E57F329F18D0400DA6296 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3D1E57FA29F18D4A00DA6296 /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = Intents.intentdefinition; sourceTree = "<group>"; };
-		3D1E57FD29F18F4600DA6296 /* GetAdamScoreHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetAdamScoreHandler.swift; sourceTree = "<group>"; };
 		3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldSkillsRankings.swift; sourceTree = "<group>"; };
 		3D3219C629D0BD5500EF5500 /* Importer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Importer.swift; sourceTree = "<group>"; };
 		3D3219C829D1CFF300EF5500 /* TeamEventsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamEventsView.swift; sourceTree = "<group>"; };
@@ -97,9 +76,11 @@
 		3D3219D029D3327500EF5500 /* EventTeamMatches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTeamMatches.swift; sourceTree = "<group>"; };
 		3D386C3429F19DAB00035B3B /* RoboScoutAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoboScoutAPI.swift; sourceTree = "<group>"; };
 		3D50E10729C8915C002FE201 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
-		3D90D5B229BBA8A8009430D0 /* VRC-RoboScout-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "VRC-RoboScout-Info.plist"; sourceTree = SOURCE_ROOT; };
 		3D919AEE29F6F70C00E1724F /* EventSkillsRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSkillsRankings.swift; sourceTree = "<group>"; };
 		3DA0AE5B29B2251B009D4782 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		3DAFC80D2A2640EB00A0C41A /* CoreML */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CoreML; sourceTree = "<group>"; };
+		3DAFC8112A2641E000A0C41A /* AdamScore 500.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = "AdamScore 500.mlpackage"; sourceTree = "<group>"; };
+		3DAFC8122A26420500A0C41A /* AdamScore 500.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; name = "AdamScore 500.mlpackage"; path = "CoreML/AdamScore 500.mlpackage"; sourceTree = SOURCE_ROOT; };
 		3DB11E4A299543D9001DDB02 /* VRC RoboScout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VRC RoboScout.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB11E4D299543D9001DDB02 /* VRC_RoboScoutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRC_RoboScoutApp.swift; sourceTree = "<group>"; };
 		3DB11E4F299543D9001DDB02 /* Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favorites.swift; sourceTree = "<group>"; };
@@ -114,14 +95,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		3D1E57E929F18D0400DA6296 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3D1E57EF29F18D0400DA6296 /* Intents.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		3DB11E47299543D9001DDB02 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -161,25 +134,13 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		3D1E57F029F18D0400DA6296 /* GetAdamScore */ = {
-			isa = PBXGroup;
-			children = (
-				3D1E57F329F18D0400DA6296 /* Info.plist */,
-				3D1E57FA29F18D4A00DA6296 /* Intents.intentdefinition */,
-				3D1E57F129F18D0400DA6296 /* IntentHandler.swift */,
-				3D1E57FD29F18F4600DA6296 /* GetAdamScoreHandler.swift */,
-			);
-			path = GetAdamScore;
-			sourceTree = "<group>";
-		};
 		3DB11E41299543D9001DDB02 = {
 			isa = PBXGroup;
 			children = (
-				3D386C3429F19DAB00035B3B /* RoboScoutAPI.swift */,
+				3DAFC80D2A2640EB00A0C41A /* CoreML */,
 				3DB11E4C299543D9001DDB02 /* VRC RoboScout */,
 				3DB11E5E299543DC001DDB02 /* VRC RoboScoutTests */,
 				3DB11E68299543DC001DDB02 /* VRC RoboScoutUITests */,
-				3D1E57F029F18D0400DA6296 /* GetAdamScore */,
 				3D1E57ED29F18D0400DA6296 /* Frameworks */,
 				3DB11E4B299543D9001DDB02 /* Products */,
 			);
@@ -191,7 +152,6 @@
 				3DB11E4A299543D9001DDB02 /* VRC RoboScout.app */,
 				3DB11E5B299543DC001DDB02 /* VRC RoboScoutTests.xctest */,
 				3DB11E65299543DC001DDB02 /* VRC RoboScoutUITests.xctest */,
-				3D1E57EC29F18D0400DA6296 /* GetAdamScore.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -199,11 +159,11 @@
 		3DB11E4C299543D9001DDB02 /* VRC RoboScout */ = {
 			isa = PBXGroup;
 			children = (
-				3D90D5B229BBA8A8009430D0 /* VRC-RoboScout-Info.plist */,
 				3D0BE6F729A3F09F00C3EA8A /* Preview Content */,
 				3DB11E53299543DC001DDB02 /* VRC_RoboScout.entitlements */,
 				3D50E10729C8915C002FE201 /* Launch Screen.storyboard */,
 				3DB11E51299543DC001DDB02 /* Assets.xcassets */,
+				3D386C3429F19DAB00035B3B /* RoboScoutAPI.swift */,
 				3DB11E4D299543D9001DDB02 /* VRC_RoboScoutApp.swift */,
 				3D3219C629D0BD5500EF5500 /* Importer.swift */,
 				3DB11E4F299543D9001DDB02 /* Favorites.swift */,
@@ -219,7 +179,8 @@
 				3DC3F47429ACFF6000C5EA86 /* TrueSkill.swift */,
 				3D0BE6F829A3F0C700C3EA8A /* Lookup.swift */,
 				3DA0AE5B29B2251B009D4782 /* Settings.swift */,
-				3D17B4CB29F1967A007F5D78 /* AdamScore.mlmodel */,
+				3DAFC8122A26420500A0C41A /* AdamScore 500.mlpackage */,
+				3DAFC8112A2641E000A0C41A /* AdamScore 500.mlpackage */,
 			);
 			path = "VRC RoboScout";
 			sourceTree = "<group>";
@@ -244,23 +205,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3D1E57EB29F18D0400DA6296 /* GetAdamScore */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 3D1E57F729F18D0400DA6296 /* Build configuration list for PBXNativeTarget "GetAdamScore" */;
-			buildPhases = (
-				3D1E57E829F18D0400DA6296 /* Sources */,
-				3D1E57E929F18D0400DA6296 /* Frameworks */,
-				3D1E57EA29F18D0400DA6296 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = GetAdamScore;
-			productName = GetAdamScore;
-			productReference = 3D1E57EC29F18D0400DA6296 /* GetAdamScore.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		3DB11E49299543D9001DDB02 /* VRC RoboScout */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3DB11E6F299543DC001DDB02 /* Build configuration list for PBXNativeTarget "VRC RoboScout" */;
@@ -273,7 +217,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				3D1E57F529F18D0400DA6296 /* PBXTargetDependency */,
 			);
 			name = "VRC RoboScout";
 			packageProductDependencies = (
@@ -328,9 +271,6 @@
 				LastSwiftUpdateCheck = 1420;
 				LastUpgradeCheck = 1420;
 				TargetAttributes = {
-					3D1E57EB29F18D0400DA6296 = {
-						CreatedOnToolsVersion = 14.2;
-					};
 					3DB11E49299543D9001DDB02 = {
 						CreatedOnToolsVersion = 14.2;
 					};
@@ -362,23 +302,16 @@
 				3DB11E49299543D9001DDB02 /* VRC RoboScout */,
 				3DB11E5A299543DC001DDB02 /* VRC RoboScoutTests */,
 				3DB11E64299543DC001DDB02 /* VRC RoboScoutUITests */,
-				3D1E57EB29F18D0400DA6296 /* GetAdamScore */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		3D1E57EA29F18D0400DA6296 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		3DB11E48299543D9001DDB02 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DAFC80E2A2640EB00A0C41A /* CoreML in Resources */,
 				3D50E10829C8915C002FE201 /* Launch Screen.storyboard in Resources */,
 				3DB11E52299543DC001DDB02 /* Assets.xcassets in Resources */,
 			);
@@ -401,18 +334,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		3D1E57E829F18D0400DA6296 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3D386C3629F19DAB00035B3B /* RoboScoutAPI.swift in Sources */,
-				3D17B4CD29F1967A007F5D78 /* AdamScore.mlmodel in Sources */,
-				3D1E57FB29F18D4A00DA6296 /* Intents.intentdefinition in Sources */,
-				3D1E57F229F18D0400DA6296 /* IntentHandler.swift in Sources */,
-				3D1E57FE29F18F4600DA6296 /* GetAdamScoreHandler.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		3DB11E46299543D9001DDB02 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -424,14 +345,13 @@
 				3D01A8C329DF3D55000BBDEB /* EventDivisionRankings.swift in Sources */,
 				3D919AEF29F6F70C00E1724F /* EventSkillsRankings.swift in Sources */,
 				3D3219CF29D31BD500EF5500 /* EventTeams.swift in Sources */,
-				3D1E57FC29F18D8D00DA6296 /* Intents.intentdefinition in Sources */,
 				3D3219C729D0BD5500EF5500 /* Importer.swift in Sources */,
-				3D17B4CC29F1967A007F5D78 /* AdamScore.mlmodel in Sources */,
 				3D3219D129D3327500EF5500 /* EventTeamMatches.swift in Sources */,
 				3DB11E4E299543D9001DDB02 /* VRC_RoboScoutApp.swift in Sources */,
 				3D0BE6F929A3F0C700C3EA8A /* Lookup.swift in Sources */,
 				3D3219C929D1CFF300EF5500 /* TeamEventsView.swift in Sources */,
 				3D386C3529F19DAB00035B3B /* RoboScoutAPI.swift in Sources */,
+				3DAFC8132A26420600A0C41A /* AdamScore 500.mlpackage in Sources */,
 				3D3219CD29D1EF1D00EF5500 /* EventInformation.swift in Sources */,
 				3D2FDAF529A7A4A6009E9740 /* WorldSkillsRankings.swift in Sources */,
 				3D3219CB29D1EA0D00EF5500 /* EventView.swift in Sources */,
@@ -458,11 +378,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		3D1E57F529F18D0400DA6296 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 3D1E57EB29F18D0400DA6296 /* GetAdamScore */;
-			targetProxy = 3D1E57F429F18D0400DA6296 /* PBXContainerItemProxy */;
-		};
 		3DB11E5D299543DC001DDB02 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3DB11E49299543D9001DDB02 /* VRC RoboScout */;
@@ -476,61 +391,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		3D1E57F829F18D0400DA6296 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = LDYP2MX4AG;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = GetAdamScore/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = GetAdamScore;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "sunkensplashstudios.VRC-RoboScout.GetAdamScore";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		3D1E57F929F18D0400DA6296 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = LDYP2MX4AG;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = GetAdamScore/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = GetAdamScore;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "sunkensplashstudios.VRC-RoboScout.GetAdamScore";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 		3DB11E6D299543DC001DDB02 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -656,11 +516,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "VRC-RoboScout-Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
@@ -703,11 +565,13 @@
 				INFOPLIST_FILE = "VRC-RoboScout-Info.plist";
 				"INFOPLIST_FILE[sdk=*]" = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
@@ -826,15 +690,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3D1E57F729F18D0400DA6296 /* Build configuration list for PBXNativeTarget "GetAdamScore" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				3D1E57F829F18D0400DA6296 /* Debug */,
-				3D1E57F929F18D0400DA6296 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		3DB11E45299543D9001DDB02 /* Build configuration list for PBXProject "VRC RoboScout" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

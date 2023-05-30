@@ -4,10 +4,32 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>VRC RoboScout.xcscheme_^#shared#^_</key>
+		<key>GetAdamScore.xcscheme_^#shared#^_</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+		<key>VRC RoboScout.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>isShown</key>
+			<true/>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>3D1E57EB29F18D0400DA6296</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>3DB11E49299543D9001DDB02</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

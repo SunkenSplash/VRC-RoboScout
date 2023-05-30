@@ -38,7 +38,7 @@ public class RoboScoutAPI {
     }
     
     public static func robotevents_access_key() -> String {
-        return "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiNThjYmZlOWI1ZWM3OTQ2OGM1M2EzNzViODIxOGRjNTUyZmNjZjRkYTcwNDQ3ZGQ5NGIwYTVjNzgzMDI4ZTI1YmI5MTE1M2ZhMTI4ZWVlNzYiLCJpYXQiOjE2NzU5NTcxNTMuMTc5NjgwMSwibmJmIjoxNjc1OTU3MTUzLjE3OTY4MywiZXhwIjoyNjIyNzI4MzUzLjE3MTcyLCJzdWIiOiI5NzI1NyIsInNjb3BlcyI6W119.IK6UM7wm0PEgQpKDgDnhhH2aSbJvLxwjx14VQG-me8zhT3StYoOGheNN01q7ANGI-1pPYVcydbewRF_enSjddUc7TlkG_qRl5DJV6m2qkC6hAsyTpRs7bMppJnmI9p1PKJ8ntizObwCC0H22JtH-xaKnpwOlcAsVWOiF9e_2GxfkjImpui8QTQ7ezjYJ269sPRdgHF9OdDlvXomSFq8JmaNSiuQX70mYOqyB18ZNHOq-owobBbnJZFJ7btIF9PERjaaM88DR_HKuX5gH8KSOhkSX3Lheslpo2cGo9RNqWXxdtWa-roXm-ZNIwThClIpytJWl1QX2S4VMKnEZS7EVdtP48OAm_E0VwdKVuG5-U151SmxFPzl9PEa7eXF2tIDnAHQItRg5l_6wEpwJIy9qkdOhLPRMf8wBv5lR4_SeWN0kz-BVy_EPNIQxXDRRG7-5yoTg5ABcoVVmNK32XEqpqquVpd8AYN0PXrzcSdHU3yUzM5gXBHknhyJFzwiFZOIRhiy2xb1E-6T_x2PZ3QiPVNfk9balZ0eWFAeLluyy60CrgHzlsFO-a0dsZZB0cEyMdw4jScZdNUH2vWRfPMwBllNRieTvs2xkxuATaCz1g8JjQzbjWcox68eXQFS5gtWIYY0w7j-eBrKiNPigL6CoFHG--KRBpqknj7rxS-YJqNA"
+        return ProcessInfo.processInfo.environment["ROBOTEVENTS_API_KEY"] ?? ""
     }
     
     public static func robotevents_request(request_url: String, params: [String: Any] = [:]) -> [[String: Any]] {

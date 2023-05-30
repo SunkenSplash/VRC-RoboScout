@@ -176,11 +176,11 @@ struct TeamLookup: View {
     ]
     
     func adam_score() -> String {
-        guard let model = try? AdamScore(configuration: MLModelConfiguration()) else {
+        guard let model = try? AdamScore_500(configuration: MLModelConfiguration()) else {
             print("Error loading AdamScore model")
             return "Error"
         }
-        guard let score = try? model.prediction(world_skills_ranking: Double(world_skills.ranking), trueskill_ranking: Double(vrc_data_analysis.trueskill_ranking), average_qualification_ranking: avg_rank, ccwm: Double(vrc_data_analysis.ccwm), winrate: Double(vrc_data_analysis.total_wins) / Double(vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties)) else {
+        guard let score = try? model.prediction(world_skills_ranking: Double(world_skills.ranking), trueskill_ranking: Double(vrc_data_analysis.trueskill_ranking), average_qualification_ranking: avg_rank, winrate: Double(vrc_data_analysis.total_wins) / Double(vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties)) else {
             print("Runtime error with AdamScore model")
             return "Error"
         }
