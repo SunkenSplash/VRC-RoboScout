@@ -79,7 +79,6 @@
 		3D919AEE29F6F70C00E1724F /* EventSkillsRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSkillsRankings.swift; sourceTree = "<group>"; };
 		3DA0AE5B29B2251B009D4782 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		3DAFC80D2A2640EB00A0C41A /* CoreML */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CoreML; sourceTree = "<group>"; };
-		3DAFC8112A2641E000A0C41A /* AdamScore 500.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = "AdamScore 500.mlpackage"; sourceTree = "<group>"; };
 		3DAFC8122A26420500A0C41A /* AdamScore 500.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; name = "AdamScore 500.mlpackage"; path = "CoreML/AdamScore 500.mlpackage"; sourceTree = SOURCE_ROOT; };
 		3DB11E4A299543D9001DDB02 /* VRC RoboScout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VRC RoboScout.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB11E4D299543D9001DDB02 /* VRC_RoboScoutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRC_RoboScoutApp.swift; sourceTree = "<group>"; };
@@ -119,13 +118,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3D0BE6F729A3F09F00C3EA8A /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Preview Content";
-			sourceTree = "<group>";
-		};
 		3D1E57ED29F18D0400DA6296 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -159,7 +151,6 @@
 		3DB11E4C299543D9001DDB02 /* VRC RoboScout */ = {
 			isa = PBXGroup;
 			children = (
-				3D0BE6F729A3F09F00C3EA8A /* Preview Content */,
 				3DB11E53299543DC001DDB02 /* VRC_RoboScout.entitlements */,
 				3D50E10729C8915C002FE201 /* Launch Screen.storyboard */,
 				3DB11E51299543DC001DDB02 /* Assets.xcassets */,
@@ -180,7 +171,6 @@
 				3D0BE6F829A3F0C700C3EA8A /* Lookup.swift */,
 				3DA0AE5B29B2251B009D4782 /* Settings.swift */,
 				3DAFC8122A26420500A0C41A /* AdamScore 500.mlpackage */,
-				3DAFC8112A2641E000A0C41A /* AdamScore 500.mlpackage */,
 			);
 			path = "VRC RoboScout";
 			sourceTree = "<group>";
@@ -509,7 +499,7 @@
 				CODE_SIGN_ENTITLEMENTS = "VRC RoboScout/VRC_RoboScout.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"VRC RoboScout/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = LDYP2MX4AG;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -557,7 +547,7 @@
 				CODE_SIGN_ENTITLEMENTS = "VRC RoboScout/VRC_RoboScout.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"VRC RoboScout/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = LDYP2MX4AG;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
