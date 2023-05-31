@@ -116,7 +116,7 @@ class UserSettings: ObservableObject {
     
     func tabColor() -> SwiftUI.Color {
         if defaults.object(forKey: "minimalistic") as? Int ?? 1 == 1 {
-            return Color(UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0))
+            return Color(UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0))
         }
         else {
             return self.accentColor()

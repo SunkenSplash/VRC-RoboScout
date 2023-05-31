@@ -34,11 +34,6 @@ struct Settings: View {
     
     var body: some View {
         VStack {
-            VStack {
-                if showLoading {
-                    ProgressView()
-                }
-            }.frame(height: 20)
             Form {
                 Section("Data Analysis") {
                     Toggle("AdamScore™", isOn: $adam_score).onChange(of: adam_score) { _ in
