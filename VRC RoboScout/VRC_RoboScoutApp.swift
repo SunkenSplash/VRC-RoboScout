@@ -99,7 +99,7 @@ class UserSettings: ObservableObject {
     func setAdamScore(state: Bool) {
         self.adam_score = state
     }
-
+    
     func setSelectedSeasonID(id: Int) {
         self.selected_season_id = id
     }
@@ -130,6 +130,18 @@ class UserSettings: ObservableObject {
         else {
             return .white
         }
+    }
+    
+    static func getRobotEventsAPIKey() -> String {
+        var robotevents_api_key: String
+        if let key = ProcessInfo.processInfo.environment["ROBOTEVENTS_API_KEY"] {
+            robotevents_api_key = key
+            defaults.set(key, forKey: "robotevents_api_key")
+        }
+        else {
+            robotevents_api_key = defaults.object(forKey: "robotevents_api_key") as? String ?? ""
+        }
+        return robotevents_api_key
     }
     
     func getMinimalistic() -> Bool {

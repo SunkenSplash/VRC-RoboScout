@@ -38,7 +38,7 @@ public class RoboScoutAPI {
     }
     
     public static func robotevents_access_key() -> String {
-        return ProcessInfo.processInfo.environment["ROBOTEVENTS_API_KEY"] ?? ""
+        return UserSettings.getRobotEventsAPIKey()
     }
     
     public static func robotevents_request(request_url: String, params: [String: Any] = [:]) -> [[String: Any]] {
