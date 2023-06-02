@@ -355,12 +355,13 @@ struct TeamLookup: View {
                         Text("Average Qualifiers Ranking: \(displayRoundedTenths(number: avg_rank))")
                         Text("CCWM: \(displayRoundedTenths(number: vrc_data_analysis.ccwm))")
                         Text("Winrate: " + ((vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties > 0) ? ((displayRoundedTenths(number: Double(vrc_data_analysis.total_wins) / Double(vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties) * 100.0)) + "%") : ""))
+                        Text("Total Matches: \(vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties)")
                         Text("Total Wins: \(vrc_data_analysis.total_wins)")
                         Text("Total Losses: \(vrc_data_analysis.total_losses)")
                         Text("Total Ties: \(vrc_data_analysis.total_ties)")
                     }
                     Spacer()
-                    Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 ? "\(vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties) Matches" : "")
+                    Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 ? "\(vrc_data_analysis.total_wins) - \(vrc_data_analysis.total_losses) - \(vrc_data_analysis.total_ties)" : "")
                 }
                 if settings.getAdamScore() {
                     HStack {

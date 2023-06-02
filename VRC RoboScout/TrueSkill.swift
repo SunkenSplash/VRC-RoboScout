@@ -26,16 +26,25 @@ struct TrueSkillRow: View {
 
     var body: some View {
         HStack {
-            Text("#\(team_trueskill.ranking) (\(team_trueskill.ranking_change >= 0 ? "-" : "+")\(abs(team_trueskill.ranking_change)))")
+            HStack {
+                Text("#\(team_trueskill.ranking)")
+                if team_trueskill.ranking_change != 0 {
+                    Text("\(team_trueskill.ranking_change >= 0 ? Image(systemName: "arrow.up") : Image(systemName: "arrow.down"))\(abs(team_trueskill.ranking_change))").font(.system(size: 12)).foregroundColor(team_trueskill.ranking_change >= 0 ? .green : .red)
+                }
+                Spacer()
+            }.frame(width: 100)
             Spacer()
             Text("\(team_trueskill.number)")
             Spacer()
-            Menu("\(displayRoundedTenths(number: team_trueskill.trueskill))") {
-                Text("CCWM: \(displayRoundedTenths(number: team_trueskill.ccwm))")
-                Text("Total Wins: \(team_trueskill.total_wins)")
-                Text("Total Losses: \(team_trueskill.total_losses)")
-                Text("Total Ties: \(team_trueskill.total_ties)")
-            }
+            HStack {
+                Spacer()
+                Menu("\(displayRoundedTenths(number: team_trueskill.trueskill))") {
+                    Text("CCWM: \(displayRoundedTenths(number: team_trueskill.ccwm))")
+                    Text("Total Wins: \(team_trueskill.total_wins)")
+                    Text("Total Losses: \(team_trueskill.total_losses)")
+                    Text("Total Ties: \(team_trueskill.total_ties)")
+                }
+            }.frame(width: 100)
         }
     }
 }

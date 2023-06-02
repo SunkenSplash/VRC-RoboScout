@@ -14,6 +14,8 @@ struct WorldSkillsTeam: Identifiable {
     let additional_ranking: Int
     let driver: Int
     let programming: Int
+    let highest_driver: Int
+    let highest_programming: Int
     let combined: Int
 }
 
@@ -22,14 +24,29 @@ struct WorldSkillsRow: View {
 
     var body: some View {
         HStack {
-            Text(team_world_skills.additional_ranking == 0 ? "#\(team_world_skills.ranking)" : "#\(team_world_skills.ranking) (#\(team_world_skills.additional_ranking))")
+            HStack {
+                Text(team_world_skills.additional_ranking == 0 ? "#\(team_world_skills.ranking)" : "#\(team_world_skills.ranking) (#\(team_world_skills.additional_ranking))")
+                Spacer()
+            }.frame(width: 80)
             Spacer()
             Text("\(team_world_skills.number)")
             Spacer()
-            Menu("\(team_world_skills.combined)") {
-                Text("\(team_world_skills.driver) Driver")
-                Text("\(team_world_skills.programming) Programming")
-            }
+            HStack {
+                Menu("\(team_world_skills.combined)") {
+                    Text("\(team_world_skills.combined) Combined")
+                    Text("\(team_world_skills.programming) Programming")
+                    Text("\(team_world_skills.driver) Driver")
+                    Text("\(team_world_skills.highest_programming) Highest Programming")
+                    Text("\(team_world_skills.highest_driver) Highest Driver")
+                }
+                HStack {
+                    Spacer()
+                    VStack {
+                        Text(String(describing: team_world_skills.programming)).font(.system(size: 10))
+                        Text(String(describing: team_world_skills.driver)).font(.system(size: 10))
+                    }
+                }.frame(width: 30)
+            }.frame(width: 80)
         }
     }
 }
@@ -54,7 +71,7 @@ class WorldSkillsTeams: ObservableObject {
                 if !filter_array.contains((team["team"] as! [String: Any])["team"] as! String) {
                     continue
                 }
-                self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: rank, additional_ranking: team["rank"] as! Int,  driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
+                self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: rank, additional_ranking: team["rank"] as! Int, driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, highest_driver: (team["scores"] as! [String: Any])["highest_driver"] as! Int, highest_programming: (team["scores"] as! [String: Any])["highest_programming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
                 rank += 1
             }
         }
@@ -65,7 +82,7 @@ class WorldSkillsTeams: ObservableObject {
                 if region != (team["team"] as! [String: Any])["eventRegionId"] as! Int {
                     continue
                 }
-                self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: rank, additional_ranking: team["rank"] as! Int, driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
+                self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: rank, additional_ranking: team["rank"] as! Int, driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, highest_driver: (team["scores"] as! [String: Any])["highest_driver"] as! Int, highest_programming: (team["scores"] as! [String: Any])["highest_programming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
                 rank += 1
             }
         }
@@ -76,7 +93,7 @@ class WorldSkillsTeams: ObservableObject {
                 if letter != ((team["team"] as! [String: Any])["team"] as! String).last {
                     continue
                 }
-                self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: rank, additional_ranking: team["rank"] as! Int, driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
+                self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: rank, additional_ranking: team["rank"] as! Int, driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, highest_driver: (team["scores"] as! [String: Any])["highest_driver"] as! Int, highest_programming: (team["scores"] as! [String: Any])["highest_programming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
                 rank += 1
             }
         }
@@ -87,7 +104,7 @@ class WorldSkillsTeams: ObservableObject {
                     return
                 }
                 let team = API.world_skills_cache[i]
-                self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: team["rank"] as! Int, additional_ranking: 0, driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
+                self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: team["rank"] as! Int, additional_ranking: 0, driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, highest_driver: (team["scores"] as! [String: Any])["maxDriver"] as! Int, highest_programming: (team["scores"] as! [String: Any])["maxProgramming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
             }
         }
     }
