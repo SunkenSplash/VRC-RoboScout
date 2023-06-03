@@ -75,7 +75,8 @@ struct EventView: View {
             }
             
             if self.event_teams.isEmpty {
-                self.event_teams = event.fetch_teams()
+                event.fetch_teams()
+                self.event_teams = event.teams
             }
             
             DispatchQueue.main.async {

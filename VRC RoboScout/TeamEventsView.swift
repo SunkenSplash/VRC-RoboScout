@@ -23,7 +23,7 @@ struct EventRow: View {
     func generate_location() -> String {
         var location_array = [self.event.city, self.event.region, self.event.country]
         location_array = location_array.filter{ $0 != "" }
-        return location_array.joined(separator: ", ")
+        return location_array.joined(separator: ", ").replacingOccurrences(of: "United States", with: "USA")
     }
 
     var body: some View {

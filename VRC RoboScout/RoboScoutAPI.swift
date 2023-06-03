@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Matft
 
 public class RoboScoutAPI {
     
@@ -207,7 +208,7 @@ public class RoboScoutAPI {
         return data
     }
     
-    public func generate_season_id_map() -> Void {
+    public func generate_season_id_map() {
         let seasons_data = RoboScoutAPI.robotevents_request(request_url: "/seasons/")
         
         for season_data in seasons_data {
@@ -226,7 +227,7 @@ public class RoboScoutAPI {
         return UserDefaults.standard.object(forKey: "selected_season_id") as? Int ?? 181
     }
     
-    public func update_world_skills_cache(season: Int? = nil) -> Void {
+    public func update_world_skills_cache(season: Int? = nil) {
 
         let semaphore = DispatchSemaphore(value: 0)
             
@@ -287,7 +288,7 @@ public class RoboScoutAPI {
         return WorldSkills(team: Team(id: (skills_data["team"] as! [String: Any])["id"] as! Int), data: skills_data)
     }
                 
-    public func update_vrc_data_analysis_cache() -> Void {
+    public func update_vrc_data_analysis_cache() {
         
         let semaphore = DispatchSemaphore(value: 0)
             
@@ -613,7 +614,10 @@ public class Match {
             return 0
         }
     }
-
+    
+    func toString() -> String {
+        return "\(self.name) - \(self.red_score) to \(self.blue_score)"
+    }
 }
 
 public class TeamRanking {
@@ -682,6 +686,14 @@ public class TeamSkillsRanking {
     }
 }
 
+public struct TeamPerformanceRatings {
+    public var team: Team
+    public var event: Event
+    public var opr: Double
+    public var dpr: Double
+    public var ccwm: Double
+}
+
 public class Event {
     
     public var id: Int
@@ -693,8 +705,10 @@ public class Event {
     public var city: String
     public var region: String
     public var country: String
+    public var matches: [Division: [Match]]
     public var teams: [Team]
     public var teams_map: [Int: Team]
+    public var team_performance_ratings: [Int: TeamPerformanceRatings]
     public var divisions: [Division]
     public var rankings: [Division: [TeamRanking]]
     public var skills_rankings: [TeamSkillsRanking]
@@ -710,8 +724,10 @@ public class Event {
         self.city = (data["location"] != nil) ? ((data["location"] as! [String: Any])["city"] as? String ?? "") : ""
         self.region = (data["location"] != nil) ? ((data["location"] as! [String: Any])["region"] as? String ?? "") : ""
         self.country = (data["location"] != nil) ? ((data["location"] as! [String: Any])["country"] as? String ?? "") : ""
+        self.matches = [Division: [Match]]()
         self.teams = [Team]()
         self.teams_map = [Int: Team]()
+        self.team_performance_ratings = [Int: TeamPerformanceRatings]()
         self.divisions = [Division]()
         self.rankings = [Division: [TeamRanking]]()
         self.skills_rankings = [TeamSkillsRanking]()
@@ -746,24 +762,23 @@ public class Event {
         for division in (data[0]["divisions"] as! [[String: Any]]) {
             self.divisions.append(Division(data: division))
         }
-        
     }
         
-    public func fetch_teams() -> [Team] {
+    public func fetch_teams() {
+        self.teams = [Team]()
         let data = RoboScoutAPI.robotevents_request(request_url: String(format: "/events/%d/teams", self.id))
         for team in data {
             let cached_team = Team(id: team["id"] as! Int, fetch: false, data: team)
             self.teams.append(cached_team)
             self.teams_map[cached_team.id] = cached_team
         }
-        return self.teams
     }
     
-    public func get_team(id: Int) -> Team {
-        return self.teams_map[id] ?? Team(id: 0, fetch: false)
+    public func get_team(id: Int) -> Team? {
+        return self.teams_map[id]
     }
     
-    public func fetch_rankings(division: Division) -> [TeamRanking] {
+    public func fetch_rankings(division: Division) {
         let data = RoboScoutAPI.robotevents_request(request_url: "/events/\(self.id)/divisions/\(division.id)/rankings")
         self.rankings[division] = [TeamRanking]()
         for ranking in data {
@@ -771,10 +786,9 @@ public class Event {
             division_rankings.append(TeamRanking(data: ranking))
             self.rankings[division] = division_rankings
         }
-        return self.rankings[division] ?? [TeamRanking]()
     }
     
-    public func fetch_skills_rankings() -> [TeamSkillsRanking] {
+    public func fetch_skills_rankings() {
         let data = RoboScoutAPI.robotevents_request(request_url: "/events/\(self.id)/skills")
         var index = 0
         while index < data.count {
@@ -789,14 +803,117 @@ public class Event {
         
         // Remove all skills rankings with rank of 0
         self.skills_rankings = self.skills_rankings.filter({ $0.rank != 0 })
+    }
+    
+    public func fetch_matches(division: Division) {
+        let data = RoboScoutAPI.robotevents_request(request_url: "/events/\(self.id)/divisions/\(division.id)/matches")
         
-        return self.skills_rankings
+        self.matches[division] = [Match]()
+        
+        var matches = [Match]()
+        for match_data in data {
+            matches.append(Match(data: match_data))
+        }
+        self.matches[division] = matches
     }
                 
     public func toString() -> String {
         return String(format: "%@ %d", self.name, self.id)
     }
-                
+    
+    public func calculate_performance_ratings(division: Division) {
+        self.team_performance_ratings = [Int: TeamPerformanceRatings]()
+        
+        if self.teams.isEmpty {
+            self.fetch_teams()
+        }
+        
+        self.fetch_matches(division: division)
+        
+        var m = [[Int]]()
+        var scores = [[Int]]()
+        var margins = [[Int]]()
+        
+        var division_teams = [Team]()
+        
+        if !self.matches.keys.contains(division) {
+            self.matches[division] = [Match]()
+        }
+        
+        var added_teams = [Int]()
+        for match in self.matches[division]! {
+            var match_teams = [Team]()
+            match_teams.append(contentsOf: match.red_alliance)
+            match_teams.append(contentsOf: match.blue_alliance)
+            for team in match_teams {
+                if !added_teams.contains(team.id) && self.get_team(id: team.id) != nil {
+                    division_teams.append(self.get_team(id: team.id)!)
+                }
+                added_teams.append(team.id)
+            }
+        }
+        
+        for match in self.matches[division]! {
+            
+            if !match.name.starts(with: "Qualifier") {
+                continue
+            }
+                        
+            var red = [Int]()
+            var blue = [Int]()
+            
+            for team in division_teams {
+                if match.red_alliance[0].id == team.id || match.red_alliance[1].id == team.id {
+                    red.append(1)
+                }
+                else {
+                    red.append(0)
+                }
+                if match.blue_alliance[0].id == team.id || match.blue_alliance[1].id == team.id {
+                    blue.append(1)
+                }
+                else {
+                    blue.append(0)
+                }
+            }
+            m.append(red)
+            m.append(blue)
+            
+            scores.append([match.red_score])
+            scores.append([match.blue_score])
+            margins.append([match.red_score - match.blue_score])
+            margins.append([match.blue_score - match.red_score])
+        }
+        
+        let mM = MfArray(m)
+        let mScores = MfArray(scores)
+        let mMargins = MfArray(margins)
+        
+        let pinv = try! Matft.linalg.pinv(mM)
+        
+        let mOPRs = Matft.matmul(pinv, mScores)
+        let mCCWMs = Matft.matmul(pinv, mMargins)
+        
+        func convertToList(mfarray: MfArray) -> [Double] {
+            var list = [Double]()
+            for arr in mfarray.toArray() as! [[Float]] {
+                for value in arr {
+                    list.append(Double(value))
+                }
+            }
+            return list
+        }
+        
+        let OPRs = convertToList(mfarray: mOPRs)
+        let CCWMs = convertToList(mfarray: mCCWMs)
+        
+        var i = 0
+        for team in division_teams {
+            self.team_performance_ratings[team.id] = TeamPerformanceRatings(team: team, event: self, opr: OPRs[i], dpr: OPRs[i] - CCWMs[i], ccwm: CCWMs[i])
+            i += 1
+        }
+    }
+
 }
 
 public class EventSkills {

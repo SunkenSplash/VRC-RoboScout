@@ -90,7 +90,7 @@ struct Favorites: View {
         
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             
-            let data = RoboScoutAPI.robotevents_request(request_url: "/seasons/\(RoboScoutAPI.selected_season_id())/events", params: ["sku": favorites.favorite_events])
+            let data = RoboScoutAPI.robotevents_request(request_url: "/events", params: ["sku": favorites.favorite_events])
             var map = [String: Event]()
 
             for event_data in data {

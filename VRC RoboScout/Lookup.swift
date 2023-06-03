@@ -361,7 +361,7 @@ struct TeamLookup: View {
                         Text("Total Ties: \(vrc_data_analysis.total_ties)")
                     }
                     Spacer()
-                    Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 ? "\(vrc_data_analysis.total_wins) - \(vrc_data_analysis.total_losses) - \(vrc_data_analysis.total_ties)" : "")
+                    Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 ? "\(vrc_data_analysis.total_wins) - \(vrc_data_analysis.total_losses) -  \(vrc_data_analysis.total_ties)" : "")
                 }
                 if settings.getAdamScore() {
                     HStack {
