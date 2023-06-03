@@ -53,7 +53,12 @@ struct EventTeamMatches: View {
     func fetch_info() {
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             
-            self.team = Team(number: self.team.number)
+            if self.team.number != "" {
+                self.team = Team(number: self.team.number)
+            }
+            else {
+                self.team = Team(id: self.team.id)
+            }
             
             let matches = self.team.matches_at(event: event)
 

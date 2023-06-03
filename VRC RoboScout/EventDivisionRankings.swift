@@ -157,40 +157,42 @@ struct EventDivisionRankings: View {
         }
         List {
             ForEach(event_rankings_list.rankings_indexes.reversed(), id: \.self) { rank in
-                VStack {
-                    HStack {
+                NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: self.event, team: Team(id: team_ranking(rank: rank).team.id, fetch: false)).environmentObject(settings)) {
+                    VStack {
                         HStack {
-                            Spacer().frame(width: 22)
-                            Text(teams_map[String(team_ranking(rank: rank).team.id)] ?? "").font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 60, alignment: .leading)
-                            Text((event.get_team(id: team_ranking(rank: rank).team.id) ?? Team(id: 0, fetch: false)).name).frame(alignment: .leading)
-                        }
-                        Spacer()
-                    }.frame(height: 20, alignment: .leading)
-                    HStack {
-                        HStack {
-                            Spacer().frame(width: 22)
-                            VStack(alignment: .leading) {
-                                Text("#\(team_ranking(rank: rank).rank)").frame(alignment: .leading).font(.system(size: 16))
-                                Text("\(team_ranking(rank: rank).wins)-\(team_ranking(rank: rank).losses)-\(team_ranking(rank: rank).ties)").frame(alignment: .leading).font(.system(size: 16))
-                            }.frame(width: 60, alignment: .leading)
+                            HStack {
+                                Spacer().frame(width: 22)
+                                Text(teams_map[String(team_ranking(rank: rank).team.id)] ?? "").font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 60, alignment: .leading)
+                                Text((event.get_team(id: team_ranking(rank: rank).team.id) ?? Team(id: 0, fetch: false)).name).frame(alignment: .leading)
+                            }
                             Spacer()
-                        }
+                        }.frame(height: 20, alignment: .leading)
                         HStack {
-                            VStack(alignment: .leading) {
-                                Text("WP: \(team_ranking(rank: rank).wp)").frame(alignment: .leading).font(.system(size: 12))
-                                Text("OPR: \(displayRoundedTenths(number: (self.event.team_performance_ratings[team_ranking(rank: rank).team.id] ?? TeamPerformanceRatings(team: team_ranking(rank: rank).team, event: self.event, opr: 0.0, dpr: 0.0, ccwm: 0.0)).opr))").frame(alignment: .leading).font(.system(size: 12))
-                                Text("HIGH: \(team_ranking(rank: rank).high_score)").frame(alignment: .leading).font(.system(size: 12))
-                            }.frame(width: 90, alignment: .leading)
-                            VStack(alignment: .leading) {
-                                Text("AP: \(team_ranking(rank: rank).ap)").frame(alignment: .leading).font(.system(size: 12))
-                                Text("DPR: \(displayRoundedTenths(number: (self.event.team_performance_ratings[team_ranking(rank: rank).team.id] ?? TeamPerformanceRatings(team: team_ranking(rank: rank).team, event: self.event, opr: 0.0, dpr: 0.0, ccwm: 0.0)).dpr))").frame(alignment: .leading).font(.system(size: 12))
-                                Text("AVG: " + displayRounded(number: team_ranking(rank: rank).average_points)).frame(alignment: .leading).font(.system(size: 12))
-                            }.frame(width: 90, alignment: .leading)
-                            VStack(alignment: .leading) {
-                                Text("SP: \(team_ranking(rank: rank).sp)").frame(alignment: .leading).font(.system(size: 12))
-                                Text("CCWM: \(displayRoundedTenths(number: (self.event.team_performance_ratings[team_ranking(rank: rank).team.id] ?? TeamPerformanceRatings(team: team_ranking(rank: rank).team, event: self.event, opr: 0.0, dpr: 0.0, ccwm: 0.0)).ccwm))").frame(alignment: .leading).font(.system(size: 12))
-                                Text("TTL: \(team_ranking(rank: rank).total_points)").frame(alignment: .leading).font(.system(size: 12))
-                            }.frame(width: 90, alignment: .leading)
+                            HStack {
+                                Spacer().frame(width: 22)
+                                VStack(alignment: .leading) {
+                                    Text("#\(team_ranking(rank: rank).rank)").frame(alignment: .leading).font(.system(size: 16))
+                                    Text("\(team_ranking(rank: rank).wins)-\(team_ranking(rank: rank).losses)-\(team_ranking(rank: rank).ties)").frame(alignment: .leading).font(.system(size: 16))
+                                }.frame(width: 60, alignment: .leading)
+                                Spacer()
+                            }
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text("WP: \(team_ranking(rank: rank).wp)").frame(alignment: .leading).font(.system(size: 12))
+                                    Text("OPR: \(displayRoundedTenths(number: (self.event.team_performance_ratings[team_ranking(rank: rank).team.id] ?? TeamPerformanceRatings(team: team_ranking(rank: rank).team, event: self.event, opr: 0.0, dpr: 0.0, ccwm: 0.0)).opr))").frame(alignment: .leading).font(.system(size: 12))
+                                    Text("HIGH: \(team_ranking(rank: rank).high_score)").frame(alignment: .leading).font(.system(size: 12))
+                                }.frame(width: 90, alignment: .leading)
+                                VStack(alignment: .leading) {
+                                    Text("AP: \(team_ranking(rank: rank).ap)").frame(alignment: .leading).font(.system(size: 12))
+                                    Text("DPR: \(displayRoundedTenths(number: (self.event.team_performance_ratings[team_ranking(rank: rank).team.id] ?? TeamPerformanceRatings(team: team_ranking(rank: rank).team, event: self.event, opr: 0.0, dpr: 0.0, ccwm: 0.0)).dpr))").frame(alignment: .leading).font(.system(size: 12))
+                                    Text("AVG: " + displayRounded(number: team_ranking(rank: rank).average_points)).frame(alignment: .leading).font(.system(size: 12))
+                                }.frame(width: 90, alignment: .leading)
+                                VStack(alignment: .leading) {
+                                    Text("SP: \(team_ranking(rank: rank).sp)").frame(alignment: .leading).font(.system(size: 12))
+                                    Text("CCWM: \(displayRoundedTenths(number: (self.event.team_performance_ratings[team_ranking(rank: rank).team.id] ?? TeamPerformanceRatings(team: team_ranking(rank: rank).team, event: self.event, opr: 0.0, dpr: 0.0, ccwm: 0.0)).ccwm))").frame(alignment: .leading).font(.system(size: 12))
+                                    Text("TTL: \(team_ranking(rank: rank).total_points)").frame(alignment: .leading).font(.system(size: 12))
+                                }.frame(width: 90, alignment: .leading)
+                            }
                         }
                     }
                 }
