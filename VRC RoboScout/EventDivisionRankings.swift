@@ -13,6 +13,52 @@ class EventDivisionRankingsList: ObservableObject {
     init(rankings_indexes: [Int] = [Int]()) {
         self.rankings_indexes = rankings_indexes.sorted()
     }
+    
+    func sort_by(option: Int, event: Event, division: Division) {
+        var sorted = [Int]()
+        
+        // Create an array of team performance ratings from the event.team_performance_ratings dictionary
+        let team_performance_ratings = Array(event.team_performance_ratings.values)
+        
+        // By rank
+        if option == 0 {
+            // Create the indexes of the rankings in order
+            for i in 0..<event.rankings[division]!.count {
+                sorted.append(i)
+            }
+        }
+        // By OPR
+        else if option == 1 {
+            // Sort the team performance ratings for the given division by OPR
+            // The larger the OPR, the better the ranking
+            let option_order = team_performance_ratings.sorted(by: { $0.opr < $1.opr })
+            // Get the indexes of the sorted team performance ratings
+            for team_performance_rating in option_order {
+                sorted.append(event.rankings[division]!.firstIndex(where: { $0.team.id == team_performance_rating.team.id })!)
+            }
+        }
+        // By DPR
+        else if option == 2 {
+            // Sort the team performance ratings for the given division by DPR
+            // The smaller the DPR, the better the ranking
+            let option_order = team_performance_ratings.sorted(by: { $0.dpr > $1.dpr })
+            // Get the indexes of the sorted team performance ratings
+            for team_performance_rating in option_order {
+                sorted.append(event.rankings[division]!.firstIndex(where: { $0.team.id == team_performance_rating.team.id })!)
+            }
+        }
+        // By CCWM
+        else if option == 3 {
+            // Sort the team performance ratings for the given division by CCWM
+            // The larger the CCWM, the better the ranking
+            let option_order = team_performance_ratings.sorted(by: { $0.ccwm < $1.ccwm })
+            // Get the indexes of the sorted team performance ratings
+            for team_performance_rating in option_order {
+                sorted.append(event.rankings[division]!.firstIndex(where: { $0.team.id == team_performance_rating.team.id })!)
+            }
+        }
+        self.rankings_indexes = sorted
+    }
 }
 
 struct EventDivisionRankings: View {
@@ -24,6 +70,7 @@ struct EventDivisionRankings: View {
     @State var teams_map: [String: String]
     @State var event_rankings_list: EventDivisionRankingsList
     @State var showLoading = true;
+    @State var sortingOption = 0;
     
     init(event: Event, division: Division, teams_map: [String: String]) {
         self.event = event
@@ -55,6 +102,19 @@ struct EventDivisionRankings: View {
     var body: some View {
         if showLoading {
             ProgressView().padding()
+        }
+        else {
+            Picker("Sort", selection: $sortingOption) {
+                Text("Rank").tag(0)
+                Text("OPR").tag(1)
+                Text("DPR").tag(2)
+                Text("CCWM").tag(3)
+            }.pickerStyle(.segmented).padding()
+                .onChange(of: sortingOption) { option in
+                    self.event_rankings_list.sort_by(option: option, event: self.event, division: self.division)
+                    self.showLoading = true
+                    self.showLoading = false
+                }
         }
         List {
             ForEach(event_rankings_list.rankings_indexes.reversed(), id: \.self) { rank in
