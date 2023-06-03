@@ -20,6 +20,8 @@ class EventDivisionRankingsList: ObservableObject {
         // Create an array of team performance ratings from the event.team_performance_ratings dictionary
         let team_performance_ratings = Array(event.team_performance_ratings.values)
         
+        let team_rankings = event.rankings[division] ?? [TeamRanking]()
+        
         // By rank
         if option == 0 {
             // Create the indexes of the rankings in order
@@ -55,6 +57,36 @@ class EventDivisionRankingsList: ObservableObject {
             // Get the indexes of the sorted team performance ratings
             for team_performance_rating in option_order {
                 sorted.append(event.rankings[division]!.firstIndex(where: { $0.team.id == team_performance_rating.team.id })!)
+            }
+        }
+        // By AP
+        else if option == 4 {
+            // Sort the team rankings for the given division by AP
+            // The larger the AP, the better the ranking
+            let option_order = team_rankings.sorted(by: { $0.ap < $1.ap })
+            // Get the indexes of the sorted team rankings
+            for team_ranking in option_order {
+                sorted.append(event.rankings[division]!.firstIndex(where: { $0.team.id == team_ranking.team.id })!)
+            }
+        }
+        // By SP
+        else if option == 5 {
+            // Sort the team rankings for the given division by SP
+            // The larger the SP, the better the ranking
+            let option_order = team_rankings.sorted(by: { $0.sp < $1.sp })
+            // Get the indexes of the sorted team rankings
+            for team_ranking in option_order {
+                sorted.append(event.rankings[division]!.firstIndex(where: { $0.team.id == team_ranking.team.id })!)
+            }
+        }
+        // By high score
+        else if option == 6 {
+            // Sort the team rankings for the given division by high score
+            // The larger the high score, the better the ranking
+            let option_order = team_rankings.sorted(by: { $0.high_score < $1.high_score })
+            // Get the indexes of the sorted team rankings
+            for team_ranking in option_order {
+                sorted.append(event.rankings[division]!.firstIndex(where: { $0.team.id == team_ranking.team.id })!)
             }
         }
         self.rankings_indexes = sorted
@@ -109,9 +141,16 @@ struct EventDivisionRankings: View {
                 Text("OPR").tag(1)
                 Text("DPR").tag(2)
                 Text("CCWM").tag(3)
+                Text("AP").tag(4)
+                Text("SP").tag(5)
             }.pickerStyle(.segmented).padding()
                 .onChange(of: sortingOption) { option in
                     self.event_rankings_list.sort_by(option: option, event: self.event, division: self.division)
+                    self.showLoading = true
+                    self.showLoading = false
+                }.onShake{
+                    self.sortingOption = 6
+                    self.event_rankings_list.sort_by(option: self.sortingOption, event: self.event, division: self.division)
                     self.showLoading = true
                     self.showLoading = false
                 }
