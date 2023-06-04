@@ -23,6 +23,7 @@ struct Importer: View {
     
     @State private var enter = false
     @State private var trueskill_progress = 0.0
+    @State private var trueskill_fetch_error = false
     @State private var world_skills_done = false
     @State private var seasons_done = false
     @State private var cont = false
@@ -54,6 +55,10 @@ struct Importer: View {
             
             if json.count == 0 {
                 print("Failed to update VRC Data Analysis cache")
+                DispatchQueue.main.async {
+                    trueskill_progress = 0.0
+                    trueskill_fetch_error = true
+                }
                 return
             }
             
@@ -154,12 +159,12 @@ struct Importer: View {
                     VStack {
                         Text("TrueSkill").font(.system(size: 18, design: .monospaced)).frame(maxWidth: .infinity, alignment: .leading).padding()
                         ProgressView(value: trueskill_progress) {
-                            Text((trueskill_progress != 0 ? "Processed \(API.vrc_data_analysis_cache.count) out of \(Int(total_teams)) teams" : "Accessing vrc-data-analysis.com...")).font(.system(size: 12, design: .monospaced))
+                            Text(!trueskill_fetch_error ? (trueskill_progress != 0 ? "Processed \(API.vrc_data_analysis_cache.count) out of \(Int(total_teams)) teams" : "Accessing vrc-data-analysis.com...") : "Error fetching TrueSkill data").font(.system(size: 12, design: .monospaced))
                         }.padding(.leading).padding(.trailing)
                     }.padding()
                     Spacer()
                     VStack {
-                        if trueskill_progress > 0.1 {
+                        if (trueskill_progress > 0 || trueskill_fetch_error) && (seasons_done && world_skills_done) {
                             Button("Continue") {
                                 cont = true
                             }

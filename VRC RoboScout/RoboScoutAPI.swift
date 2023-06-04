@@ -103,9 +103,13 @@ public class RoboScoutAPI {
                         
                     } catch let error as NSError {
                         print("NSERROR " + error.description)
+                        cont = false
+                        semaphore.signal()
                     }
                 } else if let error = error {
                     print("ERROR " + error.localizedDescription)
+                    cont = false
+                    semaphore.signal()
                 }
             }
             task.resume()
@@ -163,6 +167,7 @@ public class RoboScoutAPI {
                 semaphore.signal()
             } else if let error = error {
                 print("ERROR " + error.localizedDescription)
+                semaphore.signal()
             }
         }
         task.resume()
@@ -198,9 +203,11 @@ public class RoboScoutAPI {
                     
                 } catch let error as NSError {
                     print("NSERROR " + error.description)
+                    semaphore.signal()
                 }
             } else if let error = error {
                 print("ERROR " + error.localizedDescription)
+                semaphore.signal()
             }
         }
         task.resume()
@@ -253,6 +260,7 @@ public class RoboScoutAPI {
                 semaphore.signal()
             } else if let error = error {
                 print(error.localizedDescription)
+                semaphore.signal()
             }
         }
         task.resume()
@@ -371,9 +379,11 @@ public class RoboScoutAPI {
 
                 }  catch let error as NSError {
                     print(error.localizedDescription)
+                    semaphore.signal()
                 }
             } else if let error = error {
                 print(error.localizedDescription)
+                semaphore.signal()
             }
         }
         task.resume()
@@ -400,9 +410,11 @@ public class RoboScoutAPI {
                     semaphore.signal()
                 }  catch let error as NSError {
                     print(error.localizedDescription)
+                    semaphore.signal()
                 }
             } else if let error = error {
                 print(error.localizedDescription)
+                semaphore.signal()
             }
         }
         task.resume()
