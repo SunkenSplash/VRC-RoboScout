@@ -164,7 +164,7 @@ struct TeamLookup: View {
     @State private var world_skills = WorldSkills(team: Team(id: 0, fetch: false))
     @State private var avg_rank: Double = 0.0
     @State private var showLoading: Bool = false
-    @State private var showingAlert = false
+    @State private var showingPopover = false
     
     let adam_score_map = [
         "Low",
@@ -366,9 +366,16 @@ struct TeamLookup: View {
                 if settings.getAdamScore() {
                     HStack {
                         Button("AdamScore™") {
-                            showingAlert = true
-                        }.alert("AdamScore™ takes into account TrueSkill, world skills, average qualifiers ranking, CCWM, and winrate to rate teams with a machine learning model trained on data from Adam, Team Jelly's scout.", isPresented: $showingAlert) {
-                            Button("OK", role: .cancel) { }
+                            showingPopover = true
+                        }.popover(isPresented: $showingPopover) {
+                            Text("AdamScore™")
+                                .font(.headline)
+                                .padding()
+                            VStack(alignment: .leading) {
+                                Text("AdamScore™ is a machine learning model trained on data from Team Ace's scout, Adam. 500 teams were manually reviewed and rated and the AdamScore™ model aims to predict the overall performance of any team.").padding()
+                                Text("The following metrics are looked at:").padding()
+                            }
+                            BulletList(listItems: ["TrueSkill Ranking", "World Skills Ranking", "Average Qualifiers Ranking", "Winrate", "CCWM"], listItemSpacing: 10).padding()
                         }
                         Spacer()
                         Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 && world_skills.ranking != 0 ? adam_score() : "")
