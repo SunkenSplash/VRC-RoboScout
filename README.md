@@ -55,4 +55,4 @@ Below are the steps you must follow:
 
 ![Screenshot 2023-06-11 at 6 00 47 PM](https://github.com/SunkenSplash/VRC-RoboScout/assets/62484109/d765223e-d815-4d73-9f0b-0f87747e5eff)
 
-16. [OPTIONAL] Please join the VRC RoboScout Discord server [here](https://discord.gg/7b9qcMhVnW) to share your feedback! You are now also eligible to become a beta tester for VRC RoboScout. Please ping a developer in the server for the `Beta Testers` role and access to beta testing channels if you are interested!
+15. [OPTIONAL] Please join the VRC RoboScout Discord server [here](https://discord.gg/7b9qcMhVnW) to share your feedback! You are now also eligible to become a beta tester for VRC RoboScout. Please ping a developer in the server for the `Beta Testers` role and access to beta testing channels if you are interested!
