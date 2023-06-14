@@ -271,7 +271,6 @@ struct Importer: View {
                             .navigationBarTitleDisplayMode(.inline)
                             .toolbarBackground(settings.tabColor(), for: .navigationBar)
                             .toolbarBackground(.visible, for: .navigationBar)
-                
             }
         }
     }

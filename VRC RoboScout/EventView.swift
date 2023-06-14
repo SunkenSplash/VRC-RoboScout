@@ -10,6 +10,7 @@ import SwiftUI
 struct EventDivisionRow: View {
     
     @EnvironmentObject var settings: UserSettings
+    @EnvironmentObject var favorites: FavoriteStorage
     
     @Binding var teams_map: [String: String]
     
@@ -17,7 +18,7 @@ struct EventDivisionRow: View {
     var event: Event
 
     var body: some View {
-        NavigationLink(destination: EventDivisionRankings(event: event, division: Division(id: Int(division.split(separator: "&&")[0]) ?? 0, name: String(division.split(separator: "&&")[1])), teams_map: teams_map).environmentObject(settings)) {
+        NavigationLink(destination: EventDivisionView(event: event, division: Division(id: Int(division.split(separator: "&&")[0]) ?? 0, name: String(division.split(separator: "&&")[1])), teams_map: teams_map).environmentObject(settings).environmentObject(favorites)) {
             Text(division.split(separator: "&&")[1])
         }
     }
@@ -146,6 +147,7 @@ struct EventView: View {
                         List($event_divisions.event_divisions) { division in
                             EventDivisionRow(teams_map: $teams_map, division: division.wrappedValue, event: event)
                                 .environmentObject(settings)
+                                .environmentObject(favorites)
                         }
                     }
                 }

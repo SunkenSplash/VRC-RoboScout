@@ -18,8 +18,8 @@
 		3D3219CF29D31BD500EF5500 /* EventTeams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219CE29D31BD500EF5500 /* EventTeams.swift */; };
 		3D3219D129D3327500EF5500 /* EventTeamMatches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219D029D3327500EF5500 /* EventTeamMatches.swift */; };
 		3D386C3529F19DAB00035B3B /* RoboScoutAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D386C3429F19DAB00035B3B /* RoboScoutAPI.swift */; };
-		3D3E973A2A2A929100356E54 /* Matft in Frameworks */ = {isa = PBXBuildFile; productRef = 3D3E97392A2A929100356E54 /* Matft */; };
 		3D50E10829C8915C002FE201 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D50E10729C8915C002FE201 /* Launch Screen.storyboard */; };
+		3D86DDB12A3A3ACC00826BB4 /* Matft in Frameworks */ = {isa = PBXBuildFile; productRef = 3D86DDB02A3A3ACC00826BB4 /* Matft */; };
 		3D919AEF29F6F70C00E1724F /* EventSkillsRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D919AEE29F6F70C00E1724F /* EventSkillsRankings.swift */; };
 		3DA0AE5C29B2251B009D4782 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA0AE5B29B2251B009D4782 /* Settings.swift */; };
 		3DAFC80E2A2640EB00A0C41A /* CoreML in Resources */ = {isa = PBXBuildFile; fileRef = 3DAFC80D2A2640EB00A0C41A /* CoreML */; };
@@ -99,7 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3D3E973A2A2A929100356E54 /* Matft in Frameworks */,
+				3D86DDB12A3A3ACC00826BB4 /* Matft in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,7 +212,7 @@
 			);
 			name = "VRC RoboScout";
 			packageProductDependencies = (
-				3D3E97392A2A929100356E54 /* Matft */,
+				3D86DDB02A3A3ACC00826BB4 /* Matft */,
 			);
 			productName = "VRC RoboScout";
 			productReference = 3DB11E4A299543D9001DDB02 /* VRC RoboScout.app */;
@@ -287,7 +287,7 @@
 			);
 			mainGroup = 3DB11E41299543D9001DDB02;
 			packageReferences = (
-				3D3E97382A2A929000356E54 /* XCRemoteSwiftPackageReference "Matft" */,
+				3D86DDAF2A3A3ACC00826BB4 /* XCRemoteSwiftPackageReference "Matft" */,
 			);
 			productRefGroup = 3DB11E4B299543D9001DDB02 /* Products */;
 			projectDirPath = "";
@@ -435,6 +435,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -487,6 +488,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -725,20 +727,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		3D3E97382A2A929000356E54 /* XCRemoteSwiftPackageReference "Matft" */ = {
+		3D86DDAF2A3A3ACC00826BB4 /* XCRemoteSwiftPackageReference "Matft" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/jjjkkkjjj/Matft";
+			repositoryURL = "https://github.com/SunkenSplash/Matft";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.3.2;
+				branch = master;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3D3E97392A2A929100356E54 /* Matft */ = {
+		3D86DDB02A3A3ACC00826BB4 /* Matft */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3D3E97382A2A929000356E54 /* XCRemoteSwiftPackageReference "Matft" */;
+			package = 3D86DDAF2A3A3ACC00826BB4 /* XCRemoteSwiftPackageReference "Matft" */;
 			productName = Matft;
 		};
 /* End XCSwiftPackageProductDependency section */
