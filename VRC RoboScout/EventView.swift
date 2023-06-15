@@ -98,32 +98,6 @@ struct EventView: View {
                 Spacer()
             }
             else {
-                Button(action: {
-                    for sku in favorites.favorite_events {
-                        if sku == event.sku {
-                            favorites.favorite_events.removeAll(where: {
-                                $0 == event.sku
-                            })
-                            favorites.sort_teams()
-                            defaults.set(favorites.favorite_events, forKey: "favorite_events")
-                            favorited = false
-                            return
-                        }
-                    }
-                    Task {
-                        favorites.favorite_events.append(self.event.sku)
-                        favorites.sort_teams()
-                        defaults.set(favorites.favorite_events, forKey: "favorite_events")
-                        favorited = true
-                    }
-                }, label: {
-                    if favorited {
-                        Image(systemName: "star.fill").font(.system(size: 25))
-                    }
-                    else {
-                        Image(systemName: "star").font(.system(size: 25))
-                    }
-                }).padding(20)
                 Form {
                     Section("Event") {
                         NavigationLink(destination: EventInformation(event: event).environmentObject(settings)) {
@@ -163,6 +137,34 @@ struct EventView: View {
                             .fontWeight(.medium)
                             .font(.system(size: 19))
                             .foregroundColor(settings.navTextColor())
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            for sku in favorites.favorite_events {
+                                if sku == event.sku {
+                                    favorites.favorite_events.removeAll(where: {
+                                        $0 == event.sku
+                                    })
+                                    favorites.sort_teams()
+                                    defaults.set(favorites.favorite_events, forKey: "favorite_events")
+                                    favorited = false
+                                    return
+                                }
+                            }
+                            Task {
+                                favorites.favorite_events.append(self.event.sku)
+                                favorites.sort_teams()
+                                defaults.set(favorites.favorite_events, forKey: "favorite_events")
+                                favorited = true
+                            }
+                        }, label: {
+                            if favorited {
+                                Image(systemName: "star.fill")
+                            }
+                            else {
+                                Image(systemName: "star")
+                            }
+                        })
                     }
                 }
                 .navigationBarTitleDisplayMode(.inline)
