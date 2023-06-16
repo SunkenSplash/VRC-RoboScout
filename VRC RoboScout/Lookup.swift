@@ -282,6 +282,7 @@ struct TeamLookup: View {
                             favorites.sort_teams()
                             defaults.set(favorites.favorite_teams, forKey: "favorite_teams")
                             favorited = false
+                            showLoading = false
                             return
                         }
                     }

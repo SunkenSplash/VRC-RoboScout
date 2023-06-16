@@ -203,7 +203,7 @@ struct EventDivisionRankings: View {
                 }
             }
         }.task{
-            self.event.calculate_performance_ratings(division: self.division)
+            self.event.calculate_team_performance_ratings(division: self.division)
             fetch_rankings()
         }.onAppear{
             navigation_bar_manager.title = "\(division.name) Rankings"

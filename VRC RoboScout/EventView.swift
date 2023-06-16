@@ -13,12 +13,13 @@ struct EventDivisionRow: View {
     @EnvironmentObject var favorites: FavoriteStorage
     
     @Binding var teams_map: [String: String]
+    @Binding var event_teams: [Team]
     
     var division: String
     var event: Event
 
     var body: some View {
-        NavigationLink(destination: EventDivisionView(event: event, division: Division(id: Int(division.split(separator: "&&")[0]) ?? 0, name: String(division.split(separator: "&&")[1])), teams_map: teams_map).environmentObject(settings).environmentObject(favorites)) {
+        NavigationLink(destination: EventDivisionView(event: event, event_teams: event_teams, division: Division(id: Int(division.split(separator: "&&")[0]) ?? 0, name: String(division.split(separator: "&&")[1])), teams_map: teams_map).environmentObject(settings).environmentObject(favorites)) {
             Text(division.split(separator: "&&")[1])
         }
     }
@@ -103,7 +104,7 @@ struct EventView: View {
                         NavigationLink(destination: EventInformation(event: event).environmentObject(settings)) {
                             Text("Information")
                         }
-                        NavigationLink(destination: EventTeams(event: event, teams_map: $teams_map, event_teams: $event_teams, event_teams_list: $event_teams_list).environmentObject(settings)) {
+                        NavigationLink(destination: EventTeams(event: event, teams_map: $teams_map, event_teams: $event_teams, event_teams_list: event_teams_list).environmentObject(settings)) {
                             Text("Teams")
                         }
                         if team != nil {
@@ -119,7 +120,7 @@ struct EventView: View {
                     }
                     Section("Divisions") {
                         List($event_divisions.event_divisions) { division in
-                            EventDivisionRow(teams_map: $teams_map, division: division.wrappedValue, event: event)
+                            EventDivisionRow(teams_map: $teams_map, event_teams: $event_teams, division: division.wrappedValue, event: event)
                                 .environmentObject(settings)
                                 .environmentObject(favorites)
                         }
@@ -145,7 +146,6 @@ struct EventView: View {
                                     favorites.favorite_events.removeAll(where: {
                                         $0 == event.sku
                                     })
-                                    favorites.sort_teams()
                                     defaults.set(favorites.favorite_events, forKey: "favorite_events")
                                     favorited = false
                                     return
@@ -153,7 +153,6 @@ struct EventView: View {
                             }
                             Task {
                                 favorites.favorite_events.append(self.event.sku)
-                                favorites.sort_teams()
                                 defaults.set(favorites.favorite_events, forKey: "favorite_events")
                                 favorited = true
                             }

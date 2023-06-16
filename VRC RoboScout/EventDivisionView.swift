@@ -15,18 +15,34 @@ struct EventDivisionView: View {
     @StateObject var navigation_bar_manager = NavigationBarManager(title: "Rankings")
     
     @State var event: Event
+    @State var event_teams: [Team]
     @State var division: Division
     @State var teams_map: [String: String]
     @State var showingPopover = false
     
-    init(event: Event, division: Division, teams_map: [String: String]) {
+    init(event: Event, event_teams: [Team], division: Division, teams_map: [String: String]) {
         self.event = event
+        self.event_teams = event_teams
         self.division = division
         self.teams_map = teams_map
     }
     
     var body: some View {
         TabView {
+            EventTeams(event: self.event, division: self.division, teams_map: $teams_map, event_teams: $event_teams, event_teams_list: [String]())
+                .tabItem {
+                    if settings.getMinimalistic() {
+                        Image(systemName: "person.3.fill")
+                    }
+                    else {
+                        Label("Teams", systemImage: "person.3.fill")
+                    }
+                }
+                .environmentObject(favorites)
+                .environmentObject(settings)
+                .environmentObject(navigation_bar_manager)
+                .tint(settings.accentColor())
+            
             EventDivisionRankings(event: event, division: division, teams_map: teams_map).environmentObject(settings).environmentObject(favorites)
                 .tabItem {
                     if settings.getMinimalistic() {
@@ -87,6 +103,6 @@ struct EventDivisionView: View {
 
 struct EventDivisionView_Previews: PreviewProvider {
     static var previews: some View {
-        EventDivisionView(event: Event(), division: Division(), teams_map: [String: String]())
+        EventDivisionView(event: Event(), event_teams: [Team](), division: Division(), teams_map: [String: String]())
     }
 }

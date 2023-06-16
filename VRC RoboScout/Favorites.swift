@@ -56,8 +56,9 @@ class FavoriteStorage: ObservableObject {
     @Published var favorite_events: [String]
     
     init(favorite_teams: [String], favorite_events: [String]) {
-        self.favorite_teams = favorite_teams.sorted()
+        self.favorite_teams = favorite_teams
         self.favorite_events = favorite_events.sorted()
+        self.sort_teams()
     }
     
     public func teams_as_array() -> [String] {
@@ -69,7 +70,10 @@ class FavoriteStorage: ObservableObject {
     }
     
     public func sort_teams() {
-        self.favorite_teams = self.favorite_teams.sorted()
+        self.favorite_teams.sort()
+        self.favorite_teams.sort(by: {
+            (Int($0.filter("0123456789".contains)) ?? 0) < (Int($1.filter("0123456789".contains)) ?? 0)
+        })
     }
     
     public func is_favorited(event_sku: String) -> Bool {
@@ -109,7 +113,7 @@ struct Favorites: View {
     
     func sort_events_by_date() {
         // The start of a date can be determined with event_sku_map[sku].start
-        favorites.favorite_events = favorites.favorite_events.sorted { (sku1, sku2) -> Bool in
+        favorites.favorite_events.sort{ (sku1, sku2) -> Bool in
             let event1 = event_sku_map[sku1] ?? Event(sku: sku1, fetch: false)
             let event2 = event_sku_map[sku2] ?? Event(sku: sku2, fetch: false)
             return event1.start ?? Date() > event2.start ?? Date()

@@ -108,7 +108,7 @@ struct Importer: View {
                 
                 API.vrc_data_analysis_cache.append(team_data_dict)
                 
-                API.vrc_data_analysis_cache = API.vrc_data_analysis_cache.sorted(by: {
+                API.vrc_data_analysis_cache.sort(by: {
                     ($0["abs_ranking"] as! Int) < ($1["abs_ranking"] as! Int)
                 })
                 

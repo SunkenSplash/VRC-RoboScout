@@ -363,7 +363,7 @@ public class RoboScoutAPI {
                         
                         self.vrc_data_analysis_cache.append(team_data_dict)
                         
-                        self.vrc_data_analysis_cache = self.vrc_data_analysis_cache.sorted(by: {
+                        self.vrc_data_analysis_cache.sort(by: {
                             ($0["abs_ranking"] as! Int) < ($1["abs_ranking"] as! Int)
                         })
                         
@@ -833,7 +833,7 @@ public class Event {
         return String(format: "%@ %d", self.name, self.id)
     }
     
-    public func calculate_performance_ratings(division: Division) {
+    public func calculate_team_performance_ratings(division: Division) {
         self.team_performance_ratings = [Int: TeamPerformanceRatings]()
         
         if self.teams.isEmpty {
@@ -850,6 +850,10 @@ public class Event {
         
         if !self.matches.keys.contains(division) {
             self.matches[division] = [Match]()
+        }
+        
+        if self.matches[division]!.isEmpty {
+            return
         }
         
         var added_teams = [Int]()
