@@ -167,7 +167,11 @@ struct EventDivisionRankings: View {
                                 HStack {
                                     Spacer().frame(width: 22)
                                     Text(teams_map[String(team_ranking(rank: rank).team.id)] ?? "").font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 60, alignment: .leading)
-                                    Text((event.get_team(id: team_ranking(rank: rank).team.id) ?? Team(id: 0, fetch: false)).name).frame(alignment: .leading)
+                                    Text((event.get_team(id: team_ranking(rank: rank).team.id) ?? Team()).name).frame(alignment: .leading)
+                                    if favorites.favorite_teams.contains(teams_map[String(team_ranking(rank: rank).team.id)] ?? "") {
+                                        Spacer()
+                                        Image(systemName: "star.fill")
+                                    }
                                 }
                                 Spacer()
                             }.frame(height: 20, alignment: .leading)
