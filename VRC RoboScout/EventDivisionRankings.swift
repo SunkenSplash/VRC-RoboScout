@@ -217,6 +217,6 @@ struct EventDivisionRankings: View {
 
 struct EventDivisionRankings_Previews: PreviewProvider {
     static var previews: some View {
-        EventDivisionRankings(event: Event(id: 0, fetch: false), division: Division(), teams_map: [String: String]())
+        EventDivisionRankings(event: Event(), division: Division(), teams_map: [String: String]())
     }
 }

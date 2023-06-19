@@ -89,7 +89,7 @@ struct EventInformation: View {
 
 struct EventInformation_Previews: PreviewProvider {
     static var previews: some View {
-        EventInformation(event: Event(id: 0, fetch: false))
+        EventInformation(event: Event())
     }
 }
 

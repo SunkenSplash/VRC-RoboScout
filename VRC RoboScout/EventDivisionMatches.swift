@@ -1,69 +1,30 @@
 //
-//  EventTeamMatches.swift
+//  EventDivisionMatches.swift
 //  VRC RoboScout
 //
-//  Created by William Castro on 3/28/23.
+//  Created by William Castro on 6/19/23.
 //
 
 import SwiftUI
 
-struct EventTeamMatches: View {
+struct EventDivisionMatches: View {
     
     @EnvironmentObject var settings: UserSettings
+    @EnvironmentObject var navigation_bar_manager: NavigationBarManager
     
     @Binding var teams_map: [String: String]
     
     @State var event: Event
-    @State var team: Team
+    @State var division: Division
     @State private var matches = [Match]()
     @State private var matches_list = [String]()
     @State private var showLoading = true
     
-    func conditionalUnderline(match: String, index: Int) -> Bool {
-        let split = match.split(separator: "&&")
-        if Int(split[index]) == team.id {
-            return true
-        }
-        
-        let match = matches[Int(split[0]) ?? 0]
-        let alliance = match.alliance_for(team: self.team)
-        
-        if alliance == nil {
-            return false
-        }
-        
-        if (alliance! == Alliance.red && index == 6) || (alliance! == Alliance.blue && index == 7) {
-            return true
-        }
-        
-        return false
-    }
-    
-    func conditionalColor(match: String) -> Color {
-        let split = match.split(separator: "&&")
-        let match = matches[Int(split[0]) ?? 0]
-        let victor = match.winning_alliance()
-        
-        if match.started == nil && match.red_score == 0 && match.blue_score == 0 {
-            return Color(UIColor.label)
-        }
-        
-        if victor == nil {
-            return .yellow
-        }
-        else if victor! == match.alliance_for(team: self.team) {
-            return .green
-        }
-        
-        return .red
-    }
-    
     func fetch_info() {
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             
-            self.team = Team(id: self.team.id, number: self.team.number)
-            
-            let matches = self.team.matches_at(event: event)
+            self.event.fetch_matches(division: division)
+            let matches = self.event.matches[division] ?? [Match]()
 
             // Time should be in the format of "HH:mm" AM/PM
             let formatter = DateFormatter()
@@ -113,31 +74,33 @@ struct EventTeamMatches: View {
             List($matches_list) { name in
                 HStack {
                     VStack {
-                        Text(name.wrappedValue.split(separator: "&&")[1]).font(.system(size: 15)).frame(width: 60, alignment: .leading).foregroundColor(conditionalColor(match: name.wrappedValue))
+                        Text(name.wrappedValue.split(separator: "&&")[1]).font(.system(size: 15)).frame(width: 60, alignment: .leading)
                         Spacer().frame(maxHeight: 4)
                         Text(name.wrappedValue.split(separator: "&&")[8]).font(.system(size: 12)).frame(width: 60, alignment: .leading)
                     }
                     VStack {
-                        Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 2))
-                        Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[3])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 3))
+                        Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15))
+                        Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[3])] ?? "")).foregroundColor(.red).font(.system(size: 15))
                     }.frame(width: 80)
-                    Text(name.wrappedValue.split(separator: "&&")[6]).foregroundColor(.red).font(.system(size: 19)).frame(alignment: .leading).underline(conditionalUnderline(match: name.wrappedValue, index: 6))
+                    Text(name.wrappedValue.split(separator: "&&")[6]).foregroundColor(.red).font(.system(size: 19)).frame(alignment: .leading)
                     Spacer()
-                    Text(name.wrappedValue.split(separator: "&&")[7]).foregroundColor(.blue).font(.system(size: 19)).frame(alignment: .trailing).underline(conditionalUnderline(match: name.wrappedValue, index: 7))
+                    Text(name.wrappedValue.split(separator: "&&")[7]).foregroundColor(.blue).font(.system(size: 19)).frame(alignment: .trailing)
                     VStack {
-                        Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 4))
-                        Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[5])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 5))
+                        Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 15))
+                        Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[5])] ?? "")).foregroundColor(.blue).font(.system(size: 15))
                     }.frame(width: 80)
                 }.frame(maxHeight: 30)
             }
             
         }.task{
             fetch_info()
+        }.onAppear{
+            navigation_bar_manager.title = "\(division.name) Match List"
         }
             .background(.clear)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("\(team.number) Match List")
+                    Text("\(division.name) Match List")
                         .fontWeight(.medium)
                         .font(.system(size: 19))
                         .foregroundColor(settings.navTextColor())
@@ -149,8 +112,8 @@ struct EventTeamMatches: View {
     }
 }
 
-struct EventTeamMatches_Previews: PreviewProvider {
+struct EventDivisionMatches_Previews: PreviewProvider {
     static var previews: some View {
-        EventTeamMatches(teams_map: .constant([String: String]()), event: Event(), team: Team())
+        EventDivisionMatches(teams_map: .constant([String: String]()), event: Event(), division: Division())
     }
 }

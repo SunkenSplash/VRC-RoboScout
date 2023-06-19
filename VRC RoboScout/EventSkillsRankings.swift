@@ -61,7 +61,7 @@ struct EventSkillsRankings: View {
                         HStack {
                             // Spacer().frame(width: 20)
                             Text(teams_map[String(team_ranking(rank: rank).team.id)] ?? "").font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 60, alignment: .leading)
-                            Text((event.get_team(id: team_ranking(rank: rank).team.id) ?? Team(id: 0, fetch: false)).name).frame(alignment: .leading)
+                            Text((event.get_team(id: team_ranking(rank: rank).team.id) ?? Team()).name).frame(alignment: .leading)
                         }
                         Spacer()
                     }.frame(height: 20, alignment: .leading)
@@ -106,6 +106,6 @@ struct EventSkillsRankings: View {
 
 struct EventSkillsRankings_Previews: PreviewProvider {
     static var previews: some View {
-        EventSkillsRankings(event: Event(id: 0, fetch: false), teams_map: [String: String]())
+        EventSkillsRankings(event: Event(), teams_map: [String: String]())
     }
 }

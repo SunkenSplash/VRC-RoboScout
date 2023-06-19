@@ -174,6 +174,6 @@ struct EventView: View {
 
 struct EventView_Previews: PreviewProvider {
     static var previews: some View {
-        EventView(event: Event(id: 0, fetch: false))
+        EventView(event: Event())
     }
 }

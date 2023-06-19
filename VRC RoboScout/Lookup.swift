@@ -159,9 +159,9 @@ struct TeamLookup: View {
     @State var favorited: Bool = false
     @State var fetch: Bool = false
     @State var fetched: Bool = false
-    @State private var team: Team = Team(id: 0, fetch: false)
+    @State private var team: Team = Team()
     @State private var vrc_data_analysis = VRCDataAnalysis()
-    @State private var world_skills = WorldSkills(team: Team(id: 0, fetch: false))
+    @State private var world_skills = WorldSkills(team: Team())
     @State private var avg_rank: Double = 0.0
     @State private var showLoading: Bool = false
     @State private var showingPopover = false
@@ -236,9 +236,9 @@ struct TeamLookup: View {
                     "229V",
                     text: $team_number,
                     onEditingChanged: { _ in
-                        team = Team(id: 0, fetch: false)
+                        team = Team()
                         vrc_data_analysis = VRCDataAnalysis()
-                        world_skills = WorldSkills(team: Team(id: 0, fetch: false))
+                        world_skills = WorldSkills(team: Team())
                         avg_rank = 0.0
                         fetched = false
                         favorited = false

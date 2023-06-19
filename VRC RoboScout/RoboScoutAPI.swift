@@ -530,6 +530,27 @@ public class Division: Hashable {
     }
 }
 
+public enum Alliance {
+    case red, blue
+}
+
+public enum Round: Int {
+    case none, practice, qualification, r128, r64, r32, r16, quarterfinals, semifinals, finals
+}
+
+private let round_map = [
+    0: Round.none,
+    1: Round.practice,
+    2: Round.qualification,
+    3: Round.quarterfinals,
+    4: Round.semifinals,
+    5: Round.finals,
+    6: Round.r16,
+    7: Round.r32,
+    8: Round.r64,
+    9: Round.r128
+]
+
 public class Match {
     public var id: Int
     public var event: Event
@@ -537,6 +558,8 @@ public class Match {
     public var field: String
     public var scheduled: Date?
     public var started: Date?
+    public var round: Round
+    public var instance: Int
     public var matchnum: Int
     public var name: String
     public var blue_alliance: [Team]
@@ -547,11 +570,16 @@ public class Match {
     public init(data: [String: Any] = [:], fetch: Bool = false) {
 
         self.id = (data["id"] != nil) ? data["id"] as? Int ?? 0 : 0
-        self.event = (data["event"] != nil) ? Event(id: ((data["event"] as! [String: Any])["id"] as! Int), fetch: fetch) : Event(id: 0, fetch: false)
+        self.event = (data["event"] != nil) ? Event(id: ((data["event"] as! [String: Any])["id"] as! Int), fetch: fetch) : Event()
         self.division = (data["division"] != nil) ? Division(data: data["division"] as! [String : Any]) : Division()
         self.field = (data["field"] != nil) ? data["field"] as? String ?? "" : ""
         self.scheduled = (data["scheduled"] != nil) ? RoboScoutAPI.robotevents_date(date: data["scheduled"] as? String ?? "") : nil
         self.started = (data["started"] != nil) ? RoboScoutAPI.robotevents_date(date: data["started"] as? String ?? "") : nil
+        
+        let round = (data["round"] != nil) ? data["round"] as? Int ?? 0 : 0
+        self.round = round_map[round] ?? Round.none
+                
+        self.instance = (data["instance"] != nil) ? data["instance"] as? Int ?? 0 : 0
         self.matchnum = (data["matchnum"] != nil) ? data["matchnum"] as? Int ?? 0 : 0
         self.name = (data["name"] != nil) ? data["name"] as? String ?? "" : ""
         self.blue_alliance = [Team]()
@@ -576,10 +604,10 @@ public class Match {
             }
         }
         while self.red_alliance.count < 2 {
-            self.red_alliance.append(Team(id: 0, fetch: false))
+            self.red_alliance.append(Team())
         }
         while self.blue_alliance.count < 2 {
-            self.blue_alliance.append(Team(id: 0, fetch: false))
+            self.blue_alliance.append(Team())
         }
     }
     
@@ -599,31 +627,29 @@ public class Match {
         self.red_alliance = red_full
     }
     
-    // Returns 0 for not found, 1 for red alliance, and 2 for blue alliance
-    func alliance_for(team: Team) -> Int {
+    func alliance_for(team: Team) -> Alliance? {
         for alliance_team in self.red_alliance {
             if alliance_team.id == team.id {
-                return 1
+                return Alliance.red
             }
         }
         for alliance_team in self.blue_alliance {
             if alliance_team.id == team.id {
-                return 2
+                return Alliance.blue
             }
         }
-        return 0
+        return nil
     }
     
-    // Returns 0 for a tie, 1 for red alliance, and 2 for blue alliance
-    func winning_alliance() -> Int {
+    func winning_alliance() -> Alliance? {
         if self.red_score > self.blue_score {
-            return 1
+            return Alliance.red
         }
         else if self.blue_score > self.red_score {
-            return 2
+            return Alliance.blue
         }
         else {
-            return 0
+            return nil
         }
     }
     
@@ -756,7 +782,13 @@ public class Event {
     }
     
     public func fetch_info() {
+        
+        if self.id == 0 && self.sku == "" {
+            return
+        }
+        
         let data = RoboScoutAPI.robotevents_request(request_url: "/events/", params: self.id != 0 ? ["id": self.id] : ["sku": self.sku])
+        
         if data.isEmpty {
             return
         }
@@ -826,6 +858,14 @@ public class Event {
         for match_data in data {
             matches.append(Match(data: match_data))
         }
+        
+        matches.sort(by: {
+            $0.instance < $1.instance
+        })
+        matches.sort(by: {
+            $0.round.rawValue < $1.round.rawValue
+        })
+        
         self.matches[division] = matches
     }
                 
@@ -968,7 +1008,7 @@ public class WorldSkills {
         if data["scores"] == nil {
             self.team = team
             self.ranking = 0
-            self.event = Event(id: 0, fetch: false)
+            self.event = Event()
             self.driver = 0
             self.programming = 0
             self.highest_driver = 0
@@ -978,7 +1018,7 @@ public class WorldSkills {
         }
         self.team = team
         self.ranking = (data["rank"] != nil) ? data["rank"] as! Int : 0
-        self.event = (data["event"] != nil) ? Event(sku: (data["event"] as! [String: Any])["sku"] as! String) : Event(id: 0)
+        self.event = (data["event"] != nil) ? Event(sku: (data["event"] as! [String: Any])["sku"] as! String) : Event()
         self.driver = ((data["scores"] as! [String: Any])["driver"] != nil) ? (data["scores"] as! [String: Any])["driver"] as! Int : 0
         self.programming = ((data["scores"] as! [String: Any])["programming"] != nil) ? (data["scores"] as! [String: Any])["programming"] as! Int : 0
         self.highest_driver = ((data["scores"] as! [String: Any])["maxDriver"] != nil) ? (data["scores"] as! [String: Any])["maxDriver"] as! Int : 0
@@ -1028,9 +1068,13 @@ public class Team {
     
     public func fetch_info() {
         
+        if self.id == 0 && self.number == "" {
+            return
+        }
+        
         let data = RoboScoutAPI.robotevents_request(request_url: "/teams", params: self.id != 0 ? ["id": self.id, "program": 1] : ["number": self.number, "program": 1])
         
-        if data.count == 0 {
+        if data.isEmpty {
             return
         }
         
@@ -1050,50 +1094,18 @@ public class Team {
     
     public func matches_at(event: Event) -> [Match] {
         let matches_data = RoboScoutAPI.robotevents_request(request_url: "/teams/\(self.id)/matches", params: ["event": event.id])
-        var practice = [Match]()
-        var qual = [Match]()
-        var r32 = [Match]()
-        var r16 = [Match]()
-        var qf = [Match]()
-        var sf = [Match]()
-        var final = [Match]()
-        
-        for match_data in matches_data {
-            let match = Match(data: match_data)
-            let match_type = match.name.split(separator: " ")[0]
-            
-            if match_type == "Practice" {
-                practice.append(match)
-            }
-            else if match_type == "Qualifier" {
-                qual.append(match)
-            }
-            else if match_type == "R32" {
-                r32.append(match)
-            }
-            else if match_type == "R16" {
-                r16.append(match)
-            }
-            else if match_type == "QF" {
-                qf.append(match)
-            }
-            else if match_type == "SF" {
-                sf.append(match)
-            }
-            else if match_type == "Final" {
-                final.append(match)
-            }
-        }
-        
         var matches = [Match]()
         
-        matches.append(contentsOf: practice)
-        matches.append(contentsOf: qual)
-        matches.append(contentsOf: r32)
-        matches.append(contentsOf: r16)
-        matches.append(contentsOf: qf)
-        matches.append(contentsOf: sf)
-        matches.append(contentsOf: final)
+        for match_data in matches_data {
+            matches.append(Match(data: match_data))
+        }
+        
+        matches.sort(by: {
+            $0.instance < $1.instance
+        })
+        matches.sort(by: {
+            $0.round.rawValue < $1.round.rawValue
+        })
         
         return matches
     }

@@ -42,8 +42,20 @@ struct EventDivisionView: View {
                 .environmentObject(settings)
                 .environmentObject(navigation_bar_manager)
                 .tint(settings.accentColor())
-            
-            EventDivisionRankings(event: event, division: division, teams_map: teams_map).environmentObject(settings).environmentObject(favorites)
+            EventDivisionMatches(teams_map: $teams_map, event: self.event, division: self.division)
+                .tabItem {
+                    if settings.getMinimalistic() {
+                        Image(systemName: "calendar.badge.clock")
+                    }
+                    else {
+                        Label("Teams", systemImage: "calendar.badge.clock")
+                    }
+                }
+                .environmentObject(favorites)
+                .environmentObject(settings)
+                .environmentObject(navigation_bar_manager)
+                .tint(settings.accentColor())
+            EventDivisionRankings(event: self.event, division: self.division, teams_map: teams_map)
                 .tabItem {
                     if settings.getMinimalistic() {
                         Image(systemName: "list.number")
