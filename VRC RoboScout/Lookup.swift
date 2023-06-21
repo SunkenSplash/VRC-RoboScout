@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import OrderedCollections
 import CoreML
 
 struct TeamInfo: Identifiable {
@@ -163,6 +164,7 @@ struct TeamLookup: View {
     @State private var vrc_data_analysis = VRCDataAnalysis()
     @State private var world_skills = WorldSkills(team: Team())
     @State private var avg_rank: Double = 0.0
+    @State private var award_counts = OrderedDictionary<String, Int>()
     @State private var showLoading: Bool = false
     @State private var showingPopover = false
     
@@ -207,6 +209,16 @@ struct TeamLookup: View {
             let fetced_vrc_data_analysis = API.vrc_data_analysis_for(team: fetched_team, fetch: false)
             let fetched_world_skills = API.world_skills_for(team: fetched_team)
             let fetched_avg_rank = fetched_team.average_ranking()
+            fetched_team.fetch_awards()
+            
+            fetched_team.awards.sort(by: {
+                $0.order < $1.order
+            })
+            
+            var fetched_award_counts = OrderedDictionary<String, Int>()
+            for award in fetched_team.awards {
+                fetched_award_counts[award.title] = (fetched_award_counts[award.title] ?? 0) + 1
+            }
             
             var is_favorited = false
             for favorite_team in favorites.favorite_teams {
@@ -220,6 +232,7 @@ struct TeamLookup: View {
                 vrc_data_analysis = fetced_vrc_data_analysis
                 world_skills = fetched_world_skills
                 avg_rank = fetched_avg_rank
+                award_counts = fetched_award_counts
                 favorited = is_favorited
                 
                 showLoading = false
@@ -308,25 +321,27 @@ struct TeamLookup: View {
                 }
             }.frame(height: 10)
             List {
-                HStack {
-                    Text("Name")
-                    Spacer()
-                    Text(team.name)
-                }
-                HStack {
-                    Text("Robot")
-                    Spacer()
-                    Text(team.robot_name)
-                }
-                HStack {
-                    Text("Organization")
-                    Spacer()
-                    Text(team.organization)
-                }
-                HStack {
-                    Text("Location")
-                    Spacer()
-                    Text(fetched ? "\(team.city), \(team.region)" : "")
+                Group {
+                    HStack {
+                        Text("Name")
+                        Spacer()
+                        Text(team.name)
+                    }
+                    HStack {
+                        Text("Robot")
+                        Spacer()
+                        Text(team.robot_name)
+                    }
+                    HStack {
+                        Text("Organization")
+                        Spacer()
+                        Text(team.organization)
+                    }
+                    HStack {
+                        Text("Location")
+                        Spacer()
+                        Text(fetched ? "\(team.city), \(team.region)" : "")
+                    }
                 }
                 HStack {
                     Menu("TrueSkill Ranking") {
@@ -363,6 +378,15 @@ struct TeamLookup: View {
                     }
                     Spacer()
                     Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 ? "\(vrc_data_analysis.total_wins) - \(vrc_data_analysis.total_losses) -  \(vrc_data_analysis.total_ties)" : "")
+                }
+                HStack {
+                    Menu("Awards") {
+                        ForEach(0..<award_counts.count, id: \.self) { index in
+                            Text("\(Array(award_counts.values)[index])x \(Array(award_counts.keys)[index])")
+                        }
+                    }
+                    Spacer()
+                    Text(fetched ? "\(self.team.awards.count)" : "")
                 }
                 if settings.getAdamScore() {
                     HStack {

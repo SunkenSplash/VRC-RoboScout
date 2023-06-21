@@ -552,6 +552,7 @@ private let round_map = [
 ]
 
 public class Match {
+    
     public var id: Int
     public var event: Event
     public var division: Division
@@ -655,6 +656,39 @@ public class Match {
     
     func toString() -> String {
         return "\(self.name) - \(self.red_score) to \(self.blue_score)"
+    }
+}
+
+public struct TeamAwardWinner {
+    public var division: Division
+    public var team: Team
+}
+
+public class Award {
+
+    public var id: Int
+    public var event: Event
+    public var order: Int
+    public var title: String
+    public var qualifications: [String]
+    public var team_winners: [TeamAwardWinner]
+    public var individual_winners: [String]
+    
+    init(data: [String: Any] = [:]) {
+        self.id = data["id"] as? Int ?? 0
+        self.event = Event(fetch: false, data: data["event"] as? [String: Any] ?? [String: Any]())
+        self.order = data["order"] as? Int ?? 0
+        self.title = data["title"] as? String ?? ""
+        
+        if !self.title.contains("(WC)") {
+            self.title = self.title.replacingOccurrences(of: "\\([^()]*\\)", with: "", options: [.regularExpression])
+        }
+        
+        self.qualifications = data["qualifications"] as? [String] ?? [String]()
+        self.team_winners = (data["teamWinners"] as? [[String: [String: Any]]] ?? [[String: [String: Any]]]()).map{
+            TeamAwardWinner(division: Division(data: $0["division"] ?? [String: Any]()), team: Team(fetch: false, data: $0["team"] ?? [String: Any]()))
+        }
+        self.individual_winners = data["individualWinners"] as? [String] ?? [String]()
     }
 }
 
@@ -787,7 +821,7 @@ public class Event {
             return
         }
         
-        let data = RoboScoutAPI.robotevents_request(request_url: "/events/", params: self.id != 0 ? ["id": self.id] : ["sku": self.sku])
+        let data = RoboScoutAPI.robotevents_request(request_url: "/events", params: self.id != 0 ? ["id": self.id] : ["sku": self.sku])
         
         if data.isEmpty {
             return
@@ -1033,9 +1067,9 @@ public class WorldSkills {
 
 public class Team {
     
-    // RobotEvents API
     public var id: Int
     public var events: [Event]
+    public var awards: [Award]
     public var name: String
     public var number: String
     public var organization: String
@@ -1048,9 +1082,9 @@ public class Team {
     
     public init(id: Int = 0, number: String = "", fetch: Bool = true, data: [String: Any] = [:]) {
         
-        // RobotEvents API
         self.id = (data["id"] != nil) ? data["id"] as? Int ?? id : id
         self.events = (data["events"] != nil) ? data["events"] as? [Event] ?? [] : []
+        self.awards = (data["awards"] != nil) ? data["awards"] as? [Award] ?? [] : []
         self.name = (data["team_name"] != nil) ? data["team_name"] as? String ?? "" : ""
         self.number = (data["number"] != nil) ? data["number"] as? String ?? number : number
         self.organization = (data["organization"] != nil) ? data["organization"] as? String ?? "" : ""
@@ -1078,7 +1112,6 @@ public class Team {
             return
         }
         
-        // RobotEvents API
         self.id = data[0]["id"] as? Int ?? 0
         self.name = data[0]["team_name"] as? String ?? ""
         self.number = data[0]["number"] as? String ?? ""
@@ -1111,14 +1144,21 @@ public class Team {
     }
     
     public func fetch_events(season: Int? = nil) {
-        let data = RoboScoutAPI.robotevents_request(request_url: "/events/", params: ["team": self.id, "season": season ?? RoboScoutAPI.selected_season_id()])
+        let data = RoboScoutAPI.robotevents_request(request_url: "/events", params: ["team": self.id, "season": season ?? RoboScoutAPI.selected_season_id()])
         for event in data {
             self.events.append(Event(id: event["id"] as! Int, fetch: false, data: event))
         }
     }
     
+    public func fetch_awards(season: Int? = nil) {
+        let data = RoboScoutAPI.robotevents_request(request_url: "/teams/\(self.id)/awards", params: ["season": season ?? RoboScoutAPI.selected_season_id()])
+        for award in data {
+            self.awards.append(Award(data: award))
+        }
+    }
+    
     public func skills_at(event: Event) -> EventSkills {
-        let data = RoboScoutAPI.robotevents_request(request_url: String(format: "/events/%d/skills", event.id), params: ["team": self.id])
+        let data = RoboScoutAPI.robotevents_request(request_url: "/events/\(event.id)/skills", params: ["team": self.id])
         
         var driver = 0
         var programming = 0
