@@ -176,64 +176,55 @@ struct WorldSkillsRankings: View {
     
     var body: some View {
         VStack {
-            Menu("Filter") {
-                Button("Favorites") {
-                    display_skills = "Favorites Skills"
-                    start = 1
-                    end = 200
-                    region_id = 0
-                    letter = "0"
-                    current_index = 100
-                    world_skills_rankings = WorldSkillsTeams(begin: 1, end: API.world_skills_cache.count, filter_array: favorites.teams_as_array(), fetch: false)
-                }
-                Menu("Region") {
-                    Button("World") {
-                        display_skills = "World Skills"
+            if API.world_skills_cache.isEmpty {
+                NoData()
+            }
+            else {
+                Menu("Filter") {
+                    Button("Favorites") {
+                        display_skills = "Favorites Skills"
                         start = 1
                         end = 200
                         region_id = 0
                         letter = "0"
                         current_index = 100
-                        world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200, fetch: false)
+                        world_skills_rankings = WorldSkillsTeams(begin: 1, end: API.world_skills_cache.count, filter_array: favorites.teams_as_array(), fetch: false)
                     }
-                    ForEach(region_id_map.sorted(by: <), id: \.key) { region, id in
-                        Button(region) {
-                            display_skills = "\(region) Skills"
+                    Menu("Region") {
+                        Button("World") {
+                            display_skills = "World Skills"
                             start = 1
                             end = 200
-                            region_id = id
+                            region_id = 0
                             letter = "0"
                             current_index = 100
-                            world_skills_rankings = WorldSkillsTeams(begin: 1, end: API.world_skills_cache.count, region: id, fetch: false)
+                            world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200, fetch: false)
+                        }
+                        ForEach(region_id_map.sorted(by: <), id: \.key) { region, id in
+                            Button(region) {
+                                display_skills = "\(region) Skills"
+                                start = 1
+                                end = 200
+                                region_id = id
+                                letter = "0"
+                                current_index = 100
+                                world_skills_rankings = WorldSkillsTeams(begin: 1, end: API.world_skills_cache.count, region: id, fetch: false)
+                            }
                         }
                     }
-                }
-                Menu("Letter") {
-                    ForEach(["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"], id: \.self) { char in
-                        Button(char) {
-                            display_skills = "\(char) Skills"
-                            start = 1
-                            end = 200
-                            letter = char.first!
-                            current_index = 100
-                            world_skills_rankings = WorldSkillsTeams(begin: 1, end: API.world_skills_cache.count, letter: char.first!, fetch: false)
+                    Menu("Letter") {
+                        ForEach(["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"], id: \.self) { char in
+                            Button(char) {
+                                display_skills = "\(char) Skills"
+                                start = 1
+                                end = 200
+                                letter = char.first!
+                                current_index = 100
+                                world_skills_rankings = WorldSkillsTeams(begin: 1, end: API.world_skills_cache.count, letter: char.first!, fetch: false)
+                            }
                         }
                     }
-                }
-                Button("Clear Filters") {
-                    display_skills = "World Skills"
-                    start = 1
-                    end = 200
-                    region_id = 0
-                    letter = "0"
-                    current_index = 100
-                    world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200, fetch: false)
-                }
-            }.fontWeight(.medium)
-                .font(.system(size: 19))
-                .padding(20)
-                .onAppear{
-                    if RoboScoutAPI.selected_season_id() != self.season_id {
+                    Button("Clear Filters") {
                         display_skills = "World Skills"
                         start = 1
                         end = 200
@@ -241,48 +232,61 @@ struct WorldSkillsRankings: View {
                         letter = "0"
                         current_index = 100
                         world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200, fetch: false)
-                        self.season_id = RoboScoutAPI.selected_season_id()
                     }
-                }
-            ScrollViewReader { proxy in
-                List($world_skills_rankings.world_skills_teams) { team in
-                    WorldSkillsRow(team_world_skills: team.wrappedValue).id(team.wrappedValue.ranking).onAppear{
-                        if region_id != 0 || letter != "0" {
-                            return
+                }.fontWeight(.medium)
+                    .font(.system(size: 19))
+                    .padding(20)
+                    .onAppear{
+                        if RoboScoutAPI.selected_season_id() != self.season_id {
+                            display_skills = "World Skills"
+                            start = 1
+                            end = 200
+                            region_id = 0
+                            letter = "0"
+                            current_index = 100
+                            world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200, fetch: false)
+                            self.season_id = RoboScoutAPI.selected_season_id()
                         }
-                        let cache_size = API.world_skills_cache.count
-                        if cache_size == 0 {
-                            return
-                        }
-                        if team.wrappedValue.ranking == current_index + 100 {
-                            current_index += 50
-                            start = start + 50 > cache_size ? cache_size - 50 : start + 50
-                            end = end + 50 > cache_size ? cache_size : end + 50
-                            Task {
-                                world_skills_rankings = WorldSkillsTeams(begin: start, end: end)
-                                proxy.scrollTo(current_index - 25)
+                    }
+                ScrollViewReader { proxy in
+                    List($world_skills_rankings.world_skills_teams) { team in
+                        WorldSkillsRow(team_world_skills: team.wrappedValue).id(team.wrappedValue.ranking).onAppear{
+                            if region_id != 0 || letter != "0" {
+                                return
                             }
-                        }
-                        else if team.wrappedValue.ranking == current_index - 100 + 1 && team.wrappedValue.ranking != 1 {
-                            current_index -= 50
-                            start = start - 50 < 1 ? 1 : start - 50
-                            end = end - 50 < 1 ? 1 + 50 : end - 50
-                            Task {
-                                world_skills_rankings = WorldSkillsTeams(begin: start, end: end)
-                                proxy.scrollTo(current_index + 25)
+                            let cache_size = API.world_skills_cache.count
+                            if cache_size == 0 {
+                                return
+                            }
+                            if team.wrappedValue.ranking == current_index + 100 {
+                                current_index += 50
+                                start = start + 50 > cache_size ? cache_size - 50 : start + 50
+                                end = end + 50 > cache_size ? cache_size : end + 50
+                                Task {
+                                    world_skills_rankings = WorldSkillsTeams(begin: start, end: end)
+                                    proxy.scrollTo(current_index - 25)
+                                }
+                            }
+                            else if team.wrappedValue.ranking == current_index - 100 + 1 && team.wrappedValue.ranking != 1 {
+                                current_index -= 50
+                                start = start - 50 < 1 ? 1 : start - 50
+                                end = end - 50 < 1 ? 1 + 50 : end - 50
+                                Task {
+                                    world_skills_rankings = WorldSkillsTeams(begin: start, end: end)
+                                    proxy.scrollTo(current_index + 25)
+                                }
                             }
                         }
                     }
                 }
             }
-            .background(.clear)
+        }.background(.clear)
             .onAppear{
                 navigation_bar_manager.title = $display_skills.wrappedValue
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(settings.tabColor(), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
-        }
     }
 }
 

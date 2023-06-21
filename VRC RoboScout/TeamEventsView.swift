@@ -99,8 +99,13 @@ struct TeamEventsView: View {
             if showLoading {
                 ProgressView().padding()
             }
-            List(events.event_indexes) { event_index in
-                EventRow(event: events.events[Int(event_index)!], team: team)
+            else if events.event_indexes.isEmpty {
+                NoData()
+            }
+            else {
+                List(events.event_indexes) { event_index in
+                    EventRow(event: events.events[Int(event_index)!], team: team)
+                }
             }
         }.task{
             fetch_team_events()

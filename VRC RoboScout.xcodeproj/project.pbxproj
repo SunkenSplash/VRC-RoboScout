@@ -31,7 +31,7 @@
 		3DB11E60299543DC001DDB02 /* VRC_RoboScoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E5F299543DC001DDB02 /* VRC_RoboScoutTests.swift */; };
 		3DB11E6A299543DC001DDB02 /* VRC_RoboScoutUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E69299543DC001DDB02 /* VRC_RoboScoutUITests.swift */; };
 		3DB11E6C299543DC001DDB02 /* VRC_RoboScoutUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E6B299543DC001DDB02 /* VRC_RoboScoutUITestsLaunchTests.swift */; };
-		3DC3F47529ACFF6000C5EA86 /* TrueSkill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC3F47429ACFF6000C5EA86 /* TrueSkill.swift */; };
+		3DC3F47529ACFF6000C5EA86 /* TrueSkillRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC3F47429ACFF6000C5EA86 /* TrueSkillRankings.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,7 +93,7 @@
 		3DB11E65299543DC001DDB02 /* VRC RoboScoutUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "VRC RoboScoutUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB11E69299543DC001DDB02 /* VRC_RoboScoutUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRC_RoboScoutUITests.swift; sourceTree = "<group>"; };
 		3DB11E6B299543DC001DDB02 /* VRC_RoboScoutUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRC_RoboScoutUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		3DC3F47429ACFF6000C5EA86 /* TrueSkill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrueSkill.swift; sourceTree = "<group>"; };
+		3DC3F47429ACFF6000C5EA86 /* TrueSkillRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrueSkillRankings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,7 +172,7 @@
 				3D01A8C229DF3D55000BBDEB /* EventDivisionRankings.swift */,
 				3D919AEE29F6F70C00E1724F /* EventSkillsRankings.swift */,
 				3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */,
-				3DC3F47429ACFF6000C5EA86 /* TrueSkill.swift */,
+				3DC3F47429ACFF6000C5EA86 /* TrueSkillRankings.swift */,
 				3D0BE6F829A3F0C700C3EA8A /* Lookup.swift */,
 				3DA0AE5B29B2251B009D4782 /* Settings.swift */,
 				3DAFC8122A26420500A0C41A /* AdamScore 500.mlpackage */,
@@ -338,7 +338,7 @@
 				3DA0AE5C29B2251B009D4782 /* Settings.swift in Sources */,
 				3D1E57AA29F17D3500DA6296 /* EventDivisionView.swift in Sources */,
 				3DB11E50299543D9001DDB02 /* Favorites.swift in Sources */,
-				3DC3F47529ACFF6000C5EA86 /* TrueSkill.swift in Sources */,
+				3DC3F47529ACFF6000C5EA86 /* TrueSkillRankings.swift in Sources */,
 				3D01A8C329DF3D55000BBDEB /* EventDivisionRankings.swift in Sources */,
 				3D84D77A2A40A6320043F8ED /* EventDivisionMatches.swift in Sources */,
 				3D919AEF29F6F70C00E1724F /* EventSkillsRankings.swift in Sources */,

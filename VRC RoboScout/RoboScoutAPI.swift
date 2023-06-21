@@ -8,6 +8,10 @@
 import Foundation
 import Matft
 
+enum RoboScoutAPIError: Error {
+    case missing_data
+}
+
 public class RoboScoutAPI {
     
     public var world_skills_cache: [[String: Any]]
@@ -907,7 +911,7 @@ public class Event {
         return String(format: "%@ %d", self.name, self.id)
     }
     
-    public func calculate_team_performance_ratings(division: Division) {
+    public func calculate_team_performance_ratings(division: Division) throws {
         self.team_performance_ratings = [Int: TeamPerformanceRatings]()
         
         if self.teams.isEmpty {
@@ -975,6 +979,10 @@ public class Event {
             margins.append([match.blue_score - match.red_score])
         }
         
+        guard !m.isEmpty && !scores.isEmpty && !margins.isEmpty else {
+            throw RoboScoutAPIError.missing_data
+        }
+        
         let mM = MfArray(m)
         let mScores = MfArray(scores)
         let mMargins = MfArray(margins)
@@ -1003,7 +1011,6 @@ public class Event {
             i += 1
         }
     }
-
 }
 
 public class EventSkills {
@@ -1180,6 +1187,9 @@ public class Team {
         var total = 0
         for comp in data {
             total += comp["rank"] as! Int
+        }
+        if data.count == 0 {
+            return 0
         }
         return Double(total) / Double(data.count)
     }

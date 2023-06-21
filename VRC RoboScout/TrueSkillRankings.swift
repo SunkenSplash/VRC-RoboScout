@@ -161,7 +161,7 @@ var region_list: [String] = [
     "Singapore"
 ]
 
-struct TrueSkill: View {
+struct TrueSkillRankings: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
@@ -180,7 +180,10 @@ struct TrueSkill: View {
     
     var body: some View {
         VStack {
-            HStack {
+            if API.vrc_data_analysis_cache.isEmpty {
+                NoData()
+            }
+            else {
                 Menu("Filter") {
                     Button("Favorites") {
                         display_trueskill = "Favorites TrueSkill"
@@ -233,48 +236,47 @@ struct TrueSkill: View {
                         current_index = 100
                         trueskill_rankings = TrueSkillTeams(begin: 1, end: 200, fetch: false)
                     }
-                }
-            }.fontWeight(.medium)
-                .font(.system(size: 19))
-                .padding(20)
-            ScrollViewReader { proxy in
-                List($trueskill_rankings.trueskill_teams) { team in
-                    TrueSkillRow(team_trueskill: team.wrappedValue).id(team.wrappedValue.abs_ranking).onAppear{
-                        if region != "" || letter != "0" {
-                            return
-                        }
-                        let cache_size = API.vrc_data_analysis_cache.count
-                        if Int(team.wrappedValue.abs_ranking) == current_index + 100 {
-                            current_index += 50
-                            start = start + 50 > cache_size ? cache_size - 50 : start + 50
-                            end = end + 50 > cache_size ? cache_size : end + 50
-                            Task {
-                                trueskill_rankings = TrueSkillTeams(begin: start, end: end)
-                                proxy.scrollTo(current_index - 25)
+                }.fontWeight(.medium)
+                    .font(.system(size: 19))
+                    .padding(20)
+                ScrollViewReader { proxy in
+                    List($trueskill_rankings.trueskill_teams) { team in
+                        TrueSkillRow(team_trueskill: team.wrappedValue).id(team.wrappedValue.abs_ranking).onAppear{
+                            if region != "" || letter != "0" {
+                                return
                             }
-                        }
-                        else if Int(team.wrappedValue.abs_ranking) == current_index - 100 + 1 && Int(team.wrappedValue.abs_ranking) != 1 {
-                            current_index -= 50
-                            start = start - 50 < 1 ? 1 : start - 50
-                            end = end - 50 < 1 ? 1 + 50 : end - 50
-                            Task {
-                                trueskill_rankings = TrueSkillTeams(begin: start, end: end)
-                                proxy.scrollTo(current_index + 25)
+                            let cache_size = API.vrc_data_analysis_cache.count
+                            if Int(team.wrappedValue.abs_ranking) == current_index + 100 {
+                                current_index += 50
+                                start = start + 50 > cache_size ? cache_size - 50 : start + 50
+                                end = end + 50 > cache_size ? cache_size : end + 50
+                                Task {
+                                    trueskill_rankings = TrueSkillTeams(begin: start, end: end)
+                                    proxy.scrollTo(current_index - 25)
+                                }
+                            }
+                            else if Int(team.wrappedValue.abs_ranking) == current_index - 100 + 1 && Int(team.wrappedValue.abs_ranking) != 1 {
+                                current_index -= 50
+                                start = start - 50 < 1 ? 1 : start - 50
+                                end = end - 50 < 1 ? 1 + 50 : end - 50
+                                Task {
+                                    trueskill_rankings = TrueSkillTeams(begin: start, end: end)
+                                    proxy.scrollTo(current_index + 25)
+                                }
                             }
                         }
                     }
                 }
             }
-            .onAppear{
-                navigation_bar_manager.title = $display_trueskill.wrappedValue
-            }
+        }.onAppear{
+            navigation_bar_manager.title = $display_trueskill.wrappedValue
         }
     }
 }
 
-struct TrueSkill_Previews: PreviewProvider {
+struct TrueSkillRankings_Previews: PreviewProvider {
     static var previews: some View {
-        TrueSkill()
+        TrueSkillRankings()
     }
 }
 

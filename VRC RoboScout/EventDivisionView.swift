@@ -45,10 +45,10 @@ struct EventDivisionView: View {
             EventDivisionMatches(teams_map: $teams_map, event: self.event, division: self.division)
                 .tabItem {
                     if settings.getMinimalistic() {
-                        Image(systemName: "calendar.badge.clock")
+                        Image(systemName: "clock.fill")
                     }
                     else {
-                        Label("Teams", systemImage: "calendar.badge.clock")
+                        Label("Match List", systemImage: "clock.fill")
                     }
                 }
                 .environmentObject(favorites)

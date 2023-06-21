@@ -56,6 +56,9 @@ struct EventTeams: View {
                 }
                 Spacer()
             }
+            else if $event_teams_list.isEmpty {
+                NoData()
+            }
             else {
                 List($event_teams_list) { team in
                     NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: event, team: Team(number: team.wrappedValue, fetch: false)).environmentObject(settings)) {

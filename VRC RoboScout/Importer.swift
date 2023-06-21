@@ -215,7 +215,7 @@ struct Importer: View {
                         .environmentObject(settings)
                         .environmentObject(navigation_bar_manager)
                         .tint(settings.accentColor())
-                    TrueSkill()
+                    TrueSkillRankings()
                         .tabItem {
                             if settings.getMinimalistic() {
                                 Image(systemName: "trophy")

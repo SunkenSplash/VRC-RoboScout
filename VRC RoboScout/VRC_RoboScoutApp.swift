@@ -117,6 +117,15 @@ struct BulletList: View {
     }
 }
 
+struct NoData: View {
+    var body: some View {
+        VStack {
+            Image(systemName: "xmark.bin.fill").font(.system(size: 30)).foregroundColor(.secondary)
+            Text("No data").foregroundColor(.secondary)
+        }
+    }
+}
+
 class UserSettings: ObservableObject {
     private var colorString: String
     private var minimalistic: Bool

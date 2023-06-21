@@ -345,7 +345,7 @@ struct TeamLookup: View {
                 }
                 HStack {
                     Menu("TrueSkill Ranking") {
-                        Text(fetched && $vrc_data_analysis.wrappedValue.trueskill_ranking != 0 ? "\(displayRoundedTenths(number: vrc_data_analysis.trueskill)) TrueSkill" : "Please import TrueSkill data")
+                        Text(fetched && $vrc_data_analysis.wrappedValue.trueskill_ranking != 0 ? "\(displayRoundedTenths(number: vrc_data_analysis.trueskill)) TrueSkill" : "No TrueSkill data")
                         Text((vrc_data_analysis.trueskill_ranking_change >= 0 ? "Up " : "Down ") + "\(abs(vrc_data_analysis.trueskill_ranking_change))" + " places since last update")
                     }
                     Spacer()
@@ -386,7 +386,7 @@ struct TeamLookup: View {
                         }
                     }
                     Spacer()
-                    Text(fetched ? "\(self.team.awards.count)" : "")
+                    Text((fetched && !team.events.isEmpty) ? "\(self.team.awards.count)" : "")
                 }
                 if settings.getAdamScore() {
                     HStack {

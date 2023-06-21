@@ -45,7 +45,7 @@ struct EventTeamMatches: View {
         let victor = match.winning_alliance()
         
         if match.started == nil && match.red_score == 0 && match.blue_score == 0 {
-            return Color(UIColor.label)
+            return .primary
         }
         
         if victor == nil {
