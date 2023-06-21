@@ -571,6 +571,7 @@ public class Match {
     public var red_alliance: [Team]
     public var blue_score: Int
     public var red_score: Int
+    public var predicted: Bool
     
     public init(data: [String: Any] = [:], fetch: Bool = false) {
 
@@ -591,6 +592,7 @@ public class Match {
         self.red_alliance = [Team]()
         self.blue_score = 0
         self.red_score = 0
+        self.predicted = false
         
         for alliance in (data["alliances"] != nil) ? data["alliances"] as! [[String: Any]] : [[String: Any]]() {
             if alliance["color"] as! String == "blue" {
@@ -906,10 +908,6 @@ public class Event {
         
         self.matches[division] = matches
     }
-                
-    public func toString() -> String {
-        return String(format: "%@ %d", self.name, self.id)
-    }
     
     public func calculate_team_performance_ratings(division: Division) throws {
         self.team_performance_ratings = [Int: TeamPerformanceRatings]()
@@ -918,7 +916,9 @@ public class Event {
             self.fetch_teams()
         }
         
-        self.fetch_matches(division: division)
+        if self.matches[division] == nil || self.matches[division]!.isEmpty {
+            self.fetch_matches(division: division)
+        }
         
         var m = [[Int]]()
         var scores = [[Int]]()
@@ -949,7 +949,10 @@ public class Event {
         
         for match in self.matches[division]! {
             
-            if !match.name.starts(with: "Qualifier") {
+            guard match.round == Round.qualification else {
+                continue
+            }
+            guard match.started != nil || match.red_score != 0 || match.blue_score != 0 else {
                 continue
             }
                         
@@ -1010,6 +1013,10 @@ public class Event {
             self.team_performance_ratings[team.id] = TeamPerformanceRatings(team: team, event: self, opr: OPRs[i], dpr: OPRs[i] - CCWMs[i], ccwm: CCWMs[i])
             i += 1
         }
+    }
+    
+    public func toString() -> String {
+        return String(format: "%@ %d", self.name, self.id)
     }
 }
 

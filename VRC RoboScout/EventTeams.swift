@@ -61,7 +61,7 @@ struct EventTeams: View {
             }
             else {
                 List($event_teams_list) { team in
-                    NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: event, team: Team(number: team.wrappedValue, fetch: false)).environmentObject(settings)) {
+                    NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: event, team: Team(number: team.wrappedValue, fetch: false), division: division).environmentObject(settings)) {
                         HStack {
                             Text((event_teams_map[team.wrappedValue] ?? Team()).number).font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 60, height: 30, alignment: .leading)
                             VStack {

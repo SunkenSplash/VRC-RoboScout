@@ -99,7 +99,7 @@ struct EventDivisionView: View {
                                             BulletList(listItems: ["Winning the autonomous period (full points)", "Autonomous tie (half points)"], listItemSpacing: 10).padding()
                                             Text("SP (Strength of Schedule Points) are the second tiebreaker in rankings. They are a measure of how difficult a team's schedule is, and are equal to the sum of the losing alliance scores for each match.").padding()
                                             Text("OPR (Offensive Power Rating) is the scoring power a robot has. It can be considered a measure of how many additional points a team brings to their alliance in a match. Higher is better.").padding()
-                                            Text("DPR (Defensive Power Rating) is the defensive power of a robot and represents how much a team stops its opponents from scoring. Lower is better.").padding()
+                                            Text("DPR (Defensive Power Rating) is the defensive power of a robot and can be considered a measure of how much a team contibutes to the score of the opposing alliance. Lower is better.").padding()
                                             Text("CCWM (Calculated Contribution to Winning Margin) is a measure of the positive impact a robot brings to an alliance. It is equal to OPR - DPR. Higher is better.").padding()
                                         }
                                     }
