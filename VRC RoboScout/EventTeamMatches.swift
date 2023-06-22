@@ -113,13 +113,23 @@ struct EventTeamMatches: View {
                         continue
                     }
                     
+                    var red_opr = 0.0
+                    var blue_opr = 0.0
+                    var red_dpr = 0.0
+                    var blue_dpr = 0.0
+                    
                     match.predicted = true
                     for match_team in match.red_alliance {
-                        match.red_score += Int(round((self.event.team_performance_ratings[match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self.event, opr: 0, dpr: 0, ccwm: 0)).opr))
+                        red_opr += (self.event.team_performance_ratings[match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self.event, opr: 0, dpr: 0, ccwm: 0)).opr
+                        red_dpr += (self.event.team_performance_ratings[match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self.event, opr: 0, dpr: 0, ccwm: 0)).dpr
                     }
                     for match_team in match.blue_alliance {
-                        match.blue_score += Int(round((self.event.team_performance_ratings[match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self.event, opr: 0, dpr: 0, ccwm: 0)).opr))
+                        blue_opr += (self.event.team_performance_ratings[match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self.event, opr: 0, dpr: 0, ccwm: 0)).opr
+                        blue_dpr += (self.event.team_performance_ratings[match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self.event, opr: 0, dpr: 0, ccwm: 0)).dpr
                     }
+                    
+                    match.red_score = Int(round((red_opr + blue_dpr) / 2))
+                    match.blue_score = Int(round((blue_opr + red_dpr) / 2))
                 }
             }
             

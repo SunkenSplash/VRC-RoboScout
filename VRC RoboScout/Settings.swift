@@ -44,22 +44,27 @@ struct Settings: View {
                 Section("Season") {
                     HStack {
                         Spacer()
-                        Picker("Season", selection: $selected_season_id) {
-                            ForEach(API.season_id_map.keys.sorted().reversed(), id: \.self) { season_id in
-                                Text(format_season_option(raw: API.season_id_map[season_id] ?? "Unknown")).tag(season_id)
-                            }
-                        }.labelsHidden()
-                            .onChange(of: selected_season_id) { _ in
-                                settings.setSelectedSeasonID(id: selected_season_id)
-                                settings.updateUserDefaults()
-                                showLoading = true
-                                DispatchQueue.global(qos: .userInteractive).async {
-                                    DispatchQueue.main.async {
-                                        API.update_world_skills_cache()
-                                        self.showLoading = false
+                        if showLoading {
+                            ProgressView()
+                        }
+                        else {
+                            Picker("Season", selection: $selected_season_id) {
+                                ForEach(API.season_id_map.keys.sorted().reversed(), id: \.self) { season_id in
+                                    Text(format_season_option(raw: API.season_id_map[season_id] ?? "Unknown")).tag(season_id)
+                                }
+                            }.labelsHidden()
+                                .onChange(of: selected_season_id) { _ in
+                                    settings.setSelectedSeasonID(id: selected_season_id)
+                                    settings.updateUserDefaults()
+                                    showLoading = true
+                                    DispatchQueue.global(qos: .userInteractive).async {
+                                        DispatchQueue.main.async {
+                                            API.update_world_skills_cache()
+                                            self.showLoading = false
+                                        }
                                     }
                                 }
-                            }
+                        }
                         Spacer()
                     }
                 }
