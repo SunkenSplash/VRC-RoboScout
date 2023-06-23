@@ -9,7 +9,7 @@ import Foundation
 import Matft
 
 enum RoboScoutAPIError: Error {
-    case missing_data
+    case missing_data(String)
 }
 
 public class RoboScoutAPI {
@@ -571,6 +571,8 @@ public class Match {
     public var red_alliance: [Team]
     public var blue_score: Int
     public var red_score: Int
+    public var predicted_blue_score: Int
+    public var predicted_red_score: Int
     public var predicted: Bool
     
     public init(data: [String: Any] = [:], fetch: Bool = false) {
@@ -592,6 +594,8 @@ public class Match {
         self.red_alliance = [Team]()
         self.blue_score = 0
         self.red_score = 0
+        self.predicted_blue_score = 0
+        self.predicted_red_score = 0
         self.predicted = false
         
         for alliance in (data["alliances"] != nil) ? data["alliances"] as! [[String: Any]] : [[String: Any]]() {
@@ -658,6 +662,39 @@ public class Match {
         else {
             return nil
         }
+    }
+    
+    func predicted_winning_alliance() throws -> Alliance? {
+        
+        guard self.predicted else {
+            throw RoboScoutAPIError.missing_data("Match has not been predicted")
+        }
+        
+        if self.predicted_red_score > self.predicted_blue_score {
+            return Alliance.red
+        }
+        else if self.predicted_blue_score > self.predicted_red_score {
+            return Alliance.blue
+        }
+        else {
+            return nil
+        }
+    }
+    
+    func is_correct_prediction() throws -> Bool? {
+        
+        guard self.completed() else {
+            throw RoboScoutAPIError.missing_data("No match results to compare prediction with")
+        }
+        
+        return try predicted_winning_alliance() == winning_alliance()
+    }
+    
+    func completed() -> Bool {
+        if self.started == nil && self.red_score == 0 && self.blue_score == 0 {
+            return false
+        }
+        return true
     }
     
     func toString() -> String {
@@ -786,7 +823,7 @@ public class Event {
     public var matches: [Division: [Match]]
     public var teams: [Team]
     public var teams_map: [Int: Team]
-    public var team_performance_ratings: [Int: TeamPerformanceRatings]
+    public var team_performance_ratings: [Division: [Int: TeamPerformanceRatings]]
     public var divisions: [Division]
     public var rankings: [Division: [TeamRanking]]
     public var skills_rankings: [TeamSkillsRanking]
@@ -805,7 +842,7 @@ public class Event {
         self.matches = [Division: [Match]]()
         self.teams = [Team]()
         self.teams_map = [Int: Team]()
-        self.team_performance_ratings = [Int: TeamPerformanceRatings]()
+        self.team_performance_ratings = [Division: [Int: TeamPerformanceRatings]]()
         self.divisions = [Division]()
         self.rankings = [Division: [TeamRanking]]()
         self.skills_rankings = [TeamSkillsRanking]()
@@ -910,7 +947,7 @@ public class Event {
     }
     
     public func calculate_team_performance_ratings(division: Division) throws {
-        self.team_performance_ratings = [Int: TeamPerformanceRatings]()
+        self.team_performance_ratings[division] = [Int: TeamPerformanceRatings]()
         
         if self.teams.isEmpty {
             self.fetch_teams()
@@ -952,7 +989,7 @@ public class Event {
             guard match.round == Round.qualification else {
                 continue
             }
-            guard match.started != nil || match.red_score != 0 || match.blue_score != 0 else {
+            guard match.completed() else {
                 continue
             }
                         
@@ -983,7 +1020,7 @@ public class Event {
         }
         
         guard !m.isEmpty && !scores.isEmpty && !margins.isEmpty else {
-            throw RoboScoutAPIError.missing_data
+            throw RoboScoutAPIError.missing_data("Missing match data for performance rating calculations")
         }
         
         let mM = MfArray(m)
@@ -1010,13 +1047,59 @@ public class Event {
         
         var i = 0
         for team in division_teams {
-            self.team_performance_ratings[team.id] = TeamPerformanceRatings(team: team, event: self, opr: OPRs[i], dpr: OPRs[i] - CCWMs[i], ccwm: CCWMs[i])
+            self.team_performance_ratings[division]![team.id] = TeamPerformanceRatings(team: team, event: self, opr: OPRs[i], dpr: OPRs[i] - CCWMs[i], ccwm: CCWMs[i])
             i += 1
         }
     }
     
+    public func predict_matches(division: Division, only_predict: [Round]? = nil, predict_completed: Bool = false, opr_weight: Double = 0.5, dpr_weight: Double = 0.5) throws {
+        
+        if self.team_performance_ratings[division] == nil || self.team_performance_ratings[division]!.isEmpty {
+            try self.calculate_team_performance_ratings(division: division)
+        }
+        
+        guard let matches = self.matches[division] else {
+            throw RoboScoutAPIError.missing_data("No matches to predict")
+        }
+        
+        var new_matches = [Match]()
+        
+        for match in matches {
+            if (match.completed() && !predict_completed) {
+                new_matches.append(match)
+                continue
+            }
+            else if only_predict != nil && !only_predict!.contains(match.round) {
+                new_matches.append(match)
+                continue
+            }
+            
+            var red_opr = 0.0
+            var blue_opr = 0.0
+            var red_dpr = 0.0
+            var blue_dpr = 0.0
+            
+            match.predicted = true
+            for match_team in match.red_alliance {
+                red_opr += (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).opr
+                red_dpr += (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).dpr
+            }
+            for match_team in match.blue_alliance {
+                blue_opr += (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).opr
+                blue_dpr += (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).dpr
+            }
+            
+            match.predicted_red_score = Int(round(opr_weight * red_opr + dpr_weight * blue_dpr))
+            match.predicted_blue_score = Int(round(opr_weight * blue_opr + dpr_weight * red_dpr))
+            
+            new_matches.append(match)
+        }
+        
+        self.matches[division] = new_matches
+    }
+    
     public func toString() -> String {
-        return String(format: "%@ %d", self.name, self.id)
+        return String(format: "(%@) %@", self.sku, self.name)
     }
 }
 

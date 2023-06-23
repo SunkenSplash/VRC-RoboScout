@@ -90,53 +90,27 @@ struct EventInformation: View {
                                     
                                     for division in self.event.divisions {
                                         do {
-                                            try self.event.calculate_team_performance_ratings(division: division)
-                                            
                                             var correct = 0
                                             var matches = 0
                                             
+                                            try self.event.predict_matches(division: division, only_predict: [Round.qualification], predict_completed: true, opr_weight: opr_weight, dpr_weight: dpr_weight)
+                                            
+                                            guard self.event.matches[division] != nil else {
+                                                throw RoboScoutAPIError.missing_data("Missing matches")
+                                            }
+                                            
                                             for match in self.event.matches[division]! {
-                                                
-                                                guard match.round == Round.qualification else {
-                                                    continue
+                                                do {
+                                                    guard let prediction_correct = try match.is_correct_prediction() else {
+                                                        continue
+                                                    }
+                                                    
+                                                    if prediction_correct {
+                                                        correct += 1
+                                                    }
+                                                    matches += 1
                                                 }
-                                                guard match.started != nil || match.red_score != 0 || match.blue_score != 0 else {
-                                                    continue
-                                                }
-                                                
-                                                var predicted_winner: Alliance?
-                                                
-                                                var red_opr = 0.0
-                                                var blue_opr = 0.0
-                                                var red_dpr = 0.0
-                                                var blue_dpr = 0.0
-                                                
-                                                for match_team in match.red_alliance {
-                                                    red_opr += (self.event.team_performance_ratings[match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self.event, opr: 0, dpr: 0, ccwm: 0)).opr
-                                                    red_dpr += (self.event.team_performance_ratings[match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self.event, opr: 0, dpr: 0, ccwm: 0)).dpr
-                                                }
-                                                for match_team in match.blue_alliance {
-                                                    blue_opr += (self.event.team_performance_ratings[match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self.event, opr: 0, dpr: 0, ccwm: 0)).opr
-                                                    blue_dpr += (self.event.team_performance_ratings[match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self.event, opr: 0, dpr: 0, ccwm: 0)).dpr
-                                                }
-                                                
-                                                let predicted_red_score = Int(round(opr_weight * red_opr + dpr_weight * blue_dpr))
-                                                let predicted_blue_score = Int(round(opr_weight * blue_opr + dpr_weight * red_dpr))
-                                                
-                                                if predicted_red_score > predicted_blue_score {
-                                                    predicted_winner = Alliance.red
-                                                }
-                                                else if predicted_blue_score > predicted_red_score {
-                                                    predicted_winner = Alliance.blue
-                                                }
-                                                else {
-                                                    predicted_winner = nil
-                                                }
-                                                
-                                                if predicted_winner == match.winning_alliance() {
-                                                    correct += 1
-                                                }
-                                                matches += 1
+                                                catch {}
                                             }
                                             print("Division: \(division.name)")
                                             print("Correct: \(correct)")
@@ -147,7 +121,9 @@ struct EventInformation: View {
                                                 total_matches += matches
                                             }
                                         }
-                                        catch {}
+                                        catch {
+                                            print(error)
+                                        }
                                     }
                                     
                                     DispatchQueue.main.async {

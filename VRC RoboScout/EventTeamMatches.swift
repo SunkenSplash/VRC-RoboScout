@@ -41,41 +41,53 @@ struct EventTeamMatches: View {
         
         return false
     }
-    
-    func showScore(match: String) -> Bool {
+
+    func scoreToDisplay(match: String, index: Int) -> String {
         let split = match.split(separator: "&&")
         let match = matches[Int(split[0]) ?? 0]
         
-        if match.started == nil && match.red_score == 0 && match.blue_score == 0 {
-            return false
+        guard match.completed() || (match.predicted && predictions) else {
+            return ""
         }
         
-        return true
+        if index == 6 {
+            return String(describing: (match.predicted && predictions) ? match.predicted_red_score : match.red_score)
+        }
+        else {
+            return String(describing: (match.predicted && predictions) ? match.predicted_blue_score : match.blue_score)
+        }
     }
     
     func isPredicted(match: String) -> Bool {
         let split = match.split(separator: "&&")
         let match = matches[Int(split[0]) ?? 0]
         
-        return match.predicted
+        return match.predicted && predictions
     }
     
     func conditionalColor(match: String) -> Color {
         let split = match.split(separator: "&&")
         let match = matches[Int(split[0]) ?? 0]
-        let victor = match.winning_alliance()
         
-        if match.started == nil && match.red_score == 0 && match.blue_score == 0 {
+        guard match.completed() || (match.predicted && predictions) else {
             return .primary
         }
-        else if victor == nil {
-            return .yellow
+        
+        do {
+            let victor = match.completed() ? match.winning_alliance() : try match.predicted_winning_alliance()
+            
+            if victor == nil {
+                return .yellow
+            }
+            else if victor! == match.alliance_for(team: self.team) {
+                return .green
+            }
+            else {
+                return .red
+            }
         }
-        else if victor! == match.alliance_for(team: self.team) {
-            return .green
-        }
-        else {
-            return .red
+        catch {
+            return .primary
         }
     }
     
@@ -106,36 +118,12 @@ struct EventTeamMatches: View {
                 }
             }
             
-            if predict && division != nil {
-                for match in matches {
-                    
-                    guard match.red_score == 0 && match.blue_score == 0 && match.started == nil else {
-                        continue
-                    }
-                    
-                    var red_opr = 0.0
-                    var blue_opr = 0.0
-                    var red_dpr = 0.0
-                    var blue_dpr = 0.0
-                    
-                    match.predicted = true
-                    for match_team in match.red_alliance {
-                        red_opr += (self.event.team_performance_ratings[match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self.event, opr: 0, dpr: 0, ccwm: 0)).opr
-                        red_dpr += (self.event.team_performance_ratings[match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self.event, opr: 0, dpr: 0, ccwm: 0)).dpr
-                    }
-                    for match_team in match.blue_alliance {
-                        blue_opr += (self.event.team_performance_ratings[match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self.event, opr: 0, dpr: 0, ccwm: 0)).opr
-                        blue_dpr += (self.event.team_performance_ratings[match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self.event, opr: 0, dpr: 0, ccwm: 0)).dpr
-                    }
-                    
-                    match.red_score = Int(round((red_opr + blue_dpr) / 2))
-                    match.blue_score = Int(round((blue_opr + red_dpr) / 2))
+            if predict, let division = division {
+                do {
+                    try self.event.predict_matches(division: division)
                 }
+                catch {}
             }
-            
-            matches.removeAll(where: {
-                $0.round != Round.qualification && $0.round != Round.practice
-            })
 
             // Time should be in the format of "HH:mm" AM/PM
             let formatter = DateFormatter()
@@ -197,9 +185,9 @@ struct EventTeamMatches: View {
                             Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 2))
                             Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[3])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 3))
                         }.frame(width: 80)
-                        Text(name.wrappedValue.split(separator: "&&")[6]).foregroundColor(.red).font(.system(size: 19)).frame(alignment: .leading).underline(conditionalUnderline(match: name.wrappedValue, index: 6)).opacity(showScore(match: name.wrappedValue) ? (isPredicted(match: name.wrappedValue) ? 0.6 : 1) : 0)
+                        Text(scoreToDisplay(match: name.wrappedValue, index: 6)).foregroundColor(.red).font(.system(size: 19)).frame(alignment: .leading).underline(conditionalUnderline(match: name.wrappedValue, index: 6)).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1)
                         Spacer()
-                        Text(name.wrappedValue.split(separator: "&&")[7]).foregroundColor(.blue).font(.system(size: 19)).frame(alignment: .trailing).underline(conditionalUnderline(match: name.wrappedValue, index: 7)).opacity(showScore(match: name.wrappedValue) ? (isPredicted(match: name.wrappedValue) ? 0.6 : 1) : 0)
+                        Text(scoreToDisplay(match: name.wrappedValue, index: 7)).foregroundColor(.blue).font(.system(size: 19)).frame(alignment: .trailing).underline(conditionalUnderline(match: name.wrappedValue, index: 7)).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1)
                         VStack {
                             Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 4))
                             Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[5])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 5))
@@ -225,7 +213,7 @@ struct EventTeamMatches: View {
                             calculating = true
                             fetch_info(predict: predictions)
                         }, label: {
-                            if calculating {
+                            if calculating && predictions {
                                 ProgressView()
                             }
                             else if predictions {

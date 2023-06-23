@@ -17,8 +17,8 @@ class EventDivisionRankingsList: ObservableObject {
     func sort_by(option: Int, event: Event, division: Division) {
         var sorted = [Int]()
         
-        // Create an array of team performance ratings from the event.team_performance_ratings dictionary
-        let team_performance_ratings = Array(event.team_performance_ratings.values)
+        // Create an array of team performance ratings from the event.team_performance_ratings[division] dictionary
+        let team_performance_ratings = Array(event.team_performance_ratings[division]!.values)
         
         let team_rankings = event.rankings[division] ?? [TeamRanking]()
         
@@ -186,19 +186,19 @@ struct EventDivisionRankings: View {
                                     Spacer()
                                     VStack(alignment: .leading) {
                                         Text("WP: \(team_ranking(rank: rank).wp)").frame(alignment: .leading).font(.system(size: 12))
-                                        Text("OPR: \(displayRoundedTenths(number: (self.event.team_performance_ratings[team_ranking(rank: rank).team.id] ?? TeamPerformanceRatings(team: team_ranking(rank: rank).team, event: self.event, opr: 0.0, dpr: 0.0, ccwm: 0.0)).opr))").frame(alignment: .leading).font(.system(size: 12))
+                                        Text("OPR: \(displayRoundedTenths(number: (self.event.team_performance_ratings[division]![team_ranking(rank: rank).team.id] ?? TeamPerformanceRatings(team: team_ranking(rank: rank).team, event: self.event, opr: 0.0, dpr: 0.0, ccwm: 0.0)).opr))").frame(alignment: .leading).font(.system(size: 12))
                                         Text("HIGH: \(team_ranking(rank: rank).high_score)").frame(alignment: .leading).font(.system(size: 12))
                                     }.frame(width: 90, alignment: .leading)
                                     Spacer()
                                     VStack(alignment: .leading) {
                                         Text("AP: \(team_ranking(rank: rank).ap)").frame(alignment: .leading).font(.system(size: 12))
-                                        Text("DPR: \(displayRoundedTenths(number: (self.event.team_performance_ratings[team_ranking(rank: rank).team.id] ?? TeamPerformanceRatings(team: team_ranking(rank: rank).team, event: self.event, opr: 0.0, dpr: 0.0, ccwm: 0.0)).dpr))").frame(alignment: .leading).font(.system(size: 12))
+                                        Text("DPR: \(displayRoundedTenths(number: (self.event.team_performance_ratings[division]![team_ranking(rank: rank).team.id] ?? TeamPerformanceRatings(team: team_ranking(rank: rank).team, event: self.event, opr: 0.0, dpr: 0.0, ccwm: 0.0)).dpr))").frame(alignment: .leading).font(.system(size: 12))
                                         Text("AVG: " + displayRounded(number: team_ranking(rank: rank).average_points)).frame(alignment: .leading).font(.system(size: 12))
                                     }.frame(width: 90, alignment: .leading)
                                     Spacer()
                                     VStack(alignment: .leading) {
                                         Text("SP: \(team_ranking(rank: rank).sp)").frame(alignment: .leading).font(.system(size: 12))
-                                        Text("CCWM: \(displayRoundedTenths(number: (self.event.team_performance_ratings[team_ranking(rank: rank).team.id] ?? TeamPerformanceRatings(team: team_ranking(rank: rank).team, event: self.event, opr: 0.0, dpr: 0.0, ccwm: 0.0)).ccwm))").frame(alignment: .leading).font(.system(size: 12))
+                                        Text("CCWM: \(displayRoundedTenths(number: (self.event.team_performance_ratings[division]![team_ranking(rank: rank).team.id] ?? TeamPerformanceRatings(team: team_ranking(rank: rank).team, event: self.event, opr: 0.0, dpr: 0.0, ccwm: 0.0)).ccwm))").frame(alignment: .leading).font(.system(size: 12))
                                         Text("TTL: \(team_ranking(rank: rank).total_points)").frame(alignment: .leading).font(.system(size: 12))
                                     }.frame(width: 90, alignment: .leading)
                                     Spacer()
