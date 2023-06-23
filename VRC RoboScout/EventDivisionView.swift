@@ -7,12 +7,24 @@
 
 import SwiftUI
 
+public enum PredictionState {
+    case disabled
+    case off
+    case calculating
+    case on
+}
+
+public class PredictionManager: ObservableObject {
+    @Published var state = PredictionState.off
+}
+
 struct EventDivisionView: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
     
     @StateObject var navigation_bar_manager = NavigationBarManager(title: "Rankings")
+    @StateObject var prediction_manager = PredictionManager()
     
     @State var event: Event
     @State var event_teams: [Team]
@@ -54,6 +66,7 @@ struct EventDivisionView: View {
                 .environmentObject(favorites)
                 .environmentObject(settings)
                 .environmentObject(navigation_bar_manager)
+                .environmentObject(prediction_manager)
                 .tint(settings.accentColor())
             EventDivisionRankings(event: self.event, division: self.division, teams_map: teams_map)
                 .tabItem {
@@ -104,6 +117,32 @@ struct EventDivisionView: View {
                                         }
                                     }
                                 }
+                            }
+                        }
+                        else if navigation_bar_manager.title.contains("Match List") {
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                Button(action: {
+                                    if prediction_manager.state == PredictionState.off {
+                                        prediction_manager.state = PredictionState.calculating
+                                    }
+                                    else if prediction_manager.state == PredictionState.on {
+                                        prediction_manager.state = PredictionState.off
+                                    }
+                                    self.event = self.event
+                                }, label: {
+                                    if prediction_manager.state == PredictionState.disabled {
+                                        Image(systemName: "bolt.slash")
+                                    }
+                                    else if prediction_manager.state == PredictionState.off {
+                                        Image(systemName: "bolt")
+                                    }
+                                    else if prediction_manager.state == PredictionState.calculating {
+                                        ProgressView()
+                                    }
+                                    else {
+                                        Image(systemName: "bolt.fill")
+                                    }
+                                })
                             }
                         }
                     }

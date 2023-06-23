@@ -11,21 +11,69 @@ struct EventDivisionMatches: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var navigation_bar_manager: NavigationBarManager
+    @EnvironmentObject var prediction_manager: PredictionManager
     
     @Binding var teams_map: [String: String]
     
     @State var event: Event
     @State var division: Division
+    @State private var predictions = false
     @State private var matches = [Match]()
     @State private var matches_list = [String]()
     @State private var showLoading = true
     
-    func fetch_info() {
+    func scoreToDisplay(match: String, index: Int) -> String {
+        let split = match.split(separator: "&&")
+        let match = matches[Int(split[0]) ?? 0]
+        
+        guard match.completed() || (match.predicted && predictions) else {
+            return ""
+        }
+        
+        if index == 6 {
+            return String(describing: (match.predicted && predictions) ? match.predicted_red_score : match.red_score)
+        }
+        else {
+            return String(describing: (match.predicted && predictions) ? match.predicted_blue_score : match.blue_score)
+        }
+    }
+    
+    func isPredicted(match: String) -> Bool {
+        let split = match.split(separator: "&&")
+        let match = matches[Int(split[0]) ?? 0]
+        
+        return match.predicted && predictions
+    }
+    
+    func fetch_info(predict: Bool = false) {
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            
-            self.event.fetch_matches(division: division)
-            let matches = self.event.matches[division] ?? [Match]()
 
+            var matches = [Match]()
+
+            do {
+                self.event.fetch_matches(division: division)
+                try self.event.calculate_team_performance_ratings(division: division)
+                matches = self.event.matches[division] ?? [Match]()
+            }
+            catch {
+                matches = self.event.matches[division] ?? [Match]()
+                DispatchQueue.main.async {
+                    self.predictions = false
+                    self.prediction_manager.state = PredictionState.off
+                }
+            }
+            
+            if predict {
+                do {
+                    try self.event.predict_matches(division: division)
+                    DispatchQueue.main.async {
+                        self.predictions = true
+                        self.prediction_manager.state = PredictionState.on
+                    }
+                }
+                catch {}
+            }
+            
             // Time should be in the format of "HH:mm" AM/PM
             let formatter = DateFormatter()
             formatter.dateFormat = "h:mm a"
@@ -77,7 +125,7 @@ struct EventDivisionMatches: View {
                 List($matches_list) { name in
                     HStack {
                         VStack {
-                            Text(name.wrappedValue.split(separator: "&&")[1]).font(.system(size: 15)).frame(width: 60, alignment: .leading)
+                            Text(name.wrappedValue.split(separator: "&&")[1]).font(.system(size: 15)).frame(width: 60, alignment: .leading).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1)
                             Spacer().frame(maxHeight: 4)
                             Text(name.wrappedValue.split(separator: "&&")[8]).font(.system(size: 12)).frame(width: 60, alignment: .leading)
                         }
@@ -85,14 +133,22 @@ struct EventDivisionMatches: View {
                             Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15))
                             Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[3])] ?? "")).foregroundColor(.red).font(.system(size: 15))
                         }.frame(width: 80)
-                        Text(name.wrappedValue.split(separator: "&&")[6]).foregroundColor(.red).font(.system(size: 19)).frame(alignment: .leading)
+                        Text(scoreToDisplay(match: name.wrappedValue, index: 6)).foregroundColor(.red).font(.system(size: 19)).frame(alignment: .leading).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1)
                         Spacer()
-                        Text(name.wrappedValue.split(separator: "&&")[7]).foregroundColor(.blue).font(.system(size: 19)).frame(alignment: .trailing)
+                        Text(scoreToDisplay(match: name.wrappedValue, index: 7)).foregroundColor(.blue).font(.system(size: 19)).frame(alignment: .trailing).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1)
                         VStack {
                             Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 15))
                             Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[5])] ?? "")).foregroundColor(.blue).font(.system(size: 15))
                         }.frame(width: 80)
                     }.frame(maxHeight: 30)
+                }.onChange(of: prediction_manager.state) { new_state in
+                    if new_state == PredictionState.calculating {
+                        print("predicting")
+                        fetch_info(predict: true)
+                    }
+                    else if new_state == PredictionState.off {
+                        predictions = false
+                    }
                 }
             }
         }.task{
@@ -101,14 +157,6 @@ struct EventDivisionMatches: View {
             navigation_bar_manager.title = "\(division.name) Match List"
         }
             .background(.clear)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("\(division.name) Match List")
-                        .fontWeight(.medium)
-                        .font(.system(size: 19))
-                        .foregroundColor(settings.navTextColor())
-                }
-            }
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(settings.tabColor(), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)

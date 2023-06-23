@@ -97,7 +97,9 @@ struct EventTeamMatches: View {
             var matches = [Match]()
             
             if self.team.id == 0 || self.team.number == "" {
-                self.team = Team(id: self.team.id, number: self.team.number)
+                DispatchQueue.main.async {
+                    self.team = Team(id: self.team.id, number: self.team.number)
+                }
             }
             
             if division == nil {
@@ -113,8 +115,10 @@ struct EventTeamMatches: View {
                 }
                 catch {
                     matches = self.team.matches_at(event: event)
-                    self.predictions = false
-                    self.calculating = false
+                    DispatchQueue.main.async {
+                        self.predictions = false
+                        self.calculating = false
+                    }
                 }
             }
             

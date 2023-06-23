@@ -620,6 +620,12 @@ public class Match {
         while self.blue_alliance.count < 2 {
             self.blue_alliance.append(Team())
         }
+        
+        /*if self.matchnum > 90 {
+            self.red_score = 0
+            self.blue_score = 0
+            self.started = nil
+        }*/
     }
     
     func fetch_full_info() {
