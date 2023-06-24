@@ -33,11 +33,28 @@ struct EventTeams: View {
                 self.event.fetch_rankings(division: self.division!)
             }
             
+            if self.event.rankings[self.division!]!.isEmpty && !self.event.matches.keys.contains(self.division!) {
+                self.event.fetch_matches(division: self.division!)
+            }
+            
             DispatchQueue.main.async {
                 self.event_teams_list = [String]()
                 
-                for ranking in self.event.rankings[self.division!]! {
-                    self.event_teams_list.append(self.teams_map[String(ranking.team.id)] ?? "")
+                if !self.event.rankings[self.division!]!.isEmpty {
+                    for ranking in self.event.rankings[self.division!]! {
+                        self.event_teams_list.append(self.teams_map[String(ranking.team.id)] ?? "")
+                    }
+                }
+                else {
+                    for match in self.event.matches[self.division!]! {
+                        var match_teams = match.red_alliance
+                        match_teams.append(contentsOf: match.blue_alliance)
+                        for team in match_teams {
+                            if !self.event_teams_list.contains(self.teams_map[String(team.id)] ?? "") {
+                                self.event_teams_list.append(self.teams_map[String(team.id)] ?? "")
+                            }
+                        }
+                    }
                 }
                 self.event_teams_list.sort()
                 self.event_teams_list.sort(by: {

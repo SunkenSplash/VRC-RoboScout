@@ -72,13 +72,13 @@ struct EventSkillsRankings: View {
                             }.frame(width: 60, alignment: .leading)
                             Spacer()
                             VStack(alignment: .leading) {
-                                Text("Prog: \(team_ranking(rank: rank).programming_attempts)").frame(alignment: .leading).font(.system(size: 16))
-                                Text("\(team_ranking(rank: rank).programming_score)").frame(alignment: .leading).font(.system(size: 16))
+                                Text("Prog: \(team_ranking(rank: rank).programming_attempts)").frame(alignment: .leading).font(.system(size: 16)).foregroundColor(.secondary)
+                                Text("\(team_ranking(rank: rank).programming_score)").frame(alignment: .leading).font(.system(size: 16)).foregroundColor(.secondary)
                             }.frame(width: 90, alignment: .leading)
                             Spacer()
                             VStack(alignment: .leading) {
-                                Text("Driver: \(team_ranking(rank: rank).driver_attempts)").frame(alignment: .leading).font(.system(size: 16))
-                                Text("\(team_ranking(rank: rank).driver_score)").frame(alignment: .leading).font(.system(size: 16))
+                                Text("Driver: \(team_ranking(rank: rank).driver_attempts)").frame(alignment: .leading).font(.system(size: 16)).foregroundColor(.secondary)
+                                Text("\(team_ranking(rank: rank).driver_score)").frame(alignment: .leading).font(.system(size: 16)).foregroundColor(.secondary)
                             }.frame(width: 90, alignment: .leading)
                             Spacer()
                         }

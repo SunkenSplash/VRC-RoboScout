@@ -386,7 +386,7 @@ struct TeamLookup: View {
                         }
                     }
                     Spacer()
-                    Text((fetched && !team.events.isEmpty) ? "\(self.team.awards.count)" : "")
+                    Text(fetched ? "\(self.team.awards.count)" : "")
                 }
                 if settings.getAdamScore() {
                     HStack {

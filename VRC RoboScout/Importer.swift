@@ -218,10 +218,10 @@ struct Importer: View {
                     TrueSkillRankings()
                         .tabItem {
                             if settings.getMinimalistic() {
-                                Image(systemName: "trophy")
+                                Image(systemName: "chart.line.uptrend.xyaxis")
                             }
                             else {
-                                Label("TrueSkill", systemImage: "trophy")
+                                Label("TrueSkill", systemImage: "chart.line.uptrend.xyaxis")
                             }
                         }
                         .environmentObject(favorites)

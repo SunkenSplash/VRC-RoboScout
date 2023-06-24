@@ -81,6 +81,19 @@ struct EventDivisionView: View {
                 .environmentObject(settings)
                 .environmentObject(navigation_bar_manager)
                 .tint(settings.accentColor())
+            EventDivisionAwards(event: self.event, division: self.division)
+                .tabItem {
+                    if settings.getMinimalistic() {
+                        Image(systemName: "trophy")
+                    }
+                    else {
+                        Label("Awards", systemImage: "trophy")
+                    }
+                }
+                .environmentObject(favorites)
+                .environmentObject(settings)
+                .environmentObject(navigation_bar_manager)
+                .tint(settings.accentColor())
         }.onAppear {
             let tabBarAppearance = UITabBarAppearance()
             tabBarAppearance.configureWithDefaultBackground()

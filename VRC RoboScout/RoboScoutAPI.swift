@@ -723,9 +723,10 @@ public class Award {
     public var team_winners: [TeamAwardWinner]
     public var individual_winners: [String]
     
-    init(data: [String: Any] = [:]) {
+    init(event: Event? = nil, data: [String: Any] = [:]) {
         self.id = data["id"] as? Int ?? 0
-        self.event = Event(fetch: false, data: data["event"] as? [String: Any] ?? [String: Any]())
+        let event = event ?? Event(fetch: false, data: data["event"] as? [String: Any] ?? [String: Any]())
+        self.event = event
         self.order = data["order"] as? Int ?? 0
         self.title = data["title"] as? String ?? ""
         
@@ -735,9 +736,27 @@ public class Award {
         
         self.qualifications = data["qualifications"] as? [String] ?? [String]()
         self.team_winners = (data["teamWinners"] as? [[String: [String: Any]]] ?? [[String: [String: Any]]]()).map{
-            TeamAwardWinner(division: Division(data: $0["division"] ?? [String: Any]()), team: Team(fetch: false, data: $0["team"] ?? [String: Any]()))
+            TeamAwardWinner(division: Division(data: $0["division"] ?? [String: Any]()), team: event.get_team(id: ($0["team"] ?? [String: Any]())["id"] as? Int ?? 0) ?? Team(id: ($0["team"] ?? [String: Any]())["id"] as? Int ?? 0, number: ($0["team"] ?? [String: Any]())["name"] as? String ?? "", fetch: false))
         }
         self.individual_winners = data["individualWinners"] as? [String] ?? [String]()
+    }
+}
+
+public class DivisionalAward: Award {
+    public var teams: [Team]
+    public var division: Division
+    
+    init(event: Event, division: Division, data: [String: Any] = [:]) {
+        self.teams = [Team]()
+        self.division = division
+        
+        super.init(event: event, data: data)
+        
+        for team_award_winner in super.team_winners {
+            if team_award_winner.division.id == division.id {
+                self.teams.append(team_award_winner.team)
+            }
+        }
     }
 }
 
@@ -833,6 +852,7 @@ public class Event {
     public var divisions: [Division]
     public var rankings: [Division: [TeamRanking]]
     public var skills_rankings: [TeamSkillsRanking]
+    public var awards: [Division: [DivisionalAward]]
     
     public init(id: Int = 0, sku: String = "", fetch: Bool = true, data: [String: Any] = [:]) {
 
@@ -852,6 +872,7 @@ public class Event {
         self.divisions = [Division]()
         self.rankings = [Division: [TeamRanking]]()
         self.skills_rankings = [TeamSkillsRanking]()
+        self.awards = [Division: [DivisionalAward]]()
         
         if data["divisions"] != nil {
             for division in (data["divisions"] as! [[String: Any]]) {
@@ -932,10 +953,27 @@ public class Event {
         self.skills_rankings = self.skills_rankings.filter({ $0.rank != 0 })
     }
     
+    public func fetch_awards(division: Division) {
+        let data = RoboScoutAPI.robotevents_request(request_url: "/events/\(self.id)/awards")
+        
+        if self.teams.isEmpty {
+            self.fetch_teams()
+        }
+        
+        var awards = [DivisionalAward]()
+        for award in data {
+            awards.append(DivisionalAward(event: self, division: division, data: award))
+        }
+        awards = awards.filter{
+            !$0.teams.isEmpty
+        }
+        self.awards[division] = awards.sorted(by: {
+            $0.order < $1.order
+        })
+    }
+    
     public func fetch_matches(division: Division) {
         let data = RoboScoutAPI.robotevents_request(request_url: "/events/\(self.id)/divisions/\(division.id)/matches")
-        
-        self.matches[division] = [Match]()
         
         var matches = [Match]()
         for match_data in data {
@@ -1258,6 +1296,9 @@ public class Team {
         for award in data {
             self.awards.append(Award(data: award))
         }
+        self.awards.sort(by: {
+            $0.order < $1.order
+        })
     }
     
     public func skills_at(event: Event) -> EventSkills {

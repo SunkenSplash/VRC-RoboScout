@@ -121,7 +121,7 @@ struct NoData: View {
     var body: some View {
         VStack {
             Image(systemName: "xmark.bin.fill").font(.system(size: 30)).foregroundColor(.secondary)
-            Text("")
+            Spacer().frame(height: 5)
             Text("No data").foregroundColor(.secondary)
         }
     }
