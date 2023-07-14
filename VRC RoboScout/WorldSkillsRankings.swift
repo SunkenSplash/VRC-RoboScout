@@ -99,7 +99,7 @@ class WorldSkillsTeams: ObservableObject {
         }
         // World
         else {
-            for i in begin - 1...end - 1 {
+            for i in begin - 1...(end - 1 < API.world_skills_cache.count ? end - 1 : API.world_skills_cache.count - 1) {
                 if API.world_skills_cache.count == 0 {
                     return
                 }
