@@ -17,13 +17,13 @@ public class RoboScoutAPI {
     public var world_skills_cache: [[String: Any]]
     public var vrc_data_analysis_cache: [[String: Any]]
     public var season_id_map: [Int: String]
-    public var current_season_id: Int
+    public var current_skills_season_id: Int
     
     public init() {
         self.world_skills_cache = [[String: Any]]()
         self.vrc_data_analysis_cache = [[String: Any]]()
         self.season_id_map = [Int: String]()
-        self.current_season_id = 0
+        self.current_skills_season_id = 0
     }
 
     public static func robotevents_date(date: String) -> Date? {
@@ -225,9 +225,6 @@ public class RoboScoutAPI {
         for season_data in seasons_data {
             if (season_data["program"] as! [String: Any])["id"] as! Int == 1 {
                 self.season_id_map[(season_data)["id"] as! Int] = (season_data)["name"] as? String ?? ""
-                if current_season_id == 0 {
-                    current_season_id = (season_data)["id"] as! Int
-                }
             }
         }
 
@@ -255,6 +252,7 @@ public class RoboScoutAPI {
                 
                 if json != nil {
                     self.world_skills_cache = json!
+                    self.current_skills_season_id = season ?? RoboScoutAPI.selected_season_id()
                     print("World skills cache updated")
                 }
                 else {

@@ -56,10 +56,10 @@ struct Settings: View {
                                 .onChange(of: selected_season_id) { _ in
                                     settings.setSelectedSeasonID(id: selected_season_id)
                                     settings.updateUserDefaults()
-                                    showLoading = true
+                                    self.showLoading = true
                                     DispatchQueue.global(qos: .userInteractive).async {
+                                        API.update_world_skills_cache()
                                         DispatchQueue.main.async {
-                                            API.update_world_skills_cache()
                                             self.showLoading = false
                                         }
                                     }
