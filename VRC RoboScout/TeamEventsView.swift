@@ -98,6 +98,7 @@ struct TeamEventsView: View {
         VStack {
             if showLoading {
                 ProgressView().padding()
+                Spacer()
             }
             else if events.event_indexes.isEmpty {
                 NoData()

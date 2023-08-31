@@ -18,6 +18,7 @@ struct Settings: View {
     @State var adam_score = UserSettings().getAdamScore()
     @State var selected_season_id = UserSettings().getSelectedSeasonID()
     @State var showLoading = false
+    @State var showApply = false
     
     func format_season_option(raw: String) -> String {
         var season = raw
@@ -71,14 +72,20 @@ struct Settings: View {
                 Section("Appearance") {
                     ColorPicker("Color", selection: $selected_color, supportsOpacity: false).onChange(of: selected_color) { _ in
                         settings.setColor(color: selected_color)
+                        adam_score = UserSettings().getAdamScore()
+                        showApply = true
                     }
                     Toggle("Minimalistic", isOn: $minimalistic).onChange(of: minimalistic) { _ in
                         settings.setMinimalistic(state: minimalistic)
+                        adam_score = UserSettings().getAdamScore()
+                        showApply = true
                     }
+                    if showApply {
                     Button("Restart to apply") {
                         settings.updateUserDefaults()
                         print("App Restarting")
                         exit(0)
+                    }
                     }
                 }
                 Section("Danger") {

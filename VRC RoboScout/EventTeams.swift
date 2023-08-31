@@ -106,6 +106,11 @@ struct EventTeams: View {
                         .font(.system(size: 19))
                         .foregroundColor(settings.navTextColor())
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: DataExporter(event: event, event_teams_list: event_teams_list).environmentObject(settings)) {
+                        Image(systemName: "doc.badge.plus")
+                    }
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(settings.tabColor(), for: .navigationBar)

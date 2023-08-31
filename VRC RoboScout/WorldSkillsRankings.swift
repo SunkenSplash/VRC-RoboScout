@@ -184,6 +184,7 @@ struct WorldSkillsRankings: View {
                     if !favorites.teams_as_array().isEmpty {
                         Button("Favorites") {
                             display_skills = "Favorites Skills"
+                            navigation_bar_manager.title = display_skills
                             start = 1
                             end = 200
                             region_id = 0
@@ -195,6 +196,7 @@ struct WorldSkillsRankings: View {
                     Menu("Region") {
                         Button("World") {
                             display_skills = "World Skills"
+                            navigation_bar_manager.title = display_skills
                             start = 1
                             end = 200
                             region_id = 0
@@ -205,6 +207,7 @@ struct WorldSkillsRankings: View {
                         ForEach(region_id_map.sorted(by: <), id: \.key) { region, id in
                             Button(region) {
                                 display_skills = "\(region) Skills"
+                                navigation_bar_manager.title = display_skills
                                 start = 1
                                 end = 200
                                 region_id = id
@@ -218,6 +221,7 @@ struct WorldSkillsRankings: View {
                         ForEach(["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"], id: \.self) { char in
                             Button(char) {
                                 display_skills = "\(char) Skills"
+                                navigation_bar_manager.title = display_skills
                                 start = 1
                                 end = 200
                                 letter = char.first!
@@ -228,6 +232,7 @@ struct WorldSkillsRankings: View {
                     }
                     Button("Clear Filters") {
                         display_skills = "World Skills"
+                        navigation_bar_manager.title = display_skills
                         start = 1
                         end = 200
                         region_id = 0
@@ -275,6 +280,7 @@ struct WorldSkillsRankings: View {
                 navigation_bar_manager.title = $display_skills.wrappedValue
                 if RoboScoutAPI.selected_season_id() != self.season_id {
                     display_skills = "World Skills"
+                    navigation_bar_manager.title = display_skills
                     start = 1
                     end = 200
                     region_id = 0

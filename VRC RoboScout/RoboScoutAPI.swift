@@ -1191,7 +1191,7 @@ public class WorldSkills {
         }
         self.team = team
         self.ranking = (data["rank"] != nil) ? data["rank"] as! Int : 0
-        self.event = (data["event"] != nil) ? Event(sku: (data["event"] as! [String: Any])["sku"] as! String) : Event()
+        self.event = (data["event"] != nil) ? Event(sku: (data["event"] as! [String: Any])["sku"] as! String, fetch: false) : Event()
         self.driver = ((data["scores"] as! [String: Any])["driver"] != nil) ? (data["scores"] as! [String: Any])["driver"] as! Int : 0
         self.programming = ((data["scores"] as! [String: Any])["programming"] != nil) ? (data["scores"] as! [String: Any])["programming"] as! Int : 0
         self.highest_driver = ((data["scores"] as! [String: Any])["maxDriver"] != nil) ? (data["scores"] as! [String: Any])["maxDriver"] as! Int : 0
@@ -1208,6 +1208,7 @@ public class Team {
     
     public var id: Int
     public var events: [Event]
+    public var event_count: Int
     public var awards: [Award]
     public var name: String
     public var number: String
@@ -1223,6 +1224,7 @@ public class Team {
         
         self.id = (data["id"] != nil) ? data["id"] as? Int ?? id : id
         self.events = (data["events"] != nil) ? data["events"] as? [Event] ?? [] : []
+        self.event_count = (data["event_count"] != nil) ? data["event_count"] as? Int ?? 0 : 0
         self.awards = (data["awards"] != nil) ? data["awards"] as? [Award] ?? [] : []
         self.name = (data["team_name"] != nil) ? data["team_name"] as? String ?? "" : ""
         self.number = (data["number"] != nil) ? data["number"] as? String ?? number : number
@@ -1287,6 +1289,7 @@ public class Team {
         for event in data {
             self.events.append(Event(id: event["id"] as! Int, fetch: false, data: event))
         }
+        self.event_count = self.events.count
     }
     
     public func fetch_awards(season: Int? = nil) {
@@ -1326,6 +1329,7 @@ public class Team {
         if data.count == 0 {
             return 0
         }
+        self.event_count = data.count
         return Double(total) / Double(data.count)
     }
                                         

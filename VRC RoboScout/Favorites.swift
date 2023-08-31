@@ -119,21 +119,36 @@ struct Favorites: View {
             return event1.start ?? Date() > event2.start ?? Date()
         }
     }
+    
+    func deleteTeam(at offsets: IndexSet) {
+        favorites.favorite_teams.remove(atOffsets: offsets)
+        favorites.sort_teams()
+        defaults.set(favorites.favorite_teams, forKey: "favorite_teams")
+    }
+    
+    func deleteEvent(at offsets: IndexSet) {
+        favorites.favorite_events.remove(atOffsets: offsets)
+        defaults.set(favorites.favorite_events, forKey: "favorite_events")
+    }
         
     var body: some View {
         VStack {
             Form {
                 Section($favorites.favorite_teams.count > 0 ? "Favorite Teams" : "Add favorite teams in the team lookup!") {
-                    List($favorites.favorite_teams) { team in
-                        FavoriteTeamsRow(team: team.wrappedValue)
-                            .environmentObject(favorites)
+                    List {
+                        ForEach($favorites.favorite_teams, id: \.self) { team in
+                            FavoriteTeamsRow(team: team.wrappedValue)
+                                .environmentObject(favorites)
+                        }.onDelete(perform: deleteTeam)
                     }
                 }
                 Section($favorites.favorite_events.count > 0 ? "Favorite Events" : "Favorite events on event pages!") {
                     if showEvents {
-                        List($favorites.favorite_events) { sku in
-                            FavoriteEventsRow(sku: sku.wrappedValue, data: event_sku_map)
-                                .environmentObject(favorites)
+                        List {
+                            ForEach($favorites.favorite_events, id: \.self) { sku in
+                                FavoriteEventsRow(sku: sku.wrappedValue, data: event_sku_map)
+                                    .environmentObject(favorites)
+                            }.onDelete(perform: deleteEvent)
                         }
                     }
                     else if !favorites.favorite_events.isEmpty {
