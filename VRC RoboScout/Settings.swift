@@ -108,9 +108,10 @@ struct Settings: View {
                     }
                 }
                 Section("Developed by Teams Ace 229V and Jelly 2733J") {}
-            }.onAppear{
-                navigation_bar_manager.title = "Settings"
             }
+            Link("Join the Discord Server", destination: URL(string: "https://discord.gg/7b9qcMhVnW")!).padding()
+        }.onAppear{
+            navigation_bar_manager.title = "Settings"
         }
     }
 }
