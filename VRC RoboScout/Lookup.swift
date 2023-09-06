@@ -62,16 +62,27 @@ class EventSearch: ObservableObject {
     @Published var event_indexes: [String]
     @Published var events: [Event]
     
-    init(name_query: String? = nil, page: Int = 1) {
+    init(name_query: String? = nil, season_query: Int? = nil, page: Int = 1) {
         event_indexes = [String]()
         events = [Event]()
-        if name_query == nil || name_query == "" {
+        if name_query == nil {
             event_indexes = [String]()
             events = [Event]()
             return
         }
-        let sku_array = RoboScoutAPI.robotevents_competition_scraper(params: ["name": name_query!, "seasonId": RoboScoutAPI.selected_season_id(), "page": page, "from_date": "01-Jan-1970"])
-        let data = RoboScoutAPI.robotevents_request(request_url: "/seasons/\(RoboScoutAPI.selected_season_id())/events", params: ["sku": sku_array])
+        var scraper_params = [String: Any]()
+        
+        if name_query != nil && name_query != "" {
+            scraper_params["name"] = name_query!
+        }
+        if season_query != nil {
+            scraper_params["seasonId"] = season_query!
+        }
+        scraper_params["page"] = page
+        scraper_params["from_date"] = "01-Jan-1970"
+        
+        let sku_array = RoboScoutAPI.robotevents_competition_scraper(params: scraper_params)
+        let data = RoboScoutAPI.robotevents_request(request_url: "/seasons/\(season_query ?? RoboScoutAPI.selected_season_id())/events", params: ["sku": sku_array])
         
         for event_data in data {
             events.append(Event(fetch: false, data: event_data))
@@ -82,7 +93,6 @@ class EventSearch: ObservableObject {
             event_indexes.append(String(count))
             count += 1
         }
-        event_indexes.reverse()
     }
 }
 
@@ -93,19 +103,33 @@ struct EventLookup: View {
     
     @State private var events: EventSearch = EventSearch()
     @State private var name_query: String = ""
+    @State private var season_query: Int = RoboScoutAPI.selected_season_id()
     @State private var page: Int = 1
     @State private var showLoading = false
     
-    func event_query(name_query: String, page: Int = 1) {
+    func event_query(name_query: String, season_query: Int, page: Int = 1) {
         showLoading = true
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            let fetched_events = EventSearch(name_query: name_query, page: page)
+            let fetched_events = EventSearch(name_query: name_query, season_query: season_query, page: page)
             
             DispatchQueue.main.async {
                 self.events = fetched_events
                 self.showLoading = false
             }
         }
+    }
+    
+    func format_season_option(raw: String) -> String {
+        var season = raw
+        season = season.replacingOccurrences(of: "VRC ", with: "")
+        
+        let season_split = season.split(separator: "-")
+        
+        if season_split.count == 1 {
+            return season
+        }
+        
+        return "\(season_split[0])-\(season_split[1].dropFirst(2))"
     }
     
     var body: some View {
@@ -115,7 +139,7 @@ struct EventLookup: View {
                 text: $name_query,
                 onCommit: {
                     showLoading = true
-                    event_query(name_query: name_query)
+                    event_query(name_query: name_query, season_query: season_query)
                 }
             ).frame(alignment: .center).multilineTextAlignment(.center).font(.system(size: 36)).padding(11)
             VStack {
@@ -123,6 +147,14 @@ struct EventLookup: View {
                     ProgressView()
                 }
             }.frame(height: 10)
+            Picker("Season", selection: $season_query) {
+                ForEach(API.season_id_map.keys.sorted().reversed(), id: \.self) { season_id in
+                    Text(format_season_option(raw: API.season_id_map[season_id] ?? "Unknown")).tag(season_id)
+                }
+            }.onChange(of: season_query) { _ in
+                showLoading = true
+                event_query(name_query: name_query, season_query: season_query)
+            }
             List(events.event_indexes) { event_index in
                 EventRow(event: events.events[Int(event_index)!])
             }
@@ -132,7 +164,7 @@ struct EventLookup: View {
                     showLoading = true
                     events = EventSearch()
                     page -= 1
-                    event_query(name_query: name_query, page: page)
+                    event_query(name_query: name_query, season_query: season_query, page: page)
                 }, label: {
                     Image(systemName: "arrow.left").font(.system(size: 25))
                 }).disabled(page <= 1 || showLoading).opacity((events.events.isEmpty && !showLoading) ? 0 : 1).padding(20)
@@ -141,7 +173,7 @@ struct EventLookup: View {
                     showLoading = true
                     events = EventSearch()
                     page += 1
-                    event_query(name_query: name_query, page: page)
+                    event_query(name_query: name_query, season_query: season_query, page: page)
                 }, label: {
                     Image(systemName: "arrow.right").font(.system(size: 25))
                 }).disabled(events.events.count < 20 || showLoading).opacity((events.events.isEmpty && !showLoading) ? 0 : 1).padding(20)
@@ -377,7 +409,7 @@ struct TeamLookup: View {
                         Text("Total Ties: \(vrc_data_analysis.total_ties)")
                     }
                     Spacer()
-                    Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 ? "\(vrc_data_analysis.total_wins) - \(vrc_data_analysis.total_losses) -  \(vrc_data_analysis.total_ties)" : "")
+                    Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 ? "\(vrc_data_analysis.total_wins)-\(vrc_data_analysis.total_losses)- \(vrc_data_analysis.total_ties)" : "")
                 }
                 HStack {
                     Menu("Awards") {
