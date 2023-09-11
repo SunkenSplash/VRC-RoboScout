@@ -1,5 +1,5 @@
 //
-//  VRC_RoboScoutTests.swift
+//  VRCRoboScoutTests.swift
 //  VRC RoboScoutTests
 //
 //  Created by William Castro on 2/9/23.
@@ -7,7 +7,7 @@
 
 import XCTest
 
-final class VRC_RoboScoutTests: XCTestCase {
+final class VRCRoboScoutTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

@@ -1,5 +1,5 @@
 //
-//  VRC_RoboScoutUITestsLaunchTests.swift
+//  VRCRoboScoutUITestsLaunchTests.swift
 //  VRC RoboScoutUITests
 //
 //  Created by William Castro on 2/9/23.
@@ -7,7 +7,7 @@
 
 import XCTest
 
-final class VRC_RoboScoutUITestsLaunchTests: XCTestCase {
+final class VRCRoboScoutUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
