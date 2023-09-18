@@ -123,24 +123,26 @@ struct EventDivisionMatches: View {
             }
             else {
                 List($matches_list) { name in
-                    HStack {
-                        VStack {
-                            Text(name.wrappedValue.split(separator: "&&")[1]).font(.system(size: 15)).frame(width: 60, alignment: .leading).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1)
-                            Spacer().frame(maxHeight: 4)
-                            Text(name.wrappedValue.split(separator: "&&")[8]).font(.system(size: 12)).frame(width: 60, alignment: .leading)
-                        }
-                        VStack {
-                            Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15))
-                            Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[3])] ?? "")).foregroundColor(.red).font(.system(size: 15))
-                        }.frame(width: 80)
-                        Text(scoreToDisplay(match: name.wrappedValue, index: 6)).foregroundColor(.red).font(.system(size: 19)).frame(alignment: .leading).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1)
-                        Spacer()
-                        Text(scoreToDisplay(match: name.wrappedValue, index: 7)).foregroundColor(.blue).font(.system(size: 19)).frame(alignment: .trailing).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1)
-                        VStack {
-                            Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 15))
-                            Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[5])] ?? "")).foregroundColor(.blue).font(.system(size: 15))
-                        }.frame(width: 80)
-                    }.frame(maxHeight: 30)
+                    NavigationLink(destination: MatchNotes(event: event, match: matches[Int(name.wrappedValue.split(separator: "&&")[0])!]).environmentObject(settings)) {
+                        HStack {
+                            VStack {
+                                Text(name.wrappedValue.split(separator: "&&")[1]).font(.system(size: 15)).frame(width: 60, alignment: .leading).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1)
+                                Spacer().frame(maxHeight: 4)
+                                Text(name.wrappedValue.split(separator: "&&")[8]).font(.system(size: 12)).frame(width: 60, alignment: .leading)
+                            }
+                            VStack {
+                                Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15))
+                                Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[3])] ?? "")).foregroundColor(.red).font(.system(size: 15))
+                            }.frame(width: 70)
+                            Text(scoreToDisplay(match: name.wrappedValue, index: 6)).foregroundColor(.red).font(.system(size: 18)).frame(alignment: .leading).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1)
+                            Spacer()
+                            Text(scoreToDisplay(match: name.wrappedValue, index: 7)).foregroundColor(.blue).font(.system(size: 18)).frame(alignment: .trailing).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1)
+                            VStack {
+                                Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 15))
+                                Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[5])] ?? "")).foregroundColor(.blue).font(.system(size: 15))
+                            }.frame(width: 70)
+                        }.frame(maxHeight: 30)
+                    }
                 }.onChange(of: prediction_manager.state) { new_state in
                     if new_state == PredictionState.calculating {
                         print("predicting")

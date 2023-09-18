@@ -11,11 +11,12 @@ struct FavoriteTeamsRow: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    @EnvironmentObject var dataController: RoboScoutDataController
     
     var team: String
 
     var body: some View {
-        NavigationLink(destination: TeamEventsView(team_number: team).environmentObject(settings)) {
+        NavigationLink(destination: TeamEventsView(team_number: team).environmentObject(settings).environmentObject(dataController)) {
             Text(team)
         }
     }
@@ -25,6 +26,7 @@ struct FavoriteEventsRow: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    @EnvironmentObject var dataController: RoboScoutDataController
     
     var sku: String
     var data: [String: Event]
@@ -36,7 +38,7 @@ struct FavoriteEventsRow: View {
     }
 
     var body: some View {
-        NavigationLink(destination: EventView(event: (data[sku] ?? Event(sku: sku, fetch: false))).environmentObject(settings)) {
+        NavigationLink(destination: EventView(event: (data[sku] ?? Event(sku: sku, fetch: false))).environmentObject(settings).environmentObject(dataController)) {
             VStack {
                 Text((data[sku] ?? Event(sku: sku, fetch: false)).name).frame(maxWidth: .infinity, alignment: .leading).frame(height: 20)
                 Spacer().frame(height: 5)
@@ -85,13 +87,15 @@ struct Favorites: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    @EnvironmentObject var dataController: RoboScoutDataController
     @EnvironmentObject var navigation_bar_manager: NavigationBarManager
     
     @State var event_sku_map = [String: Event]()
     @State var showEvents = false
     
+    @Binding var tab_selection: Int
+    
     func generate_event_sku_map() {
-        
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             
             let data = RoboScoutAPI.robotevents_request(request_url: "/events", params: ["sku": favorites.favorite_events])
@@ -135,24 +139,42 @@ struct Favorites: View {
         VStack {
             Form {
                 Section($favorites.favorite_teams.count > 0 ? "Favorite Teams" : "Add favorite teams in the team lookup!") {
-                    List {
-                        ForEach($favorites.favorite_teams, id: \.self) { team in
-                            FavoriteTeamsRow(team: team.wrappedValue)
-                                .environmentObject(favorites)
-                        }.onDelete(perform: deleteTeam)
+                    if !favorites.favorite_teams.isEmpty {
+                        List {
+                            ForEach($favorites.favorite_teams, id: \.self) { team in
+                                FavoriteTeamsRow(team: team.wrappedValue)
+                                    .environmentObject(favorites)
+                                    .environmentObject(dataController)
+                            }.onDelete(perform: deleteTeam)
+                        }
+                    }
+                    else {
+                        List {
+                            Button("Find a team!") {
+                                tab_selection = 3
+                            }
+                        }
                     }
                 }
                 Section($favorites.favorite_events.count > 0 ? "Favorite Events" : "Favorite events on event pages!") {
-                    if showEvents {
+                    if showEvents && !favorites.favorite_events.isEmpty {
                         List {
                             ForEach($favorites.favorite_events, id: \.self) { sku in
                                 FavoriteEventsRow(sku: sku.wrappedValue, data: event_sku_map)
                                     .environmentObject(favorites)
+                                    .environmentObject(dataController)
                             }.onDelete(perform: deleteEvent)
                         }
                     }
                     else if !favorites.favorite_events.isEmpty {
                         ProgressView().frame(maxWidth: .infinity)
+                    }
+                    else {
+                        List {
+                            Button("Find an event!") {
+                                tab_selection = 3
+                            }
+                        }
                     }
                 }
             }.onAppear{
@@ -168,6 +190,6 @@ struct Favorites: View {
 
 struct Favorites_Previews: PreviewProvider {
     static var previews: some View {
-        Favorites()
+        Favorites(tab_selection: .constant(0))
     }
 }

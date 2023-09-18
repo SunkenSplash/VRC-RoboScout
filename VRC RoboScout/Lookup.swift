@@ -31,6 +31,7 @@ struct Lookup: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    @EnvironmentObject var dataController: RoboScoutDataController
     @EnvironmentObject var navigation_bar_manager: NavigationBarManager
     
     @State var lookupState = 0
@@ -46,11 +47,13 @@ struct Lookup: View {
                 TeamLookup()
                     .environmentObject(favorites)
                     .environmentObject(settings)
+                    .environmentObject(dataController)
             }
             else if lookupState == 1 {
                 EventLookup()
                     .environmentObject(favorites)
                     .environmentObject(settings)
+                    .environmentObject(dataController)
             }
         }.onAppear{
             navigation_bar_manager.title = "Lookup"
@@ -100,6 +103,7 @@ struct EventLookup: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    @EnvironmentObject var dataController: RoboScoutDataController
     
     @State private var events: EventSearch = EventSearch()
     @State private var name_query: String = ""
@@ -156,7 +160,7 @@ struct EventLookup: View {
                 event_query(name_query: name_query, season_query: season_query)
             }
             List(events.event_indexes) { event_index in
-                EventRow(event: events.events[Int(event_index)!])
+                EventRow(event: events.events[Int(event_index)!]).environmentObject(dataController)
             }
             HStack {
                 Spacer()
@@ -179,6 +183,8 @@ struct EventLookup: View {
                 }).disabled(events.events.count < 20 || showLoading).opacity((events.events.isEmpty && !showLoading) ? 0 : 1).padding(20)
                 Spacer()
             }
+        }.onAppear{
+            event_query(name_query: name_query, season_query: season_query)
         }
     }
 }
@@ -187,6 +193,7 @@ struct TeamLookup: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    @EnvironmentObject var dataController: RoboScoutDataController
     
     @State var team_number: String = ""
     @State var favorited: Bool = false
@@ -198,7 +205,7 @@ struct TeamLookup: View {
     @State private var avg_rank: Double = 0.0
     @State private var award_counts = OrderedDictionary<String, Int>()
     @State private var showLoading: Bool = false
-    @State private var showingPopover = false
+    @State private var showingSheet = false
     
     let adam_score_map = [
         "Low",
@@ -423,8 +430,8 @@ struct TeamLookup: View {
                 if settings.getAdamScore() {
                     HStack {
                         Button("AdamScore™") {
-                            showingPopover = true
-                        }.popover(isPresented: $showingPopover) {
+                            showingSheet = true
+                        }.sheet(isPresented: $showingSheet) {
                             Text("AdamScore™")
                                 .font(.headline)
                                 .padding()
@@ -439,7 +446,7 @@ struct TeamLookup: View {
                     }
                 }
                 HStack {
-                    NavigationLink(destination: TeamEventsView(team_number: team.number).environmentObject(settings)) {
+                    NavigationLink(destination: TeamEventsView(team_number: team.number).environmentObject(settings).environmentObject(dataController)) {
                         Text("Events")
                     }
                 }

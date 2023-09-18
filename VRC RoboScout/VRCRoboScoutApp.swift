@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CoreData
 
 let API = RoboScoutAPI()
 let defaults = UserDefaults.standard
@@ -91,6 +90,24 @@ extension View {
         overlay(
             ShakableViewRepresentable(onShake: block).allowsHitTesting(false)
         )
+    }
+}
+
+extension UIApplication {
+    static var appVersion: String? {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    }
+}
+
+struct LazyView<Content: View>: View {
+    private let build: () -> Content
+
+    init(_ build: @escaping () -> Content) {
+        self.build = build
+    }
+
+    var body: Content {
+        build()
     }
 }
 
@@ -224,31 +241,19 @@ class UserSettings: ObservableObject {
     }
 }
 
-class DataController: ObservableObject {
-    let container = NSPersistentContainer(name: "RoboScoutData")
-    
-    init() {
-        container.loadPersistentStores { description, error in
-            if let error = error {
-                print("Core Data failed to load: \(error.localizedDescription)")
-            }
-        }
-    }
-}
-
 @main
 struct VRCRoboScout: App {
     
     @StateObject var favorites = FavoriteStorage(favorite_teams: defaults.object(forKey: "favorite_teams") as? [String] ?? [String](), favorite_events: defaults.object(forKey: "favorite_events") as? [String] ?? [String]())
     @StateObject var settings = UserSettings()
-    @StateObject var dataController = DataController()
+    @StateObject var dataController = RoboScoutDataController()
     
     var body: some Scene {
         WindowGroup {
             Importer()
                 .environmentObject(favorites)
                 .environmentObject(settings)
-                .environment(\.managedObjectContext, dataController.container.viewContext)
+                .environmentObject(dataController)
                 .tint(settings.accentColor())
         }
     }

@@ -97,6 +97,7 @@ struct EventDivisionRankings: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    @EnvironmentObject var dataController: RoboScoutDataController
     @EnvironmentObject var navigation_bar_manager: NavigationBarManager
     
     @State var event: Event
@@ -104,7 +105,7 @@ struct EventDivisionRankings: View {
     @State var teams_map: [String: String]
     @State var event_rankings_list: EventDivisionRankingsList
     @State var showLoading = true
-    @State var showingPopover = false
+    @State var showingSheet = false
     @State var sortingOption = 0
     
     init(event: Event, division: Division, teams_map: [String: String]) {
@@ -160,10 +161,12 @@ struct EventDivisionRankings: View {
                         self.event_rankings_list.sort_by(option: self.sortingOption, event: self.event, division: self.division)
                         self.showLoading = true
                         self.showLoading = false
+                        let sel = UISelectionFeedbackGenerator()
+                        sel.selectionChanged()
                     }
                 List {
                     ForEach(event_rankings_list.rankings_indexes.reversed(), id: \.self) { rank in
-                        NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: self.event, team: Team(id: team_ranking(rank: rank).team.id, fetch: false)).environmentObject(settings)) {
+                        NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: self.event, team: Team(id: team_ranking(rank: rank).team.id, fetch: false)).environmentObject(settings).environmentObject(dataController)) {
                             VStack {
                                 HStack {
                                     HStack {

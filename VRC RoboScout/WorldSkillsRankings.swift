@@ -255,21 +255,17 @@ struct WorldSkillsRankings: View {
                             }
                             if team.wrappedValue.ranking == current_index + 100 {
                                 current_index += 50
-                                start = start + 50 > cache_size ? cache_size - 50 : start + 50
-                                end = end + 50 > cache_size ? cache_size : end + 50
-                                Task {
-                                    world_skills_rankings = WorldSkillsTeams(begin: start, end: end)
-                                    proxy.scrollTo(current_index - 25)
-                                }
+                                start = start + 50 >= cache_size ? cache_size - 50 : start + 50
+                                end = start + 200 >= cache_size ? cache_size : start + 200
+                                world_skills_rankings = WorldSkillsTeams(begin: start, end: end)
+                                proxy.scrollTo(current_index - 25)
                             }
                             else if team.wrappedValue.ranking == current_index - 100 + 1 && team.wrappedValue.ranking != 1 {
                                 current_index -= 50
                                 start = start - 50 < 1 ? 1 : start - 50
-                                end = end - 50 < 1 ? 1 + 50 : end - 50
-                                Task {
-                                    world_skills_rankings = WorldSkillsTeams(begin: start, end: end)
-                                    proxy.scrollTo(current_index + 25)
-                                }
+                                end = start + 200 >= cache_size ? cache_size : start + 200
+                                world_skills_rankings = WorldSkillsTeams(begin: start, end: end)
+                                proxy.scrollTo(current_index + 25)
                             }
                         }
                     }

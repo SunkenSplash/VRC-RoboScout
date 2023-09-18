@@ -18,6 +18,7 @@ struct Importer: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    @EnvironmentObject var dataController: RoboScoutDataController
     
     @StateObject var navigation_bar_manager = NavigationBarManager(title: "Favorites")
     
@@ -28,6 +29,8 @@ struct Importer: View {
     @State private var seasons_done = false
     @State private var cont = false
     @State private var total_teams = 0
+    
+    @State private var tab_selection = 0
     
     func import_seasons_and_skills() {
         DispatchQueue.global(qos: .userInteractive).async {
@@ -188,8 +191,8 @@ struct Importer: View {
                     .toolbarBackground(.visible, for: .navigationBar)
             }
             else {
-                TabView {
-                    Favorites()
+                TabView(selection: $tab_selection) {
+                    Favorites(tab_selection: $tab_selection)
                         .tabItem {
                             if settings.getMinimalistic() {
                                 Image(systemName: "star")
@@ -200,8 +203,10 @@ struct Importer: View {
                         }
                         .environmentObject(favorites)
                         .environmentObject(settings)
+                        .environmentObject(dataController)
                         .environmentObject(navigation_bar_manager)
                         .tint(settings.accentColor())
+                        .tag(0)
                     WorldSkillsRankings()
                         .tabItem {
                             if settings.getMinimalistic() {
@@ -215,6 +220,7 @@ struct Importer: View {
                         .environmentObject(settings)
                         .environmentObject(navigation_bar_manager)
                         .tint(settings.accentColor())
+                        .tag(1)
                     TrueSkillRankings()
                         .tabItem {
                             if settings.getMinimalistic() {
@@ -228,6 +234,7 @@ struct Importer: View {
                         .environmentObject(settings)
                         .environmentObject(navigation_bar_manager)
                         .tint(settings.accentColor())
+                        .tag(2)
                     Lookup()
                         .tabItem {
                             if settings.getMinimalistic() {
@@ -239,8 +246,10 @@ struct Importer: View {
                         }
                         .environmentObject(favorites)
                         .environmentObject(settings)
+                        .environmentObject(dataController)
                         .environmentObject(navigation_bar_manager)
                         .tint(settings.accentColor())
+                        .tag(3)
                     Settings()
                         .tabItem {
                             if settings.getMinimalistic() {
@@ -252,8 +261,10 @@ struct Importer: View {
                         }
                         .environmentObject(favorites)
                         .environmentObject(settings)
+                        .environmentObject(dataController)
                         .environmentObject(navigation_bar_manager)
                         .tint(settings.accentColor())
+                        .tag(4)
                 }.onAppear {
                     let tabBarAppearance = UITabBarAppearance()
                     tabBarAppearance.configureWithDefaultBackground()

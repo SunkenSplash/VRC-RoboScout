@@ -11,6 +11,7 @@ struct EventDivisionRow: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    @EnvironmentObject var dataController: RoboScoutDataController
     
     @Binding var teams_map: [String: String]
     @Binding var event_teams: [Team]
@@ -19,7 +20,7 @@ struct EventDivisionRow: View {
     var event: Event
 
     var body: some View {
-        NavigationLink(destination: EventDivisionView(event: event, event_teams: event_teams, division: Division(id: Int(division.split(separator: "&&")[0]) ?? 0, name: String(division.split(separator: "&&")[1])), teams_map: teams_map).environmentObject(settings).environmentObject(favorites)) {
+        NavigationLink(destination: EventDivisionView(event: event, event_teams: event_teams, division: Division(id: Int(division.split(separator: "&&")[0]) ?? 0, name: String(division.split(separator: "&&")[1])), teams_map: teams_map).environmentObject(settings).environmentObject(favorites).environmentObject(dataController)) {
             Text(division.split(separator: "&&")[1])
         }
     }
@@ -45,6 +46,7 @@ struct EventView: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    @EnvironmentObject var dataController: RoboScoutDataController
     
     @State private var event: Event
     @State private var team: Team?
@@ -76,10 +78,10 @@ struct EventView: View {
                 self.event_divisions = EventDivisions(event_divisions: event.divisions.map{ "\($0.id)&&\($0.name)" })
             }
             
-            if self.event_teams.isEmpty {
+            if self.event.teams.isEmpty {
                 event.fetch_teams()
-                self.event_teams = event.teams
             }
+            self.event_teams = event.teams
             
             DispatchQueue.main.async {
                 self.event_teams_list.removeAll()
@@ -104,11 +106,11 @@ struct EventView: View {
                         NavigationLink(destination: EventInformation(event: event).environmentObject(settings)) {
                             Text("Information")
                         }
-                        NavigationLink(destination: EventTeams(event: event, teams_map: $teams_map, event_teams: $event_teams, event_teams_list: event_teams_list).environmentObject(settings)) {
+                        NavigationLink(destination: EventTeams(event: event, teams_map: $teams_map, event_teams: $event_teams, event_teams_list: event_teams_list).environmentObject(settings).environmentObject(dataController)) {
                             Text("Teams")
                         }
                         if team != nil {
-                            NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: event, team: team!).environmentObject(settings)) {
+                            NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: event, team: team!).environmentObject(settings).environmentObject(dataController)) {
                                 Text("\(team!.number) Match List")
                             }
                         }

@@ -11,6 +11,7 @@ struct EventRow: View {
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
+    @EnvironmentObject var dataController: RoboScoutDataController
     
     private var event: Event
     private var team: Team?
@@ -27,7 +28,7 @@ struct EventRow: View {
     }
 
     var body: some View {
-        NavigationLink(destination: EventView(event: self.event, team: self.team).environmentObject(favorites).environmentObject(settings)) {
+        NavigationLink(destination: EventView(event: self.event, team: self.team).environmentObject(favorites).environmentObject(settings).environmentObject(dataController)) {
             VStack {
                 Text(self.event.name).frame(maxWidth: .infinity, alignment: .leading).frame(height: 20)
                 Spacer().frame(height: 5)

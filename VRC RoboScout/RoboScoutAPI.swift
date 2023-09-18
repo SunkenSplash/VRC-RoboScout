@@ -851,6 +851,7 @@ public class Event {
     public var rankings: [Division: [TeamRanking]]
     public var skills_rankings: [TeamSkillsRanking]
     public var awards: [Division: [DivisionalAward]]
+    public var livestream_link: String?
     
     public init(id: Int = 0, sku: String = "", fetch: Bool = true, data: [String: Any] = [:]) {
 
@@ -871,6 +872,7 @@ public class Event {
         self.rankings = [Division: [TeamRanking]]()
         self.skills_rankings = [TeamSkillsRanking]()
         self.awards = [Division: [DivisionalAward]]()
+        self.livestream_link = data["livestream_link"] as? String
         
         if data["divisions"] != nil {
             for division in (data["divisions"] as! [[String: Any]]) {
@@ -1138,6 +1140,41 @@ public class Event {
         }
         
         self.matches[division] = new_matches
+    }
+    
+    public func fetch_livestream_link() -> String? {
+        
+        if let livestream_link {
+            return livestream_link
+        }
+        
+        let request_url = "https://www.robotevents.com/robot-competitions/vex-robotics-competition/\(self.sku).html"
+        
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        let request = NSMutableURLRequest(url: URL(string: request_url)!)
+        request.httpMethod = "GET"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) { (response_data, response, error) in
+            if response_data != nil {
+                print("Checking if \(self.sku) has a livestream")
+                let html = String(data: response_data!, encoding: .utf8)!
+                
+                if html.components(separatedBy: "Webcast").count > 3 {
+                    self.livestream_link = request_url + "#webcast"
+                }
+                
+                semaphore.signal()
+            } else if let error = error {
+                print("ERROR " + error.localizedDescription)
+                semaphore.signal()
+            }
+        }
+        task.resume()
+        _ = semaphore.wait(timeout: DispatchTime.distantFuture)
+        
+        return self.livestream_link
     }
     
     public func toString() -> String {

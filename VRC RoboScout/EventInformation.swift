@@ -17,6 +17,7 @@ struct EventInformation: View {
     @State private var total_correct = 0
     @State private var total_matches = 0
     @State private var slider_value = 50.0
+    @State private var livestream_link = ""
     
     let dateFormatter = DateFormatter()
     
@@ -29,12 +30,34 @@ struct EventInformation: View {
         VStack {
             Spacer()
             Text(event.name).font(.title2).multilineTextAlignment(.center).padding()
+            if !livestream_link.isEmpty {
+                HStack {
+                    Spacer()
+                    HStack {
+                        Image(systemName: "play.tv").foregroundStyle(Color.accentColor)
+                        Link("Watch Livestream", destination: URL(string: self.livestream_link)!)
+                    }
+                    Spacer()
+                }
+            }
+            else {
+                Text("").frame(height: 20).onAppear{
+                    DispatchQueue.global(qos: .userInteractive).async { [self] in
+                        let link = self.event.fetch_livestream_link()
+                        DispatchQueue.main.async {
+                            self.livestream_link = link ?? ""
+                        }
+                    }
+                }
+            }
             VStack {
                 List {
                     HStack {
                         Text("Teams")
                         Spacer()
                         Text(String(event.teams.count))
+                    }.onAppear{
+                        print(self.livestream_link)
                     }
                     HStack {
                         Menu("Divisions") {
