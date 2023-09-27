@@ -35,6 +35,7 @@ struct EventDivisionAwards: View {
         VStack {
             if showLoading {
                 ProgressView().padding()
+                Spacer()
             }
             else if (event.awards[division] ?? [DivisionalAward]()).isEmpty {
                 NoData()

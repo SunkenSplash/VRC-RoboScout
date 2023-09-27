@@ -20,6 +20,16 @@ struct EventTeams: View {
     @Binding var event_teams: [Team]
     @State var event_teams_map = [String: Team]()
     @State var event_teams_list: [String]
+    @State var teamNumberQuery = ""
+    
+    var searchResults: [String] {
+        if teamNumberQuery.isEmpty {
+            return event_teams_list
+        }
+        else {
+            return event_teams_list.filter{ $0.lowercased().contains(teamNumberQuery.lowercased()) }
+        }
+    }
     
     func generate_location(team: Team) -> String {
         var location_array = [team.city, team.region, team.country]
@@ -30,23 +40,23 @@ struct EventTeams: View {
     func fetch_event_teams_list() {
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             
-            if !self.event.rankings.keys.contains(self.division!) {
+            if self.division != nil && !self.event.rankings.keys.contains(self.division!) {
                 self.event.fetch_rankings(division: self.division!)
             }
             
-            if self.event.rankings[self.division!]!.isEmpty && !self.event.matches.keys.contains(self.division!) {
+            if self.division != nil && self.event.rankings[self.division!]!.isEmpty && !self.event.matches.keys.contains(self.division!) {
                 self.event.fetch_matches(division: self.division!)
             }
             
             DispatchQueue.main.async {
                 self.event_teams_list = [String]()
                 
-                if !self.event.rankings[self.division!]!.isEmpty {
+                if self.division != nil && !self.event.rankings[self.division!]!.isEmpty {
                     for ranking in self.event.rankings[self.division!]! {
                         self.event_teams_list.append(self.teams_map[String(ranking.team.id)] ?? "")
                     }
                 }
-                else {
+                else if self.division != nil {
                     for match in self.event.matches[self.division!]! {
                         var match_teams = match.red_alliance
                         match_teams.append(contentsOf: match.blue_alliance)
@@ -56,6 +66,9 @@ struct EventTeams: View {
                             }
                         }
                     }
+                }
+                else {
+                    self.event_teams_list = self.event.teams.map{ $0.number }
                 }
                 self.event_teams_list.sort()
                 self.event_teams_list.sort(by: {
@@ -68,31 +81,34 @@ struct EventTeams: View {
         
     var body: some View {
         VStack {
-            if division != nil && showLoading {
-                ProgressView().padding().task{
-                    fetch_event_teams_list()
-                }
+            if showLoading {
+                ProgressView().padding()
                 Spacer()
             }
             else if $event_teams_list.isEmpty {
                 NoData()
             }
             else {
-                List($event_teams_list) { team in
-                    NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: event, team: Team(number: team.wrappedValue, fetch: false), division: division).environmentObject(settings).environmentObject(dataController)) {
-                        HStack {
-                            Text((event_teams_map[team.wrappedValue] ?? Team()).number).font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 60, height: 30, alignment: .leading)
-                            VStack {
-                                Text((event_teams_map[team.wrappedValue] ?? Team()).name).frame(maxWidth: .infinity, alignment: .leading).frame(height: 20)
-                                Spacer().frame(height: 5)
-                                Text(generate_location(team: (event_teams_map[team.wrappedValue] ?? Team()))).font(.system(size: 11)).frame(maxWidth: .infinity, alignment: .leading).frame(height: 15)
+                NavigationView {
+                    List {
+                        ForEach(searchResults, id: \.self) { teamNum in
+                            NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: event, team: Team(number: teamNum, fetch: false), division: division).environmentObject(settings).environmentObject(dataController)) {
+                                HStack {
+                                    Text((event_teams_map[teamNum] ?? Team()).number).font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 60, height: 30, alignment: .leading)
+                                    VStack {
+                                        Text((event_teams_map[teamNum] ?? Team()).name).frame(maxWidth: .infinity, alignment: .leading).frame(height: 20)
+                                        Spacer().frame(height: 5)
+                                        Text(generate_location(team: (event_teams_map[teamNum] ?? Team()))).font(.system(size: 11)).frame(maxWidth: .infinity, alignment: .leading).frame(height: 15)
+                                    }
+                                }
                             }
                         }
                     }
-                }
+                }.searchable(text: $teamNumberQuery, prompt: "Enter a team number...")
             }
         }
         .onAppear{
+            fetch_event_teams_list()
             for team in event_teams {
                 event_teams_map[team.number] = team
             }

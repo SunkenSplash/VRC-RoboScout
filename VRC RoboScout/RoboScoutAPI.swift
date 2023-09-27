@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import OrderedCollections
+import EventKit
 import Matft
 
 enum RoboScoutAPIError: Error {
@@ -16,13 +18,13 @@ public class RoboScoutAPI {
     
     public var world_skills_cache: [[String: Any]]
     public var vrc_data_analysis_cache: [[String: Any]]
-    public var season_id_map: [Int: String]
+    public var season_id_map: OrderedDictionary<Int, String>
     public var current_skills_season_id: Int
     
     public init() {
         self.world_skills_cache = [[String: Any]]()
         self.vrc_data_analysis_cache = [[String: Any]]()
-        self.season_id_map = [Int: String]()
+        self.season_id_map = OrderedDictionary<Int, String>()
         self.current_skills_season_id = 0
     }
 
@@ -231,15 +233,19 @@ public class RoboScoutAPI {
         print("Season ID map generated")
     }
 
-    public static func selected_season_id() -> Int {
-        return UserDefaults.standard.object(forKey: "selected_season_id") as? Int ?? 181
+    public func selected_season_id() -> Int {
+        return UserDefaults.standard.object(forKey: "selected_season_id") as? Int ?? self.active_season_id()
+    }
+    
+    public func active_season_id() -> Int {
+        return !self.season_id_map.isEmpty ? self.season_id_map.keys[0] : 0
     }
     
     public func update_world_skills_cache(season: Int? = nil) {
 
         let semaphore = DispatchSemaphore(value: 0)
             
-        let components = URLComponents(string: String(format: "https://www.robotevents.com/api/seasons/%d/skills", season ?? RoboScoutAPI.selected_season_id()))!
+        let components = URLComponents(string: String(format: "https://www.robotevents.com/api/seasons/%d/skills", season ?? self.selected_season_id()))!
                     
         let request = NSMutableURLRequest(url: components.url! as URL)
         request.httpMethod = "GET"
@@ -252,7 +258,7 @@ public class RoboScoutAPI {
                 
                 if json != nil {
                     self.world_skills_cache = json!
-                    self.current_skills_season_id = season ?? RoboScoutAPI.selected_season_id()
+                    self.current_skills_season_id = season ?? self.selected_season_id()
                     print("World skills cache updated")
                 }
                 else {
@@ -840,8 +846,11 @@ public class Event {
     public var start: Date?
     public var end: Date?
     public var season: Int
+    public var venue: String
+    public var address: String
     public var city: String
     public var region: String
+    public var postcode: Int
     public var country: String
     public var matches: [Division: [Match]]
     public var teams: [Team]
@@ -861,8 +870,11 @@ public class Event {
         self.start = (data["start"] != nil) ? RoboScoutAPI.robotevents_date(date: data["start"] as! String) : nil
         self.end = (data["end"] != nil) ? RoboScoutAPI.robotevents_date(date: data["end"] as! String) : nil
         self.season = (data["season"] != nil) ? (data["season"] as! [String: Any])["id"] as! Int : 0
+        self.venue = (data["location"] != nil) ? ((data["location"] as! [String: Any])["venue"] as? String ?? "") : ""
+        self.address = (data["location"] != nil) ? ((data["location"] as! [String: Any])["address_1"] as? String ?? "") : ""
         self.city = (data["location"] != nil) ? ((data["location"] as! [String: Any])["city"] as? String ?? "") : ""
         self.region = (data["location"] != nil) ? ((data["location"] as! [String: Any])["region"] as? String ?? "") : ""
+        self.postcode = (data["location"] != nil) ? ((data["location"] as! [String: Any])["postcode"] as? Int ?? 0) : 0
         self.country = (data["location"] != nil) ? ((data["location"] as! [String: Any])["country"] as? String ?? "") : ""
         self.matches = [Division: [Match]]()
         self.teams = [Team]()
@@ -1158,9 +1170,7 @@ public class Event {
         
         let task = URLSession.shared.dataTask(with: request as URLRequest) { (response_data, response, error) in
             if response_data != nil {
-                print("Checking if \(self.sku) has a livestream")
                 let html = String(data: response_data!, encoding: .utf8)!
-                
                 if html.components(separatedBy: "Webcast").count > 3 {
                     self.livestream_link = request_url + "#webcast"
                 }
@@ -1175,6 +1185,59 @@ public class Event {
         _ = semaphore.wait(timeout: DispatchTime.distantFuture)
         
         return self.livestream_link
+    }
+    
+    func add_to_calendar() {
+        let eventStore = EKEventStore()
+        
+        if #available(iOS 17, *) {
+            eventStore.requestWriteOnlyAccessToEvents() { (granted, error) in
+                if (granted) && (error == nil) {
+                    
+                    let event = EKEvent(eventStore: eventStore)
+                    
+                    event.title = self.name
+                    event.startDate = self.start
+                    event.endDate = self.end
+                    event.location = "\(self.address), \(self.city), \(self.region), \(self.postcode), \(self.country)"
+                    event.calendar = eventStore.defaultCalendarForNewEvents
+                    do {
+                        try eventStore.save(event, span: .thisEvent)
+                        print("Saved Event")
+                    }
+                    catch let error as NSError {
+                        print("Failed to save event with error : \(error)")
+                    }
+                }
+                else {
+                    print("Failed to save event with error : \(String(describing: error)) or access not granted")
+                }
+            }
+        }
+        else {
+            eventStore.requestAccess(to: .event) { (granted, error) in
+                if (granted) && (error == nil) {
+                    
+                    let event = EKEvent(eventStore: eventStore)
+                    
+                    event.title = self.name
+                    event.startDate = self.start
+                    event.endDate = self.end
+                    event.location = "\(self.address), \(self.city), \(self.region), \(self.postcode), \(self.country)"
+                    event.calendar = eventStore.defaultCalendarForNewEvents
+                    do {
+                        try eventStore.save(event, span: .thisEvent)
+                        print("Saved Event")
+                    }
+                    catch let error as NSError {
+                        print("Failed to save event with error : \(error)")
+                    }
+                }
+                else {
+                    print("Failed to save event with error : \(String(describing: error)) or access not granted")
+                }
+            }
+        }
     }
     
     public func toString() -> String {
@@ -1322,7 +1385,7 @@ public class Team {
     }
     
     public func fetch_events(season: Int? = nil) {
-        let data = RoboScoutAPI.robotevents_request(request_url: "/events", params: ["team": self.id, "season": season ?? RoboScoutAPI.selected_season_id()])
+        let data = RoboScoutAPI.robotevents_request(request_url: "/events", params: ["team": self.id, "season": season ?? API.selected_season_id()])
         for event in data {
             self.events.append(Event(id: event["id"] as! Int, fetch: false, data: event))
         }
@@ -1330,7 +1393,7 @@ public class Team {
     }
     
     public func fetch_awards(season: Int? = nil) {
-        let data = RoboScoutAPI.robotevents_request(request_url: "/teams/\(self.id)/awards", params: ["season": season ?? RoboScoutAPI.selected_season_id()])
+        let data = RoboScoutAPI.robotevents_request(request_url: "/teams/\(self.id)/awards", params: ["season": season ?? API.selected_season_id()])
         for award in data {
             self.awards.append(Award(data: award))
         }
@@ -1358,7 +1421,7 @@ public class Team {
     }
     
     public func average_ranking(season: Int? = nil) -> Double {
-        let data = RoboScoutAPI.robotevents_request(request_url: String(format: "/teams/%d/rankings/", self.id), params: ["season": season ?? RoboScoutAPI.selected_season_id()])
+        let data = RoboScoutAPI.robotevents_request(request_url: String(format: "/teams/%d/rankings/", self.id), params: ["season": season ?? API.selected_season_id()])
         var total = 0
         for comp in data {
             total += comp["rank"] as! Int

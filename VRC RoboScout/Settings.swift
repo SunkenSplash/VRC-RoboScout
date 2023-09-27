@@ -25,6 +25,12 @@ struct Settings: View {
     @State var clearedTeams = false
     @State var clearedEvents = false
     @State var clearedNotes = false
+    @State var confirmClearTeams = false
+    @State var confirmClearEvents = false
+    @State var confirmClearData = false
+    @State var confirmClearNotes = false
+    @State var confirmAppearance = false
+    @State var confirmAPIKey = false
     
     func format_season_option(raw: String) -> String {
         var season = raw
@@ -90,42 +96,51 @@ struct Settings: View {
                         showApply = true
                     }
                     if showApply {
-                    Button("Restart to apply") {
-                        settings.updateUserDefaults()
-                        print("App Restarting")
-                        exit(0)
-                    }
+                        Button("Apply changes") {
+                            confirmAppearance = true
+                        }.confirmationDialog("Are you sure?", isPresented: $confirmAppearance) {
+                            Button("Apply and close app?", role: .destructive) {
+                                settings.updateUserDefaults()
+                                print("App Closing")
+                                exit(0)
+                            }
+                        }
                     }
                 }
                 Section("Danger") {
                     Button("Clear favorite teams") {
-                        defaults.set([String](), forKey: "favorite_teams")
-                        favorites.favorite_teams = [String]()
-                        clearedTeams = true
-                        print("Favorite teams cleared")
+                        confirmClearTeams = true
                     }.alert(isPresented: $clearedTeams) {
                         Alert(title: Text("Cleared favorite teams"), dismissButton: .default(Text("OK")))
+                    }.confirmationDialog("Are you sure?", isPresented: $confirmClearTeams) {
+                        Button("Clear ALL favorited teams?", role: .destructive) {
+                            defaults.set([String](), forKey: "favorite_teams")
+                            favorites.favorite_teams = [String]()
+                            clearedTeams = true
+                            print("Favorite teams cleared")
+                        }
                     }
                     Button("Clear favorite events") {
-                        defaults.set([String](), forKey: "favorite_events")
-                        favorites.favorite_events = [String]()
-                        clearedEvents = true
-                        print("Favorite events cleared")
+                        confirmClearEvents = true
                     }.alert(isPresented: $clearedEvents) {
                         Alert(title: Text("Cleared favorite events"), dismissButton: .default(Text("OK")))
+                    }.confirmationDialog("Are you sure?", isPresented: $confirmClearEvents) {
+                        Button("Clear ALL favorited events?", role: .destructive) {
+                            defaults.set([String](), forKey: "favorite_events")
+                            favorites.favorite_events = [String]()
+                            clearedEvents = true
+                            print("Favorite events cleared")
+                        }
                     }
-                    Button("Erase all match notes") {
-                        dataController.deleteAllNotes()
-                        clearedNotes = true
+                    Button("Clear all match notes") {
+                        confirmClearNotes = true
                     }.alert(isPresented: $clearedNotes) {
                         Alert(title: Text("Cleared match notes"), dismissButton: .default(Text("OK")))
-                    }
-                    Button("Reset all data") {
-                        let domain = Bundle.main.bundleIdentifier!
-                        UserDefaults.standard.removePersistentDomain(forName: domain)
-                        UserDefaults.standard.synchronize()
-                        print("UserDefaults cleared")
-                        exit(0)
+                    }.confirmationDialog("Are you sure?", isPresented: $confirmClearNotes) {
+                        Button("Clear ALL match notes?", role: .destructive) {
+                            dataController.deleteAllNotes()
+                            clearedNotes = true
+                        }
                     }
                 }
                 Section("Developer") {
@@ -133,9 +148,14 @@ struct Settings: View {
                         Text("RobotEvents API Key")
                         Spacer()
                         SecureField("Enter Key", text: $apiKey, onCommit: {
-                            defaults.set(apiKey, forKey: "robotevents_api_key")
-                            print("Set RobotEvents API Key")
-                        })
+                            confirmAPIKey = true
+                        }).confirmationDialog("Are you sure?", isPresented: $confirmAPIKey) {
+                            Button("Set API Key and close app?", role: .destructive) {
+                                defaults.set(apiKey, forKey: "robotevents_api_key")
+                                print("Set RobotEvents API Key")
+                                exit(0)
+                            }
+                        }
                     }
                     HStack {
                         Text("Version")

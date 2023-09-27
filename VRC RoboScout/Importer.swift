@@ -31,6 +31,7 @@ struct Importer: View {
     @State private var total_teams = 0
     
     @State private var tab_selection = 0
+    @State private var lookup_type = 0 // 0 is teams, 1 is events
     
     func import_seasons_and_skills() {
         DispatchQueue.global(qos: .userInteractive).async {
@@ -192,7 +193,7 @@ struct Importer: View {
             }
             else {
                 TabView(selection: $tab_selection) {
-                    Favorites(tab_selection: $tab_selection)
+                    Favorites(tab_selection: $tab_selection, lookup_type: $lookup_type)
                         .tabItem {
                             if settings.getMinimalistic() {
                                 Image(systemName: "star")
@@ -235,7 +236,7 @@ struct Importer: View {
                         .environmentObject(navigation_bar_manager)
                         .tint(settings.accentColor())
                         .tag(2)
-                    Lookup()
+                    Lookup(lookup_type: $lookup_type)
                         .tabItem {
                             if settings.getMinimalistic() {
                                 Image(systemName: "magnifyingglass")

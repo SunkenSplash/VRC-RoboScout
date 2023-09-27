@@ -102,7 +102,7 @@ class WorldSkillsTeams: ObservableObject {
             if API.world_skills_cache.count == 0 {
                 return
             }
-            for i in begin - 1...(end - 1 < API.world_skills_cache.count ? end - 1 : API.world_skills_cache.count - 1) {
+            for i in (begin - 1)..<end {
                 let team = API.world_skills_cache[i]
                 self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: team["rank"] as! Int, additional_ranking: 0, driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, highest_driver: (team["scores"] as! [String: Any])["maxDriver"] as! Int, highest_programming: (team["scores"] as! [String: Any])["maxProgramming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
             }
@@ -172,7 +172,7 @@ struct WorldSkillsRankings: View {
     @State private var letter: Character = "0"
     @State private var current_index = 100
     @State private var world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200, fetch: false)
-    @State private var season_id = RoboScoutAPI.selected_season_id()
+    @State private var season_id = API.selected_season_id()
     
     var body: some View {
         VStack {
@@ -190,7 +190,7 @@ struct WorldSkillsRankings: View {
                             region_id = 0
                             letter = "0"
                             current_index = 100
-                            world_skills_rankings = WorldSkillsTeams(begin: 1, end: API.world_skills_cache.count, filter_array: favorites.teams_as_array(), fetch: false)
+                            world_skills_rankings = WorldSkillsTeams(begin: 1, end: 0, filter_array: favorites.teams_as_array(), fetch: false)
                         }
                     }
                     Menu("Region") {
@@ -202,7 +202,7 @@ struct WorldSkillsRankings: View {
                             region_id = 0
                             letter = "0"
                             current_index = 100
-                            world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200, fetch: false)
+                            world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200 >= API.world_skills_cache.count ? API.world_skills_cache.count : 200, fetch: false)
                         }
                         ForEach(region_id_map.sorted(by: <), id: \.key) { region, id in
                             Button(region) {
@@ -213,7 +213,7 @@ struct WorldSkillsRankings: View {
                                 region_id = id
                                 letter = "0"
                                 current_index = 100
-                                world_skills_rankings = WorldSkillsTeams(begin: 1, end: API.world_skills_cache.count, region: id, fetch: false)
+                                world_skills_rankings = WorldSkillsTeams(begin: 1, end: 0, region: id, fetch: false)
                             }
                         }
                     }
@@ -226,7 +226,7 @@ struct WorldSkillsRankings: View {
                                 end = 200
                                 letter = char.first!
                                 current_index = 100
-                                world_skills_rankings = WorldSkillsTeams(begin: 1, end: API.world_skills_cache.count, letter: char.first!, fetch: false)
+                                world_skills_rankings = WorldSkillsTeams(begin: 1, end: 0, letter: char.first!, fetch: false)
                             }
                         }
                     }
@@ -238,7 +238,7 @@ struct WorldSkillsRankings: View {
                         region_id = 0
                         letter = "0"
                         current_index = 100
-                        world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200, fetch: false)
+                        world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200 >= API.world_skills_cache.count ? API.world_skills_cache.count : 200, fetch: false)
                     }
                 }.fontWeight(.medium)
                     .font(.system(size: 19))
@@ -256,14 +256,14 @@ struct WorldSkillsRankings: View {
                             if team.wrappedValue.ranking == current_index + 100 {
                                 current_index += 50
                                 start = start + 50 >= cache_size ? cache_size - 50 : start + 50
-                                end = start + 200 >= cache_size ? cache_size : start + 200
+                                end = start + 199 >= cache_size ? cache_size : start + 199
                                 world_skills_rankings = WorldSkillsTeams(begin: start, end: end)
                                 proxy.scrollTo(current_index - 25)
                             }
                             else if team.wrappedValue.ranking == current_index - 100 + 1 && team.wrappedValue.ranking != 1 {
                                 current_index -= 50
                                 start = start - 50 < 1 ? 1 : start - 50
-                                end = start + 200 >= cache_size ? cache_size : start + 200
+                                end = start + 199 >= cache_size ? cache_size : start + 199
                                 world_skills_rankings = WorldSkillsTeams(begin: start, end: end)
                                 proxy.scrollTo(current_index + 25)
                             }
@@ -274,7 +274,7 @@ struct WorldSkillsRankings: View {
         }.background(.clear)
             .onAppear{
                 navigation_bar_manager.title = $display_skills.wrappedValue
-                if RoboScoutAPI.selected_season_id() != self.season_id {
+                if API.selected_season_id() != self.season_id {
                     display_skills = "World Skills"
                     navigation_bar_manager.title = display_skills
                     start = 1
@@ -282,8 +282,8 @@ struct WorldSkillsRankings: View {
                     region_id = 0
                     letter = "0"
                     current_index = 100
-                    world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200, fetch: false)
-                    self.season_id = RoboScoutAPI.selected_season_id()
+                    world_skills_rankings = WorldSkillsTeams(begin: 1, end: 200 >= API.world_skills_cache.count ? API.world_skills_cache.count : 200, fetch: false)
+                    self.season_id = API.selected_season_id()
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

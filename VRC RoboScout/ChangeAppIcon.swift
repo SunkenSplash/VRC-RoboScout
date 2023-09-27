@@ -12,13 +12,13 @@ enum AppIcon: String, CaseIterable, Identifiable {
     case dark = "AppIcon-Dark"
     case ace = "AppIcon-ACE"
     case revision = "AppIcon-Revision"
+    case p = "AppIcon-P"
     case cw = "AppIcon-CW"
     case ss = "AppIcon-SS"
     case canada = "AppIcon-Canada"
     case ll = "AppIcon-LL"
     case ww = "AppIcon-WW"
     case gs = "AppIcon-GS"
-    case p = "AppIcon-P"
 
     var id: String { rawValue }
     var iconName: String? {
@@ -40,6 +40,8 @@ enum AppIcon: String, CaseIterable, Identifiable {
             return "ACE/ACE Robotics 229V"
         case .revision:
             return "Revision/Revision 515R"
+        case .p:
+            return "Parker/Parker 9364C"
         case .cw:
             return "Colorwave/Alex Y 877K"
         case .ss:
@@ -52,8 +54,6 @@ enum AppIcon: String, CaseIterable, Identifiable {
             return "Worldwide/Maksym 8995B"
         case .gs:
             return "Grayscale/leader 3327H"
-        case .p:
-            return "Parker/Parker 9364C"
         }
     }
 

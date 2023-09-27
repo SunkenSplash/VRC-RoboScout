@@ -18,6 +18,7 @@ struct EventInformation: View {
     @State private var total_matches = 0
     @State private var slider_value = 50.0
     @State private var livestream_link = ""
+    @State private var calendarAlert = false
     
     let dateFormatter = DateFormatter()
     
@@ -188,6 +189,19 @@ struct EventInformation: View {
                         .fontWeight(.medium)
                         .font(.system(size: 19))
                         .foregroundColor(settings.navTextColor())
+                }
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    Link(destination: URL(string: "https://www.robotevents.com/robot-competitions/vex-robotics-competition/\(self.event.sku).html")!) {
+                        Image(systemName: "link")
+                    }
+                    Button(action: {
+                        self.event.add_to_calendar()
+                        calendarAlert = true
+                    }, label: {
+                        Image(systemName: "calendar.badge.plus")
+                    }).alert(isPresented: $calendarAlert) {
+                       Alert(title: Text("Added to calendar"), dismissButton: .default(Text("OK")))
+                    }
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

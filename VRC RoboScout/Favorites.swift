@@ -94,6 +94,7 @@ struct Favorites: View {
     @State var showEvents = false
     
     @Binding var tab_selection: Int
+    @Binding var lookup_type: Int
     
     func generate_event_sku_map() {
         DispatchQueue.global(qos: .userInteractive).async { [self] in
@@ -138,7 +139,7 @@ struct Favorites: View {
     var body: some View {
         VStack {
             Form {
-                Section($favorites.favorite_teams.count > 0 ? "Favorite Teams" : "Add favorite teams in the team lookup!") {
+                Section($favorites.favorite_teams.count > 0 ? "Favorite Teams" : "Add favorite teams in the team lookup") {
                     if !favorites.favorite_teams.isEmpty {
                         List {
                             ForEach($favorites.favorite_teams, id: \.self) { team in
@@ -150,13 +151,14 @@ struct Favorites: View {
                     }
                     else {
                         List {
-                            Button("Find a team!") {
+                            Button("Find a team") {
                                 tab_selection = 3
+                                lookup_type = 0
                             }
                         }
                     }
                 }
-                Section($favorites.favorite_events.count > 0 ? "Favorite Events" : "Favorite events on event pages!") {
+                Section($favorites.favorite_events.count > 0 ? "Favorite Events" : "Add favorite events on event pages") {
                     if showEvents && !favorites.favorite_events.isEmpty {
                         List {
                             ForEach($favorites.favorite_events, id: \.self) { sku in
@@ -171,8 +173,9 @@ struct Favorites: View {
                     }
                     else {
                         List {
-                            Button("Find an event!") {
+                            Button("Find an event") {
                                 tab_selection = 3
+                                lookup_type = 1
                             }
                         }
                     }
@@ -190,6 +193,6 @@ struct Favorites: View {
 
 struct Favorites_Previews: PreviewProvider {
     static var previews: some View {
-        Favorites(tab_selection: .constant(0))
+        Favorites(tab_selection: .constant(0), lookup_type: .constant(0))
     }
 }

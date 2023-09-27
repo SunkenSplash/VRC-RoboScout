@@ -117,6 +117,7 @@ struct EventDivisionMatches: View {
         VStack {
             if showLoading {
                 ProgressView().padding()
+                Spacer()
             }
             else if matches.isEmpty {
                 NoData()

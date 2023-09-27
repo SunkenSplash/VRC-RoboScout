@@ -29,27 +29,27 @@ struct TeamInfoRow: View {
 
 struct Lookup: View {
     
+    @Binding var lookup_type: Int
+    
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
     @EnvironmentObject var dataController: RoboScoutDataController
     @EnvironmentObject var navigation_bar_manager: NavigationBarManager
-    
-    @State var lookupState = 0
-    
+        
     var body: some View {
         VStack {
-            Picker("Lookup", selection: $lookupState) {
+            Picker("Lookup", selection: $lookup_type) {
                 Text("Teams").tag(0)
                 Text("Events").tag(1)
             }.pickerStyle(.segmented).padding()
             Spacer()
-            if lookupState  == 0 {
+            if lookup_type  == 0 {
                 TeamLookup()
                     .environmentObject(favorites)
                     .environmentObject(settings)
                     .environmentObject(dataController)
             }
-            else if lookupState == 1 {
+            else if lookup_type == 1 {
                 EventLookup()
                     .environmentObject(favorites)
                     .environmentObject(settings)
@@ -82,10 +82,14 @@ class EventSearch: ObservableObject {
             scraper_params["seasonId"] = season_query!
         }
         scraper_params["page"] = page
-        scraper_params["from_date"] = "01-Jan-1970"
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd-MMM-yyyy"
+        
+        scraper_params["from_date"] = API.active_season_id() == season_query && (name_query == nil || name_query!.isEmpty) ? formatter.string(from: Date()) : "01-Jan-1970"
         
         let sku_array = RoboScoutAPI.robotevents_competition_scraper(params: scraper_params)
-        let data = RoboScoutAPI.robotevents_request(request_url: "/seasons/\(season_query ?? RoboScoutAPI.selected_season_id())/events", params: ["sku": sku_array])
+        let data = RoboScoutAPI.robotevents_request(request_url: "/seasons/\(season_query ?? API.selected_season_id())/events", params: ["sku": sku_array])
         
         for event_data in data {
             events.append(Event(fetch: false, data: event_data))
@@ -107,7 +111,7 @@ struct EventLookup: View {
     
     @State private var events: EventSearch = EventSearch()
     @State private var name_query: String = ""
-    @State private var season_query: Int = RoboScoutAPI.selected_season_id()
+    @State private var season_query: Int = API.selected_season_id()
     @State private var page: Int = 1
     @State private var showLoading = false
     
@@ -283,7 +287,9 @@ struct TeamLookup: View {
     var body: some View {
         VStack {
             HStack {
-                Image(systemName: "star").font(.system(size: 25)).padding(20).hidden()
+                Link(destination: URL(string: "https://www.robotevents.com/teams/VRC/\(team.number)")!) {
+                    Image(systemName: "link").font(.system(size: 25)).padding(20).opacity(fetched ? 1 : 0)
+                }
                 TextField(
                     "229V",
                     text: $team_number,
@@ -388,12 +394,12 @@ struct TeamLookup: View {
                         Text((vrc_data_analysis.trueskill_ranking_change >= 0 ? "Up " : "Down ") + "\(abs(vrc_data_analysis.trueskill_ranking_change))" + " places since last update")
                     }
                     Spacer()
-                    Text(fetched && $vrc_data_analysis.wrappedValue.trueskill_ranking != 0 ? "\(vrc_data_analysis.trueskill_ranking)" : "")
+                    Text(fetched && $vrc_data_analysis.wrappedValue.trueskill_ranking != 0 ? "# \(vrc_data_analysis.trueskill_ranking) of \(API.vrc_data_analysis_cache.count)" : "")
                 }
                 HStack {
                     Text("World Skills Ranking")
                     Spacer()
-                    Text(fetched && world_skills.ranking != 0 ? "\(world_skills.ranking)" : "")
+                    Text(fetched && world_skills.ranking != 0 ? "# \(world_skills.ranking) of \(API.world_skills_cache.count)" : "")
                 }
                 HStack {
                     Menu("World Skills Score") {
@@ -416,7 +422,7 @@ struct TeamLookup: View {
                         Text("Total Ties: \(vrc_data_analysis.total_ties)")
                     }
                     Spacer()
-                    Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 ? "\(vrc_data_analysis.total_wins)-\(vrc_data_analysis.total_losses)- \(vrc_data_analysis.total_ties)" : "")
+                    Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 ? "\(vrc_data_analysis.total_wins)-\(vrc_data_analysis.total_losses)-\(vrc_data_analysis.total_ties)" : "")
                 }
                 HStack {
                     Menu("Awards") {
@@ -425,21 +431,26 @@ struct TeamLookup: View {
                         }
                     }
                     Spacer()
-                    Text(fetched ? "\(self.team.awards.count)" : "")
+                    Text(team.registered ? "\(self.team.awards.count)" : "")
                 }
                 if settings.getAdamScore() {
                     HStack {
                         Button("AdamScore™") {
                             showingSheet = true
                         }.sheet(isPresented: $showingSheet) {
-                            Text("AdamScore™")
-                                .font(.headline)
-                                .padding()
-                            VStack(alignment: .leading) {
-                                Text("AdamScore™ is a machine learning model trained on data from Team Ace's scout, Adam. 500 teams were manually reviewed and rated and the AdamScore™ model aims to predict the overall performance of any team.").padding()
-                                Text("The following metrics are looked at:").padding()
-                            }
-                            BulletList(listItems: ["TrueSkill Ranking", "World Skills Ranking", "Average Qualifiers Ranking", "Winrate", "CCWM"], listItemSpacing: 10).padding()
+                            VStack {
+                                Spacer().frame(height: 20)
+                                Text("AdamScore™")
+                                    .font(.headline)
+                                    .padding()
+                                VStack(alignment: .leading) {
+                                    Text("AdamScore™ is a machine learning model trained on data from Team Ace's scout, Adam. 500 teams were manually reviewed and rated and the AdamScore™ model aims to predict the overall performance of any team.").padding()
+                                    Text("The following metrics are looked at:").padding()
+                                }
+                                BulletList(listItems: ["TrueSkill Ranking", "World Skills Ranking", "Average Qualifiers Ranking", "Winrate", "CCWM"], listItemSpacing: 10).padding()
+                                Spacer()
+                            }.presentationDetents([.height(600), .large])
+                                .presentationDragIndicator(.automatic)
                         }
                         Spacer()
                         Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 && world_skills.ranking != 0 ? adam_score() : "")
@@ -457,6 +468,6 @@ struct TeamLookup: View {
 
 struct Lookup_Previews: PreviewProvider {
     static var previews: some View {
-        Lookup()
+        Lookup(lookup_type: .constant(0))
     }
 }
