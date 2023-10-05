@@ -9,8 +9,8 @@ VRC RoboScout is still under heavy development and this may change once more fun
 
 Contributors will have to sign a CLA in the future as VRC RoboScout is a published iOS application.
 
-## Testing and building instructions
-Testing is strongly encouraged and incredibly valuable during this stage of development. Please feel free to do so and give feedback in the development Discord server.
+## Building from source for testing
+Testing is strongly encouraged and incredibly valuable during this stage of development. Please feel free to do so and give feedback on the [development Discord server](https://discord.gg/7b9qcMhVnW).
 
 Below are the steps you must follow:
 
