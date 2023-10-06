@@ -1,8 +1,7 @@
 # VRC-RoboScout
 An iOS application to automate the scouting process for the VEX Robotics Competition.
 
-## Discord Development Server
-https://discord.gg/7b9qcMhVnW
+[![](https://dcbadge.vercel.app/api/server/7b9qcMhVnW)](https://discord.gg/7b9qcMhVnW)
 
 ## Contributions are currently not being accepted
 VRC RoboScout is still under heavy development and this may change once more functionality has been implemented.
