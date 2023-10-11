@@ -19,7 +19,7 @@ struct Settings: View {
     @State var minimalistic = UserSettings().getMinimalistic()
     @State var adam_score = UserSettings().getAdamScore()
     @State var selected_season_id = UserSettings().getSelectedSeasonID()
-    @State var apiKey = UserSettings.getRobotEventsAPIKey()
+    @State var apiKey = UserSettings.getRobotEventsAPIKey() ?? ""
     @State var showLoading = false
     @State var showApply = false
     @State var clearedTeams = false

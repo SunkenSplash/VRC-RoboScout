@@ -279,6 +279,20 @@ struct Importer: View {
                                         .font(.system(size: 19))
                                         .foregroundColor(settings.navTextColor())
                                 }
+                                if navigation_bar_manager.title.contains("Skills") {
+                                    ToolbarItem(placement: .navigationBarTrailing) {
+                                        Link(destination: URL(string: "https://www.robotevents.com/robot-competitions/vex-robotics-competition/standings/skills")!) {
+                                            Image(systemName: "link")
+                                        }
+                                    }
+                                }
+                                else if navigation_bar_manager.title.contains("TrueSkill") {
+                                    ToolbarItem(placement: .navigationBarTrailing) {
+                                        Link(destination: URL(string: "http://vrc-data-analysis.com/")!) {
+                                            Image(systemName: "link")
+                                        }
+                                    }
+                                }
                             }
                             .navigationBarTitleDisplayMode(.inline)
                             .toolbarBackground(settings.tabColor(), for: .navigationBar)

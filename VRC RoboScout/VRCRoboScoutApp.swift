@@ -157,6 +157,8 @@ class UserSettings: ObservableObject {
     private var adam_score: Bool
     private var selected_season_id: Int
     
+    static var keyIndex = Int.random(in: 0..<10)
+    
     init() {
         self.colorString = defaults.object(forKey: "color") as? String ?? UIColor.StringFromUIColor(color: .systemRed)
         defaults.object(forKey: "minimalistic") as? Int ?? 1 == 1 ? (self.minimalistic = true) : (self.minimalistic = false)
@@ -222,14 +224,19 @@ class UserSettings: ObservableObject {
         }
     }
     
-    static func getRobotEventsAPIKey() -> String {
-        var robotevents_api_key: String
-        if let key = ProcessInfo.processInfo.environment["ROBOTEVENTS_API_KEY"] {
-            robotevents_api_key = key
-            defaults.set(key, forKey: "robotevents_api_key")
-        }
-        else {
-            robotevents_api_key = defaults.object(forKey: "robotevents_api_key") as? String ?? ""
+    static func getRobotEventsAPIKey() -> String? {
+        var robotevents_api_key: String? {
+            if let environmentAPIKey = ProcessInfo.processInfo.environment["ROBOTEVENTS_API_KEY"] {
+                defaults.set(environmentAPIKey, forKey: "robotevents_api_key")
+                return environmentAPIKey
+            }
+            else if let defaultsAPIKey = defaults.object(forKey: "robotevents_api_key") as? String, !defaultsAPIKey.isEmpty {
+                return defaultsAPIKey
+            }
+            else if let path = Bundle.main.path(forResource: "Config", ofType: "plist"), let config = NSDictionary(contentsOfFile: path) as? [String: Any] {
+                return config["key\(self.keyIndex)"] as? String
+            }
+            return nil
         }
         return robotevents_api_key
     }

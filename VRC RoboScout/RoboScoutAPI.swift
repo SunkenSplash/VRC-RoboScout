@@ -45,7 +45,7 @@ public class RoboScoutAPI {
     }
     
     public static func robotevents_access_key() -> String {
-        return UserSettings.getRobotEventsAPIKey()
+        return UserSettings.getRobotEventsAPIKey() ?? ""
     }
     
     public static func robotevents_request(request_url: String, params: [String: Any] = [:]) -> [[String: Any]] {
@@ -950,6 +950,7 @@ public class Event {
     
     public func fetch_skills_rankings() {
         let data = RoboScoutAPI.robotevents_request(request_url: "/events/\(self.id)/skills")
+        self.skills_rankings = [TeamSkillsRanking]()
         var index = 0
         while index < data.count {
             var bundle = [data[index]]
@@ -1199,7 +1200,8 @@ public class Event {
                     event.title = self.name
                     event.startDate = self.start
                     event.endDate = self.end
-                    event.location = "\(self.address), \(self.city), \(self.region), \(self.postcode), \(self.country)"
+                    event.isAllDay = true
+                    event.location = "\(self.address), \(self.city), \(self.region), \(self.country)"
                     event.calendar = eventStore.defaultCalendarForNewEvents
                     do {
                         try eventStore.save(event, span: .thisEvent)

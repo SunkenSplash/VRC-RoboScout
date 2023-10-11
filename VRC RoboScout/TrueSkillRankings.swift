@@ -53,15 +53,11 @@ class TrueSkillTeams: ObservableObject {
     
     var trueskill_teams: [TrueSkillTeam]
     
-    init(begin: Int, end: Int, region: String = "", letter: Character = "0", filter_array: [String] = [], fetch: Bool = false) {
+    init(region: String = "", letter: Character = "0", filter_array: [String] = [], fetch: Bool = false) {
         if fetch {
             API.update_vrc_data_analysis_cache()
         }
-        var end = end
         self.trueskill_teams = [TrueSkillTeam]()
-        if end == 0 {
-            end = API.vrc_data_analysis_cache.count
-        }
         // Favorites
         if filter_array.count != 0 {
             var rank = 1
@@ -97,7 +93,7 @@ class TrueSkillTeams: ObservableObject {
         }
         // World
         else {
-            for var i in begin - 1...end {
+            for var i in 0..<API.vrc_data_analysis_cache.count {
                 if API.vrc_data_analysis_cache.count == 0 || API.vrc_data_analysis_cache.count == i {
                     return
                 }
@@ -168,16 +164,10 @@ struct TrueSkillRankings: View {
     @EnvironmentObject var navigation_bar_manager: NavigationBarManager
     
     @State private var display_trueskill = "World TrueSkill"
-    @State private var start = 1
-    @State private var end = 200
     @State private var region = ""
     @State private var letter: Character = "0"
-    @State private var current_index = 100
-    @State private var trueskill_rankings = TrueSkillTeams(begin: 1, end: 200, fetch: false)
-    @State private var total_teams = 0
-    
-    let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
-    
+    @State private var trueskill_rankings = TrueSkillTeams(fetch: false)
+        
     var body: some View {
         VStack {
             if API.vrc_data_analysis_cache.isEmpty {
@@ -187,32 +177,26 @@ struct TrueSkillRankings: View {
                 Menu("Filter") {
                     Button("Favorites") {
                         display_trueskill = "Favorites TrueSkill"
-                        start = 1
-                        end = 200
+                        navigation_bar_manager.title = display_trueskill
                         region = ""
                         letter = "0"
-                        current_index = 100
-                        trueskill_rankings = TrueSkillTeams(begin: 1, end: API.vrc_data_analysis_cache.count, filter_array: favorites.teams_as_array(), fetch: false)
+                        trueskill_rankings = TrueSkillTeams(filter_array: favorites.teams_as_array(), fetch: false)
                     }
                     Menu("Region") {
                         Button("World") {
                             display_trueskill = "World TrueSkill"
-                            start = 1
-                            end = 200
+                            navigation_bar_manager.title = display_trueskill
                             region = ""
                             letter = "0"
-                            current_index = 100
-                            trueskill_rankings = TrueSkillTeams(begin: 1, end: 200, fetch: false)
+                            trueskill_rankings = TrueSkillTeams(fetch: false)
                         }
                         ForEach(region_list.sorted(by: <)) { region_str in
                             Button(region_str) {
                                 display_trueskill = "\(region_str) TrueSkill"
-                                start = 1
-                                end = 200
+                                navigation_bar_manager.title = display_trueskill
                                 region = region_str
                                 letter = "0"
-                                current_index = 100
-                                trueskill_rankings = TrueSkillTeams(begin: 1, end: API.vrc_data_analysis_cache.count, region: region_str, fetch: false)
+                                trueskill_rankings = TrueSkillTeams(region: region_str, fetch: false)
                             }
                         }
                     }
@@ -220,48 +204,24 @@ struct TrueSkillRankings: View {
                         ForEach(["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"], id: \.self) { char in
                             Button(char) {
                                 display_trueskill = "\(char) TrueSkill"
-                                start = 1
-                                end = 200
+                                navigation_bar_manager.title = display_trueskill
                                 letter = char.first!
-                                current_index = 100
-                                trueskill_rankings = TrueSkillTeams(begin: 1, end: API.vrc_data_analysis_cache.count, letter: char.first!, fetch: false)
+                                trueskill_rankings = TrueSkillTeams(letter: char.first!, fetch: false)
                             }
                         }
                     }
                     Button("Clear Filters") {
                         display_trueskill = "World TrueSkill"
-                        start = 1
-                        end = 200
+                        navigation_bar_manager.title = display_trueskill
                         region = ""
-                        current_index = 100
-                        trueskill_rankings = TrueSkillTeams(begin: 1, end: 200, fetch: false)
+                        trueskill_rankings = TrueSkillTeams(fetch: false)
                     }
                 }.fontWeight(.medium)
                     .font(.system(size: 19))
                     .padding(20)
                 ScrollViewReader { proxy in
                     List($trueskill_rankings.trueskill_teams) { team in
-                        TrueSkillRow(team_trueskill: team.wrappedValue).id(team.wrappedValue.abs_ranking).onAppear{
-                            if region != "" || letter != "0" {
-                                return
-                            }
-                            let cache_size = API.vrc_data_analysis_cache.count
-                            print(team.wrappedValue.abs_ranking)
-                            if Int(team.wrappedValue.abs_ranking) == current_index + 100 {
-                                current_index += 50
-                                start = start + 50 >= cache_size ? cache_size - 50 : start + 50
-                                end = start + 199 >= cache_size ? cache_size : start + 199
-                                trueskill_rankings = TrueSkillTeams(begin: start, end: end)
-                                proxy.scrollTo(current_index - 25)
-                            }
-                            else if Int(team.wrappedValue.abs_ranking) == current_index - 100 + 1 && Int(team.wrappedValue.abs_ranking) != 1 {
-                                current_index -= 50
-                                start = start - 50 < 1 ? 1 : start - 50
-                                end = start + 199 >= cache_size ? cache_size : start + 199
-                                trueskill_rankings = TrueSkillTeams(begin: start, end: end)
-                                proxy.scrollTo(current_index + 25)
-                            }
-                        }
+                        TrueSkillRow(team_trueskill: team.wrappedValue).id(team.wrappedValue.abs_ranking)
                     }
                 }
             }

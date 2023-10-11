@@ -14,8 +14,11 @@ enum AppIcon: String, CaseIterable, Identifiable {
     case revision = "AppIcon-Revision"
     case p = "AppIcon-P"
     case cw = "AppIcon-CW"
+    case circuits = "AppIcon-Circuits"
     case ss = "AppIcon-SS"
+    case autumn = "AppIcon-Autumn"
     case canada = "AppIcon-Canada"
+    case uk = "AppIcon-UK"
     case ll = "AppIcon-LL"
     case ww = "AppIcon-WW"
     case gs = "AppIcon-GS"
@@ -44,16 +47,22 @@ enum AppIcon: String, CaseIterable, Identifiable {
             return "Parker/Parker 9364C"
         case .cw:
             return "Colorwave/Alex Y 877K"
+        case .circuits:
+            return "Circuits/Nathaniel 643A"
         case .ss:
             return "Sunset/Andrew 4610C"
+        case .autumn:
+            return "Autumn/Nathaniel 643A"
         case .canada:
             return "Canada/Abdur-Rahman 540W"
+        case .uk:
+            return "UK/Abhi 3327H"
         case .ll:
             return "LemLib/Lem 1010N"
         case .ww:
             return "Worldwide/Maksym 8995B"
         case .gs:
-            return "Grayscale/leader 3327H"
+            return "Grayscale/Abhi 3327H"
         }
     }
 
