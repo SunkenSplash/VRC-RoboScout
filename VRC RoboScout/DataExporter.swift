@@ -27,13 +27,14 @@ struct DataExporter: View {
     @State var progress: Double = 0
     @State var csv_string: String = ""
     @State var show_option = 0
+    @State var view_closed = false
     @State var selected: OrderedDictionary = [
         "Team Name": true,
         "Robot Name": true,
         "Team Location": true,
-        "Average Qualifiers Ranking (slow)": true,
-        "Total Events Attended (slow)": true,
-        "Total Awards (slow)": true,
+        "Average Qualifiers Ranking (slow)": false,
+        "Total Events Attended (slow)": false,
+        "Total Awards (slow)": false,
         "Total Matches": true,
         "Total Wins": true,
         "Total Losses": true,
@@ -237,6 +238,9 @@ struct DataExporter: View {
                         data += "\n"
                         var count = 0
                         for number in event_teams_list {
+                            if view_closed {
+                                return
+                            }
                             data += number
                             let team = event.teams.first(where: { $0.number == number })!
                             let world_skills = API.world_skills_for(team: team)
@@ -254,7 +258,7 @@ struct DataExporter: View {
                                 }
                                 else if option == "Average Qualifiers Ranking (slow)" {
                                     data += ",\(team.average_ranking())"
-                                    sleep(1)
+                                    sleep(2)
                                 }
                                 else if option == "Total Events Attended (slow)" {
                                     if selected["Average Qualifiers Ranking (slow)"]! {
@@ -263,13 +267,13 @@ struct DataExporter: View {
                                     else {
                                         team.fetch_events()
                                         data += ",\(team.events.count)"
-                                        sleep(1)
+                                        sleep(2)
                                     }
                                 }
                                 else if option == "Total Awards (slow)" {
                                     team.fetch_awards()
                                     data += ",\(team.awards.count)"
-                                    sleep(1)
+                                    sleep(2)
                                 }
                                 else if option == "Total Matches" {
                                     data += ",\(vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties)"
@@ -327,8 +331,9 @@ struct DataExporter: View {
                         .cornerRadius(20)
                 }
             }
-            
             Spacer()
+        }.onDisappear{
+            view_closed = true
         }.background(.clear)
         .toolbar {
             ToolbarItem(placement: .principal) {

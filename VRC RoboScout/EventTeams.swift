@@ -104,7 +104,7 @@ struct EventTeams: View {
                             }
                         }
                     }
-                }.searchable(text: $teamNumberQuery, prompt: "Enter a team number...")
+                }.navigationViewStyle(StackNavigationViewStyle()).searchable(text: $teamNumberQuery, prompt: "Enter a team number...")
             }
         }
         .onAppear{
