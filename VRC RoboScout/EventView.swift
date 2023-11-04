@@ -160,10 +160,10 @@ struct EventView: View {
                             }
                         }, label: {
                             if favorited {
-                                Image(systemName: "star.fill")
+                                Image(systemName: "star.fill").foregroundColor(settings.navTextColor())
                             }
                             else {
-                                Image(systemName: "star")
+                                Image(systemName: "star").foregroundColor(settings.navTextColor())
                             }
                         })
                     }

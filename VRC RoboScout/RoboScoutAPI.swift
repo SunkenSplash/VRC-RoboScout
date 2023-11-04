@@ -7,7 +7,9 @@
 
 import Foundation
 import OrderedCollections
+#if canImport(EventKit)
 import EventKit
+#endif
 import Matft
 
 enum RoboScoutAPIError: Error {
@@ -31,9 +33,12 @@ public class RoboScoutAPI {
     public static func robotevents_date(date: String) -> Date? {
         let formatter = DateFormatter()
         // Example date: "2023-04-26T11:54:40-04:00"
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-
-        return formatter.date(from: date) ?? nil
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        var split = date.split(separator: "-")
+        if !split.isEmpty {
+            split.removeLast()
+        }
+        return formatter.date(from: split.joined(separator: "-")) ?? nil
     }
     
     public static func robotevents_url() -> String {
@@ -41,7 +46,7 @@ public class RoboScoutAPI {
     }
     
     public static func vrc_data_analysis_url() -> String {
-        return "http://vrc-data-analysis.com/v1"
+        return "https://vrc-data-analysis.com/v1"
     }
     
     public static func robotevents_access_key() -> String {
@@ -133,6 +138,10 @@ public class RoboScoutAPI {
             params["page"] = 1
         }
         
+        if params["country_id"] == nil {
+            params["country_id"] = "*"
+        }
+                
         let semaphore = DispatchSemaphore(value: 0)
         
         var components = URLComponents(string: request_url)!
@@ -238,7 +247,7 @@ public class RoboScoutAPI {
     }
     
     public func active_season_id() -> Int {
-        return !self.season_id_map.isEmpty ? self.season_id_map.keys[0] : 0
+        return !self.season_id_map.isEmpty ? self.season_id_map.keys[0] : 181
     }
     
     public func update_world_skills_cache(season: Int? = nil) {
@@ -308,7 +317,7 @@ public class RoboScoutAPI {
         
         let semaphore = DispatchSemaphore(value: 0)
             
-        let components = URLComponents(string: "http://vrc-data-analysis.com/v1/allteams")!
+        let components = URLComponents(string: "https://vrc-data-analysis.com/v1/allteams")!
                     
         let request = NSMutableURLRequest(url: components.url! as URL)
         request.httpMethod = "GET"
@@ -401,7 +410,7 @@ public class RoboScoutAPI {
     public func fetch_raw_vrc_data_analysis() -> [[String: Any]] {
         let semaphore = DispatchSemaphore(value: 0)
             
-        let components = URLComponents(string: "http://vrc-data-analysis.com/v1/allteams")!
+        let components = URLComponents(string: "https://vrc-data-analysis.com/v1/allteams")!
                     
         let request = NSMutableURLRequest(url: components.url! as URL)
         request.httpMethod = "GET"

@@ -445,6 +445,7 @@ struct TeamLookup: View {
                                     .padding()
                                 VStack(alignment: .leading) {
                                     Text("AdamScore™ is a machine learning model trained on data from Team Ace's scout, Adam. 500 teams were manually reviewed and rated and the AdamScore™ model aims to predict the overall performance of any team.").padding()
+                                    Text("The possible ratings are low, low mid, mid, high mid, high, and very high.").padding()
                                     Text("The following metrics are looked at:").padding()
                                 }
                                 BulletList(listItems: ["TrueSkill Ranking", "World Skills Ranking", "Average Qualifiers Ranking", "Winrate", "CCWM"], listItemSpacing: 10).padding()

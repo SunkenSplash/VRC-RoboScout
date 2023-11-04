@@ -198,7 +198,7 @@ struct EventInformation: View {
                         self.event.add_to_calendar()
                         calendarAlert = true
                     }, label: {
-                        Image(systemName: "calendar.badge.plus")
+                        Image(systemName: "calendar.badge.plus").foregroundColor(settings.navTextColor())
                     }).alert(isPresented: $calendarAlert) {
                        Alert(title: Text("Added to calendar"), dismissButton: .default(Text("OK")))
                     }

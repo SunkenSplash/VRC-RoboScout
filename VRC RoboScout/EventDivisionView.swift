@@ -132,7 +132,7 @@ struct EventDivisionView: View {
                                 Button(action: {
                                     showingSheet = true
                                 }, label: {
-                                    Image(systemName: "info.circle")
+                                    Image(systemName: "info.circle").foregroundColor(settings.navTextColor())
                                 })
                             }
                         }
@@ -148,16 +148,16 @@ struct EventDivisionView: View {
                                     self.event = self.event
                                 }, label: {
                                     if prediction_manager.state == PredictionState.disabled {
-                                        Image(systemName: "bolt.slash")
+                                        Image(systemName: "bolt.slash").foregroundColor(settings.navTextColor())
                                     }
                                     else if prediction_manager.state == PredictionState.off {
-                                        Image(systemName: "bolt")
+                                        Image(systemName: "bolt").foregroundColor(settings.navTextColor())
                                     }
                                     else if prediction_manager.state == PredictionState.calculating {
-                                        ProgressView()
+                                        ProgressView().foregroundColor(settings.navTextColor())
                                     }
                                     else {
-                                        Image(systemName: "bolt.fill")
+                                        Image(systemName: "bolt.fill").foregroundColor(settings.navTextColor())
                                     }
                                 })
                             }

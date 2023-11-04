@@ -8,15 +8,8 @@
 import SwiftUI
 import OrderedCollections
 import UniformTypeIdentifiers
+import CoreTransferable
 
-struct CSVData: Transferable {
-    var csv_string: String
-    static var transferRepresentation: some TransferRepresentation {
-        DataRepresentation(exportedContentType: UTType("sunkensplashstudios.VRCRoboScout.csv")!) { csv in
-            csv.csv_string.data(using: .utf8)!
-        }
-    }
-}
 
 struct DataExporter: View {
     
@@ -324,12 +317,28 @@ struct DataExporter: View {
                     .cornerRadius(20)
             }
             else {
-                ShareLink(item: CSVData(csv_string: csv_string), preview: SharePreview("VRC RoboScout CSV Data.csv", image: Image(systemName: "tablecells"))) {
-                    Text("Download").padding(10)
-                        .background(settings.accentColor())
-                        .foregroundColor(.white)
-                        .cornerRadius(20)
-                }
+                Button("Download") {
+                    let dataPath = URL.documentsDirectory.appendingPathComponent("ScoutingData")
+                    if !FileManager.default.fileExists(atPath: dataPath.path) {
+                        do {
+                            try FileManager.default.createDirectory(atPath: dataPath.path, withIntermediateDirectories: true, attributes: nil)
+                        } catch {
+                            print("Error")
+                            print(error.localizedDescription)
+                        }
+                    }
+                    let url = dataPath.appending(path: "\(self.event.name.convertedToSlug() ?? self.event.sku).csv")
+                    let csvData = csv_string.data(using: .utf8)!
+                    try! csvData.write(to: url)
+                    if let sharedUrl = URL(string: "shareddocuments://\(url.path)") {
+                        if UIApplication.shared.canOpenURL(sharedUrl) {
+                            UIApplication.shared.open(sharedUrl, options: [:])
+                        }
+                    }
+                }.padding(10)
+                    .background(settings.accentColor())
+                    .foregroundColor(.white)
+                    .cornerRadius(20)
             }
             Spacer()
         }.onDisappear{

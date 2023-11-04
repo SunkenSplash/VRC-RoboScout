@@ -182,8 +182,7 @@ struct EventDivisionRankings: View {
                                 VStack {
                                     HStack {
                                         HStack {
-                                            Spacer().frame(width: 22)
-                                            Text(teams_map[String(team_ranking(rank: rank).team.id)] ?? "").font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 60, alignment: .leading)
+                                            Text(teams_map[String(team_ranking(rank: rank).team.id)] ?? "").font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 70, alignment: .leading).bold()
                                             Text((event.get_team(id: team_ranking(rank: rank).team.id) ?? Team()).name).frame(alignment: .leading)
                                             if favorites.favorite_teams.contains(teams_map[String(team_ranking(rank: rank).team.id)] ?? "") {
                                                 Spacer()
@@ -193,36 +192,37 @@ struct EventDivisionRankings: View {
                                         Spacer()
                                     }.frame(height: 20, alignment: .leading)
                                     HStack {
-                                        Spacer().frame(width: 22)
                                         VStack(alignment: .leading) {
                                             Text("# \(team_ranking(rank: rank).rank)").frame(alignment: .leading).font(.system(size: 16))
                                             Text("\(team_ranking(rank: rank).wins)-\(team_ranking(rank: rank).losses)-\(team_ranking(rank: rank).ties)").frame(alignment: .leading).font(.system(size: 16))
-                                        }.frame(width: 60, alignment: .leading)
+                                        }.frame(alignment: .leading)
                                         Spacer()
                                         VStack(alignment: .leading) {
                                             Text("WP: \(team_ranking(rank: rank).wp)").frame(alignment: .leading).font(.system(size: 12)).foregroundColor(.secondary)
                                             Text("OPR: \(displayRoundedTenths(number: (self.event.team_performance_ratings[division]![team_ranking(rank: rank).team.id] ?? TeamPerformanceRatings(team: team_ranking(rank: rank).team, event: self.event, opr: 0.0, dpr: 0.0, ccwm: 0.0)).opr))").frame(alignment: .leading).font(.system(size: 12)).foregroundColor(.secondary)
                                             Text("HIGH: \(team_ranking(rank: rank).high_score)").frame(alignment: .leading).font(.system(size: 12)).foregroundColor(.secondary)
-                                        }.frame(width: 90, alignment: .leading)
+                                        }.frame(alignment: .leading)
                                         Spacer()
                                         VStack(alignment: .leading) {
                                             Text("AP: \(team_ranking(rank: rank).ap)").frame(alignment: .leading).font(.system(size: 12)).foregroundColor(.secondary)
                                             Text("DPR: \(displayRoundedTenths(number: (self.event.team_performance_ratings[division]![team_ranking(rank: rank).team.id] ?? TeamPerformanceRatings(team: team_ranking(rank: rank).team, event: self.event, opr: 0.0, dpr: 0.0, ccwm: 0.0)).dpr))").frame(alignment: .leading).font(.system(size: 12)).foregroundColor(.secondary)
                                             Text("AVG: " + displayRounded(number: team_ranking(rank: rank).average_points)).frame(alignment: .leading).font(.system(size: 12)).foregroundColor(.secondary)
-                                        }.frame(width: 90, alignment: .leading)
+                                        }.frame(alignment: .leading)
                                         Spacer()
                                         VStack(alignment: .leading) {
                                             Text("SP: \(team_ranking(rank: rank).sp)").frame(alignment: .leading).font(.system(size: 12)).foregroundColor(.secondary)
                                             Text("CCWM: \(displayRoundedTenths(number: (self.event.team_performance_ratings[division]![team_ranking(rank: rank).team.id] ?? TeamPerformanceRatings(team: team_ranking(rank: rank).team, event: self.event, opr: 0.0, dpr: 0.0, ccwm: 0.0)).ccwm))").frame(alignment: .leading).font(.system(size: 12)).foregroundColor(.secondary)
                                             Text("TTL: \(team_ranking(rank: rank).total_points)").frame(alignment: .leading).font(.system(size: 12)).foregroundColor(.secondary)
-                                        }.frame(width: 90, alignment: .leading)
+                                        }.frame(alignment: .leading)
                                         Spacer()
                                     }
                                 }
                             }
                         }
                     }
-                }.navigationViewStyle(StackNavigationViewStyle()).searchable(text: $teamNumberQuery, prompt: "Enter a team number...")
+                }.navigationViewStyle(StackNavigationViewStyle())
+                    .searchable(text: $teamNumberQuery, prompt: "Enter a team number...")
+                    .tint(settings.navTextColor())
             }
         }.task{
             do {

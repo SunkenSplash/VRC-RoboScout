@@ -38,6 +38,7 @@
 		3DB11E6A299543DC001DDB02 /* VRCRoboScoutUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E69299543DC001DDB02 /* VRCRoboScoutUITests.swift */; };
 		3DB11E6C299543DC001DDB02 /* VRCRoboScoutUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E6B299543DC001DDB02 /* VRCRoboScoutUITestsLaunchTests.swift */; };
 		3DC3F47529ACFF6000C5EA86 /* TrueSkillRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC3F47429ACFF6000C5EA86 /* TrueSkillRankings.swift */; };
+		3DD419D82AF5A51200A4D3AB /* roboscouticon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3DD419D72AF5A51200A4D3AB /* roboscouticon.png */; };
 		3DEA14672AD73AD6001E1C23 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3DEA14662AD73AD6001E1C23 /* Config.plist */; };
 /* End PBXBuildFile section */
 
@@ -107,6 +108,7 @@
 		3DB11E69299543DC001DDB02 /* VRCRoboScoutUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRCRoboScoutUITests.swift; sourceTree = "<group>"; };
 		3DB11E6B299543DC001DDB02 /* VRCRoboScoutUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRCRoboScoutUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		3DC3F47429ACFF6000C5EA86 /* TrueSkillRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrueSkillRankings.swift; sourceTree = "<group>"; };
+		3DD419D72AF5A51200A4D3AB /* roboscouticon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = roboscouticon.png; sourceTree = "<group>"; };
 		3DEA14662AD73AD6001E1C23 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -181,6 +183,7 @@
 				3DB11E53299543DC001DDB02 /* VRCRoboScout.entitlements */,
 				3D50E10729C8915C002FE201 /* Launch Screen.storyboard */,
 				3DB11E51299543DC001DDB02 /* Assets.xcassets */,
+				3DD419D72AF5A51200A4D3AB /* roboscouticon.png */,
 				3DEA14662AD73AD6001E1C23 /* Config.plist */,
 				3D386C3429F19DAB00035B3B /* RoboScoutAPI.swift */,
 				3D73E3AB2AB330CD005BE836 /* RoboScoutDataController.swift */,
@@ -338,6 +341,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3DEA14672AD73AD6001E1C23 /* Config.plist in Resources */,
+				3DD419D82AF5A51200A4D3AB /* roboscouticon.png in Resources */,
 				3DAFC80E2A2640EB00A0C41A /* CoreML in Resources */,
 				3D50E10829C8915C002FE201 /* Launch Screen.storyboard in Resources */,
 				3DB11E52299543DC001DDB02 /* Assets.xcassets in Resources */,
@@ -429,6 +433,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -492,6 +497,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -553,14 +559,16 @@
 				CODE_SIGN_ENTITLEMENTS = "VRC RoboScout/VRCRoboScout.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = LDYP2MX4AG;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "VRC-RoboScout-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Calendar access is needed to add events.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -577,9 +585,10 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
-				MARKETING_VERSION = 1.2.9;
+				MARKETING_VERSION = 1.2.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sunkensplashstudios.VRCRoboScout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -603,15 +612,17 @@
 				CODE_SIGN_ENTITLEMENTS = "VRC RoboScout/VRCRoboScout.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = LDYP2MX4AG;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "VRC-RoboScout-Info.plist";
-				"INFOPLIST_FILE[sdk=*]" = "";
+				"INFOPLIST_FILE[sdk=*]" = "VRC-RoboScout-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Calendar access is needed to add events.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -628,9 +639,10 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
-				MARKETING_VERSION = 1.2.9;
+				MARKETING_VERSION = 1.2.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sunkensplashstudios.VRCRoboScout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

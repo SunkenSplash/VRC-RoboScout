@@ -94,7 +94,7 @@ struct EventTeams: View {
                         ForEach(searchResults, id: \.self) { teamNum in
                             NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: event, team: Team(number: teamNum, fetch: false), division: division).environmentObject(settings).environmentObject(dataController)) {
                                 HStack {
-                                    Text((event_teams_map[teamNum] ?? Team()).number).font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 60, height: 30, alignment: .leading)
+                                    Text((event_teams_map[teamNum] ?? Team()).number).font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 80, height: 30, alignment: .leading).bold()
                                     VStack {
                                         Text((event_teams_map[teamNum] ?? Team()).name).frame(maxWidth: .infinity, alignment: .leading).frame(height: 20)
                                         Spacer().frame(height: 5)
@@ -104,7 +104,9 @@ struct EventTeams: View {
                             }
                         }
                     }
-                }.navigationViewStyle(StackNavigationViewStyle()).searchable(text: $teamNumberQuery, prompt: "Enter a team number...")
+                }.navigationViewStyle(StackNavigationViewStyle())
+                    .searchable(text: $teamNumberQuery, prompt: "Enter a team number...")
+                    .tint(settings.navTextColor())
             }
         }
         .onAppear{
@@ -125,7 +127,7 @@ struct EventTeams: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: DataExporter(event: event, event_teams_list: event_teams_list).environmentObject(settings)) {
-                        Image(systemName: "doc.badge.plus")
+                        Image(systemName: "doc.badge.plus").foregroundColor(settings.navTextColor())
                     }
                 }
             }

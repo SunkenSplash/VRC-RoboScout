@@ -33,6 +33,23 @@ extension String: Identifiable {
     }
 }
 
+extension String {
+    private static let slugSafeCharacters = CharacterSet(charactersIn: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-")
+
+    public func convertedToSlug() -> String? {
+        if let latin = self.applyingTransform(StringTransform("Any-Latin; Latin-ASCII; Lower;"), reverse: false) {
+            let urlComponents = latin.components(separatedBy: String.slugSafeCharacters.inverted)
+            let result = urlComponents.filter { $0 != "" }.joined(separator: "-")
+
+            if result.count > 0 {
+                return result
+            }
+        }
+
+        return nil
+    }
+}
+
 public extension UIColor {
 
     class func StringFromUIColor(color: UIColor) -> String {
@@ -96,6 +113,9 @@ extension View {
 extension UIApplication {
     static var appVersion: String? {
         return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    }
+    static var appBuildNumber: String? {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
     }
 }
 
@@ -170,7 +190,7 @@ class UserSettings: ObservableObject {
         self.colorString = defaults.object(forKey: "color") as? String ?? UIColor.StringFromUIColor(color: .systemRed)
         defaults.object(forKey: "minimalistic") as? Int ?? 1 == 1 ? (self.minimalistic = true) : (self.minimalistic = false)
         defaults.object(forKey: "adam_score") as? Int ?? 1 == 1 ? (self.adam_score = true) : (self.adam_score = false)
-        self.selected_season_id = defaults.object(forKey: "selected_season_id") as? Int ?? 0
+        self.selected_season_id = defaults.object(forKey: "selected_season_id") as? Int ?? API.selected_season_id()
     }
     
     func updateUserDefaults() {
@@ -203,7 +223,6 @@ class UserSettings: ObservableObject {
         else {
             return Color(UIColor.systemRed)
         }
-        
     }
     
     func tabColor() -> SwiftUI.Color {
@@ -268,6 +287,13 @@ struct VRCRoboScout: App {
                 .environmentObject(settings)
                 .environmentObject(dataController)
                 .tint(settings.accentColor())
+                .onAppear{
+                    #if DEBUG
+                    print("Debug configuration")
+                    #else
+                    print("Release configuration")
+                    #endif
+                }
         }
     }
 }

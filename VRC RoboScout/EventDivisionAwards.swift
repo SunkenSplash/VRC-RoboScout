@@ -51,7 +51,7 @@ struct EventDivisionAwards: View {
                             ForEach(0..<event.awards[division]![i].teams.count, id: \.self) { j in
                                 if !event.awards[division]![i].teams.isEmpty {
                                     HStack {
-                                        Text(event.awards[division]![i].teams[j].number).frame(maxWidth: .infinity, alignment: .leading).frame(width: 60).font(.system(size: 14)).foregroundColor(.secondary)
+                                        Text(event.awards[division]![i].teams[j].number).frame(maxWidth: .infinity, alignment: .leading).frame(width: 60).font(.system(size: 14)).foregroundColor(.secondary).bold()
                                         Text(event.awards[division]![i].teams[j].name).frame(maxWidth: .infinity, alignment: .leading).font(.system(size: 14)).foregroundColor(.secondary)
                                     }
                                 }

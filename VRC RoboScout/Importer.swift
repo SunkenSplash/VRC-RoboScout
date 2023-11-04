@@ -112,10 +112,6 @@ struct Importer: View {
                 
                 API.vrc_data_analysis_cache.append(team_data_dict)
                 
-                API.vrc_data_analysis_cache.sort(by: {
-                    ($0["abs_ranking"] as! Int) < ($1["abs_ranking"] as! Int)
-                })
-                
                 if API.vrc_data_analysis_cache.count > prev_count {
                     abs_ranking += 1
                 }
@@ -127,6 +123,9 @@ struct Importer: View {
                 }
                 
             }
+            API.vrc_data_analysis_cache.sort(by: {
+                ($0["abs_ranking"] as! Int) < ($1["abs_ranking"] as! Int)
+            })
             print("Updated VRC Data Analysis cache")
             
             DispatchQueue.main.async {
@@ -283,14 +282,14 @@ struct Importer: View {
                                     ToolbarItem(placement: .navigationBarTrailing) {
                                         Link(destination: URL(string: "https://www.robotevents.com/robot-competitions/vex-robotics-competition/standings/skills")!) {
                                             Image(systemName: "link")
-                                        }
+                                        }.foregroundColor(settings.navTextColor())
                                     }
                                 }
                                 else if navigation_bar_manager.title.contains("TrueSkill") {
                                     ToolbarItem(placement: .navigationBarTrailing) {
                                         Link(destination: URL(string: "http://vrc-data-analysis.com/")!) {
                                             Image(systemName: "link")
-                                        }
+                                        }.foregroundColor(settings.navTextColor())
                                     }
                                 }
                             }
@@ -298,7 +297,7 @@ struct Importer: View {
                             .toolbarBackground(settings.tabColor(), for: .navigationBar)
                             .toolbarBackground(.visible, for: .navigationBar)
             }
-        }
+        }.tint(settings.navTextColor())
     }
 }
 

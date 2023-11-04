@@ -204,7 +204,7 @@ struct EventTeamMatches: View {
                     NavigationLink(destination: MatchNotes(event: event, match: matches[Int(name.wrappedValue.split(separator: "&&")[0])!]).environmentObject(settings).environmentObject(dataController)) {
                         HStack {
                             VStack {
-                                Text(name.wrappedValue.split(separator: "&&")[1]).font(.system(size: 15)).frame(width: 60, alignment: .leading).foregroundColor(conditionalColor(match: name.wrappedValue)).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1)
+                                Text(name.wrappedValue.split(separator: "&&")[1]).font(.system(size: 15)).frame(width: 60, alignment: .leading).foregroundColor(conditionalColor(match: name.wrappedValue)).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1).bold()
                                 Spacer().frame(maxHeight: 4)
                                 Text(name.wrappedValue.split(separator: "&&")[8]).font(.system(size: 12)).frame(width: 60, alignment: .leading)
                             }
@@ -212,9 +212,9 @@ struct EventTeamMatches: View {
                                 Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 2))
                                 Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[3])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 3))
                             }.frame(width: 70)
-                            Text(scoreToDisplay(match: name.wrappedValue, index: 6)).foregroundColor(.red).font(.system(size: 18)).frame(alignment: .leading).underline(conditionalUnderline(match: name.wrappedValue, index: 6)).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1)
+                            Text(scoreToDisplay(match: name.wrappedValue, index: 6)).foregroundColor(.red).font(.system(size: 18)).frame(alignment: .leading).underline(conditionalUnderline(match: name.wrappedValue, index: 6)).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1).bold()
                             Spacer()
-                            Text(scoreToDisplay(match: name.wrappedValue, index: 7)).foregroundColor(.blue).font(.system(size: 18)).frame(alignment: .trailing).underline(conditionalUnderline(match: name.wrappedValue, index: 7)).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1)
+                            Text(scoreToDisplay(match: name.wrappedValue, index: 7)).foregroundColor(.blue).font(.system(size: 18)).frame(alignment: .trailing).underline(conditionalUnderline(match: name.wrappedValue, index: 7)).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1).bold()
                             VStack {
                                 Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 4))
                                 Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[5])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 5))
@@ -252,7 +252,7 @@ struct EventTeamMatches: View {
                     Button(action: {
                         showingTeamNotes = true
                     }, label: {
-                        Image(systemName: "note.text")
+                        Image(systemName: "note.text").foregroundColor(settings.navTextColor())
                     })
                     if division != nil {
                         Button(action: {
@@ -261,13 +261,13 @@ struct EventTeamMatches: View {
                             fetch_info(predict: predictions)
                         }, label: {
                             if calculating && predictions {
-                                ProgressView()
+                                ProgressView().foregroundColor(settings.navTextColor())
                             }
                             else if predictions {
-                                Image(systemName: "bolt.fill")
+                                Image(systemName: "bolt.fill").foregroundColor(settings.navTextColor())
                             }
                             else {
-                                Image(systemName: "bolt")
+                                Image(systemName: "bolt").foregroundColor(settings.navTextColor())
                             }
                         })
                     }

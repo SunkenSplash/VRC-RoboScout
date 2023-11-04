@@ -76,7 +76,7 @@ struct EventSkillsRankings: View {
                             VStack {
                                 HStack {
                                     HStack {
-                                        Text(teams_map[String(team_ranking(rank: rank).team.id)] ?? "").font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 60, alignment: .leading)
+                                        Text(teams_map[String(team_ranking(rank: rank).team.id)] ?? "").font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 70, alignment: .leading).bold()
                                         Text((event.get_team(id: team_ranking(rank: rank).team.id) ?? Team()).name).frame(alignment: .leading)
                                     }
                                     Spacer()
@@ -84,7 +84,7 @@ struct EventSkillsRankings: View {
                                 HStack {
                                     HStack {
                                         VStack(alignment: .leading) {
-                                            Text("#\(team_ranking(rank: rank).rank)").frame(alignment: .leading).font(.system(size: 16))
+                                            Text("# \(team_ranking(rank: rank).rank)").frame(alignment: .leading).font(.system(size: 16))
                                             Text("\(team_ranking(rank: rank).combined_score)").frame(alignment: .leading).font(.system(size: 16))
                                         }.frame(width: 60, alignment: .leading)
                                         Spacer()
@@ -105,6 +105,7 @@ struct EventSkillsRankings: View {
                     }
                 }.navigationViewStyle(StackNavigationViewStyle())
                     .searchable(text: $teamNumberQuery, prompt: "Enter a team number...")
+                    .tint(settings.navTextColor())
             }
         }.task{
             fetch_rankings()

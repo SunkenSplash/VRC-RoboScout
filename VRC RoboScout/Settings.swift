@@ -32,6 +32,14 @@ struct Settings: View {
     @State var confirmAppearance = false
     @State var confirmAPIKey = false
     
+    var mode: String {
+        #if DEBUG
+        return " DEBUG"
+        #else
+        return ""
+        #endif
+    }
+    
     func format_season_option(raw: String) -> String {
         var season = raw
         season = season.replacingOccurrences(of: "VRC ", with: "")
@@ -87,12 +95,10 @@ struct Settings: View {
                     }
                     ColorPicker("Color", selection: $selected_color, supportsOpacity: false).onChange(of: selected_color) { _ in
                         settings.setColor(color: selected_color)
-                        adam_score = UserSettings().getAdamScore()
                         showApply = true
                     }
                     Toggle("Minimalistic", isOn: $minimalistic).onChange(of: minimalistic) { _ in
                         settings.setMinimalistic(state: minimalistic)
-                        adam_score = UserSettings().getAdamScore()
                         showApply = true
                     }
                     if showApply {
@@ -160,14 +166,15 @@ struct Settings: View {
                     HStack {
                         Text("Version")
                         Spacer()
-                        Text(UIApplication.appVersion!)
+                        Text("\(UIApplication.appVersion!) (\(UIApplication.appBuildNumber!)\(self.mode))")
                     }
                 }
                 Section("Developed by Teams Ace 229V and Jelly 2733J") {}
             }
-            Link("Join the Discord Server", destination: URL(string: "https://discord.gg/7b9qcMhVnW")!).padding()
+            Link("Join the Discord Server", destination: URL(string: "https://discord.gg/KczJZUfs5f")!).padding()
         }.onAppear{
             navigation_bar_manager.title = "Settings"
+            settings.readUserDefaults()
         }
     }
 }
