@@ -129,7 +129,7 @@ struct EventLookup: View {
     
     func format_season_option(raw: String) -> String {
         var season = raw
-        season = season.replacingOccurrences(of: "VRC ", with: "")
+        season = season.replacingOccurrences(of: "VRC ", with: "").replacingOccurrences(of: "VEXU ", with: "")
         
         let season_split = season.split(separator: "-")
         
@@ -156,8 +156,8 @@ struct EventLookup: View {
                 }
             }.frame(height: 10)
             Picker("Season", selection: $season_query) {
-                ForEach(API.season_id_map.keys.sorted().reversed(), id: \.self) { season_id in
-                    Text(format_season_option(raw: API.season_id_map[season_id] ?? "Unknown")).tag(season_id)
+                ForEach(API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1].keys.sorted().reversed(), id: \.self) { season_id in
+                    Text(format_season_option(raw: API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1][season_id] ?? "Unknown")).tag(season_id)
                 }
             }.onChange(of: season_query) { _ in
                 showLoading = true
@@ -188,6 +188,7 @@ struct EventLookup: View {
                 Spacer()
             }
         }.onAppear{
+            season_query = UserSettings.getSelectedSeasonID()
             event_query(name_query: name_query, season_query: season_query)
         }
     }
@@ -433,7 +434,7 @@ struct TeamLookup: View {
                     Spacer()
                     Text(team.registered ? "\(self.team.awards.count)" : "")
                 }
-                if settings.getAdamScore() {
+                if UserSettings.getAdamScore() {
                     HStack {
                         Button("AdamScore™") {
                             showingSheet = true

@@ -44,7 +44,7 @@ struct EventDivisionView: View {
         TabView {
             EventTeams(event: self.event, division: self.division, teams_map: $teams_map, event_teams: $event_teams, event_teams_list: [String]())
                 .tabItem {
-                    if settings.getMinimalistic() {
+                    if UserSettings.getMinimalistic() {
                         Image(systemName: "person.3.fill")
                     }
                     else {
@@ -58,7 +58,7 @@ struct EventDivisionView: View {
                 .tint(settings.accentColor())
             EventDivisionMatches(teams_map: $teams_map, event: self.event, division: self.division)
                 .tabItem {
-                    if settings.getMinimalistic() {
+                    if UserSettings.getMinimalistic() {
                         Image(systemName: "clock.fill")
                     }
                     else {
@@ -72,7 +72,7 @@ struct EventDivisionView: View {
                 .tint(settings.accentColor())
             EventDivisionRankings(event: self.event, division: self.division, teams_map: teams_map)
                 .tabItem {
-                    if settings.getMinimalistic() {
+                    if UserSettings.getMinimalistic() {
                         Image(systemName: "list.number")
                     }
                     else {
@@ -103,7 +103,7 @@ struct EventDivisionView: View {
                 }
             EventDivisionAwards(event: self.event, division: self.division)
                 .tabItem {
-                    if settings.getMinimalistic() {
+                    if UserSettings.getMinimalistic() {
                         Image(systemName: "trophy")
                     }
                     else {

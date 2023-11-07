@@ -181,16 +181,13 @@ struct EventDivisionRankings: View {
                             NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: self.event, team: Team(id: team_ranking(rank: rank).team.id, fetch: false)).environmentObject(settings).environmentObject(dataController)) {
                                 VStack {
                                     HStack {
-                                        HStack {
-                                            Text(teams_map[String(team_ranking(rank: rank).team.id)] ?? "").font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 70, alignment: .leading).bold()
-                                            Text((event.get_team(id: team_ranking(rank: rank).team.id) ?? Team()).name).frame(alignment: .leading)
-                                            if favorites.favorite_teams.contains(teams_map[String(team_ranking(rank: rank).team.id)] ?? "") {
-                                                Spacer()
-                                                Image(systemName: "star.fill")
-                                            }
-                                        }
+                                        Text(teams_map[String(team_ranking(rank: rank).team.id)] ?? "").font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 70, alignment: .leading).bold()
+                                        Text((event.get_team(id: team_ranking(rank: rank).team.id) ?? Team()).name).frame(alignment: .leading)
                                         Spacer()
-                                    }.frame(height: 20, alignment: .leading)
+                                        if favorites.favorite_teams.contains(teams_map[String(team_ranking(rank: rank).team.id)] ?? "") {
+                                            Image(systemName: "star.fill")
+                                        }
+                                    }.frame(maxWidth: .infinity, alignment: .leading).frame(height: 20)
                                     HStack {
                                         VStack(alignment: .leading) {
                                             Text("# \(team_ranking(rank: rank).rank)").frame(alignment: .leading).font(.system(size: 16))

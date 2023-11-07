@@ -175,6 +175,7 @@ class UserSettings: ObservableObject {
     private var colorString: String
     private var minimalistic: Bool
     private var adam_score: Bool
+    private var grade_level: String
     private var selected_season_id: Int
     
     static var keyIndex = Int.random(in: 0..<10)
@@ -183,7 +184,8 @@ class UserSettings: ObservableObject {
         self.colorString = defaults.object(forKey: "color") as? String ?? UIColor.StringFromUIColor(color: .systemRed)
         defaults.object(forKey: "minimalistic") as? Int ?? 1 == 1 ? (self.minimalistic = true) : (self.minimalistic = false)
         defaults.object(forKey: "adam_score") as? Int ?? 1 == 1 ? (self.adam_score = true) : (self.adam_score = false)
-        self.selected_season_id = defaults.object(forKey: "selected_season_id") as? Int ?? 0
+        self.grade_level = defaults.object(forKey: "grade_level") as? String ?? "High School"
+        self.selected_season_id = defaults.object(forKey: "selected_season_id") as? Int ?? 181
     }
     
     func readUserDefaults() {
@@ -197,6 +199,7 @@ class UserSettings: ObservableObject {
         defaults.set(UIColor.StringFromUIColor(color: UIColor.UIColorFromString(string: self.colorString)), forKey: "color")
         defaults.set(self.minimalistic ? 1 : 0, forKey: "minimalistic")
         defaults.set(self.adam_score ? 1 : 0, forKey: "adam_score")
+        defaults.set(self.grade_level, forKey: "grade_level")
         defaults.set(self.selected_season_id, forKey: "selected_season_id")
     }
     
@@ -210,6 +213,10 @@ class UserSettings: ObservableObject {
     
     func setAdamScore(state: Bool) {
         self.adam_score = state
+    }
+    
+    func setGradeLevel(grade_level: String) {
+        self.grade_level = grade_level
     }
     
     func setSelectedSeasonID(id: Int) {
@@ -260,16 +267,20 @@ class UserSettings: ObservableObject {
         return robotevents_api_key
     }
     
-    func getMinimalistic() -> Bool {
+    static func getMinimalistic() -> Bool {
         return defaults.object(forKey: "minimalistic") as? Int ?? 1 == 1
     }
     
-    func getAdamScore() -> Bool {
+    static func getAdamScore() -> Bool {
         return defaults.object(forKey: "adam_score") as? Int ?? 1 == 1
     }
+    
+    static func getGradeLevel() -> String {
+        return defaults.object(forKey: "grade_level") as? String ?? "High School"
+    }
 
-    func getSelectedSeasonID() -> Int {
-        return defaults.object(forKey: "selected_season_id") as? Int ?? 0
+    static func getSelectedSeasonID() -> Int {
+        return defaults.object(forKey: "selected_season_id") as? Int ?? 181
     }
 }
 

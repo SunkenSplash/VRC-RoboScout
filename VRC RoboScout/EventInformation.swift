@@ -92,7 +92,7 @@ struct EventInformation: View {
                     HStack {
                         Text("Season")
                         Spacer()
-                        Text(API.season_id_map[event.season] ?? "")
+                        Text(API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1][event.season] ?? "")
                     }
                     HStack {
                         Menu("Developer") {

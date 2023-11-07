@@ -106,55 +106,6 @@ class WorldSkillsTeams: ObservableObject {
     }
 }
 
-var region_id_map: [String: Int] = [
-    "South Dakota": 2491,
-    "Pennsylvania - East": 2488,
-    "Virginia": 2495,
-    "Kansas": 2466,
-    "New York - South": 3579,
-    "Hawaii": 2462,
-    "District of Columbia": 2459,
-    "China": 2500,
-    "Michigan": 2472,
-    "Taiwan": 2528,
-    "Alabama": 2452,
-    "California - Region 4": 2910,
-    "Tennessee": 2492,
-    "Texas - Region 3": 2680,
-    "Washington": 2496,
-    "Kentucky": 2467,
-    "Georgia": 2461,
-    "Arizona": 2454,
-    "Texas - Region 2": 2679,
-    "Louisiana": 2468,
-    "Colorado": 2457,
-    "California - Region 2": 3660,
-    "Minnesota": 2473,
-    "Southern New England": 2471,
-    "Maryland": 2470,
-    "Australia": 2507,
-    "South Carolina": 2490,
-    "Ontario": 2504,
-    "Wisconsin": 2498,
-    "Mississippi": 2474,
-    "Japan": 2519,
-    "Ohio": 2485,
-    "Florida - North/Central": 2460,
-    "Oregon": 2487,
-    "Quebec": 3014,
-    "Texas - Region 4": 2681,
-    "North Carolina": 2483,
-    "New Jersey": 2480,
-    "Montana": 2476,
-    "Nebraska": 2477,
-    "Utah": 2494,
-    "Alberta/Saskatchewan": 2506,
-    "British Columbia (BC)": 2505,
-    "Indiana": 2465,
-    "Florida - South": 2677,
-    "Singapore": 2525
-]
-
 struct WorldSkillsRankings: View {
     
     @EnvironmentObject var settings: UserSettings
@@ -166,6 +117,7 @@ struct WorldSkillsRankings: View {
     @State private var letter: Character = "0"
     @State private var world_skills_rankings = WorldSkillsTeams(fetch: false)
     @State private var season_id = API.selected_season_id()
+    @State private var grade_level = UserSettings.getGradeLevel()
     
     var body: some View {
         VStack {
@@ -191,7 +143,7 @@ struct WorldSkillsRankings: View {
                             letter = "0"
                             world_skills_rankings = WorldSkillsTeams(fetch: false)
                         }
-                        ForEach(region_id_map.sorted(by: <), id: \.key) { region, id in
+                        ForEach(API.regions_map.sorted(by: <), id: \.key) { region, id in
                             Button(region) {
                                 display_skills = "\(region) Skills"
                                 navigation_bar_manager.title = display_skills
@@ -230,13 +182,14 @@ struct WorldSkillsRankings: View {
             }
         }.onAppear{
             navigation_bar_manager.title = $display_skills.wrappedValue
-            if API.selected_season_id() != self.season_id {
+            if (API.selected_season_id() != self.season_id) || (UserSettings.getGradeLevel() != self.grade_level) {
                 display_skills = "World Skills"
                 navigation_bar_manager.title = display_skills
                 region_id = 0
                 letter = "0"
                 world_skills_rankings = WorldSkillsTeams(fetch: false)
                 self.season_id = API.selected_season_id()
+                self.grade_level = UserSettings.getGradeLevel()
             }
         }
     }

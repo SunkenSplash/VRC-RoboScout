@@ -241,10 +241,10 @@ struct DataExporter: View {
                             for (option, state) in selected {
                                 guard state else { continue }
                                 if option == "Team Name" {
-                                    data += ",\(team.name)"
+                                    data += ",\(team.name.replacingOccurrences(of: ",", with: ""))"
                                 }
                                 else if option == "Robot Name" {
-                                    data += ",\(team.robot_name)"
+                                    data += ",\(team.robot_name.replacingOccurrences(of: ",", with: ""))"
                                 }
                                 else if option == "Team Location" {
                                     data += ",\(generate_location(team: team))"
@@ -317,7 +317,7 @@ struct DataExporter: View {
                     .cornerRadius(20)
             }
             else {
-                Button("Download") {
+                Button("Save") {
                     let dataPath = URL.documentsDirectory.appendingPathComponent("ScoutingData")
                     if !FileManager.default.fileExists(atPath: dataPath.path) {
                         do {

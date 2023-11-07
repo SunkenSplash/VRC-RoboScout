@@ -108,55 +108,6 @@ class TrueSkillTeams: ObservableObject {
     }
 }
 
-var region_list: [String] = [
-    "South Dakota",
-    "Pennsylvania - East",
-    "Virginia",
-    "Kansas",
-    "New York - South",
-    "Hawaii",
-    "District of Columbia",
-    "China",
-    "Michigan",
-    "Taiwan",
-    "Alabama",
-    "California - Region 4",
-    "Tennessee",
-    "Texas - Region 3",
-    "Washington",
-    "Kentucky",
-    "Georgia",
-    "Arizona",
-    "Texas - Region 2",
-    "Louisiana",
-    "Colorado",
-    "California - Region 2",
-    "Minnesota",
-    "Southern New England",
-    "Maryland",
-    "Australia",
-    "South Carolina",
-    "Ontario",
-    "Wisconsin",
-    "Mississippi",
-    "Japan",
-    "Ohio",
-    "Florida - North/Central",
-    "Oregon",
-    "Quebec",
-    "Texas - Region 4",
-    "North Carolina",
-    "New Jersey",
-    "Montana",
-    "Nebraska",
-    "Utah",
-    "Alberta/Saskatchewan",
-    "British Columbia (BC)",
-    "Indiana",
-    "Florida - South",
-    "Singapore"
-]
-
 struct TrueSkillRankings: View {
     
     @EnvironmentObject var settings: UserSettings
@@ -190,7 +141,7 @@ struct TrueSkillRankings: View {
                             letter = "0"
                             trueskill_rankings = TrueSkillTeams(fetch: false)
                         }
-                        ForEach(region_list.sorted(by: <)) { region_str in
+                        ForEach(API.regions_map.keys.sorted(by: <)) { region_str in
                             Button(region_str) {
                                 display_trueskill = "\(region_str) TrueSkill"
                                 navigation_bar_manager.title = display_trueskill

@@ -16,9 +16,10 @@ struct Settings: View {
     @EnvironmentObject var navigation_bar_manager: NavigationBarManager
     
     @State var selected_color = UserSettings().accentColor()
-    @State var minimalistic = UserSettings().getMinimalistic()
-    @State var adam_score = UserSettings().getAdamScore()
-    @State var selected_season_id = UserSettings().getSelectedSeasonID()
+    @State var minimalistic = UserSettings.getMinimalistic()
+    @State var adam_score = UserSettings.getAdamScore()
+    @State var grade_level = UserSettings.getGradeLevel()
+    @State var selected_season_id = UserSettings.getSelectedSeasonID()
     @State var apiKey = UserSettings.getRobotEventsAPIKey() ?? ""
     @State var showLoading = false
     @State var showApply = false
@@ -42,7 +43,7 @@ struct Settings: View {
     
     func format_season_option(raw: String) -> String {
         var season = raw
-        season = season.replacingOccurrences(of: "VRC ", with: "")
+        season = season.replacingOccurrences(of: "VRC ", with: "").replacingOccurrences(of: "VEXU ", with: "")
         
         let season_split = season.split(separator: "-")
         
@@ -56,13 +57,28 @@ struct Settings: View {
     var body: some View {
         VStack {
             Form {
-                Section("Data Analysis") {
-                    Toggle("AdamScore™", isOn: $adam_score).onChange(of: adam_score) { _ in
-                        settings.setAdamScore(state: adam_score)
-                        settings.updateUserDefaults()
-                    }
-                }
-                Section("Season") {
+                Section("Competition") {
+                    Picker("Competition", selection: $grade_level) {
+                        Text("VRC MS").tag("Middle School")
+                        Text("VRC HS").tag("High School")
+                        Text("VEXU").tag("College")
+                    }.pickerStyle(.segmented).padding([.top, .bottom], 5)
+                        .onChange(of: grade_level) { grade in
+                            settings.setGradeLevel(grade_level: grade)
+                            settings.updateUserDefaults()
+                            self.showLoading = true
+                            DispatchQueue.global(qos: .userInteractive).async {
+                                API.generate_season_id_map()
+                                settings.setSelectedSeasonID(id: API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1].keys.sorted().reversed()[0])
+                                settings.updateUserDefaults()
+                                API.update_world_skills_cache()
+                                DispatchQueue.main.async {
+                                    self.selected_season_id = UserSettings.getSelectedSeasonID()
+                                    self.showLoading = false
+                                }
+                            }
+                            
+                        }
                     HStack {
                         Spacer()
                         if showLoading {
@@ -70,8 +86,8 @@ struct Settings: View {
                         }
                         else {
                             Picker("Season", selection: $selected_season_id) {
-                                ForEach(API.season_id_map.keys.sorted().reversed(), id: \.self) { season_id in
-                                    Text(format_season_option(raw: API.season_id_map[season_id] ?? "Unknown")).tag(season_id)
+                                ForEach(API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1].keys.sorted().reversed(), id: \.self) { season_id in
+                                    Text(format_season_option(raw: API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1][season_id] ?? "Unknown")).tag(season_id)
                                 }
                             }.labelsHidden()
                                 .onChange(of: selected_season_id) { _ in
@@ -87,6 +103,12 @@ struct Settings: View {
                                 }
                         }
                         Spacer()
+                    }
+                }
+                Section("Data Analysis") {
+                    Toggle("AdamScore™", isOn: $adam_score).onChange(of: adam_score) { _ in
+                        settings.setAdamScore(state: adam_score)
+                        settings.updateUserDefaults()
                     }
                 }
                 Section("Appearance") {
@@ -166,7 +188,7 @@ struct Settings: View {
                     HStack {
                         Text("Version")
                         Spacer()
-                        Text("\(UIApplication.appVersion!) (\(UIApplication.appBuildNumber!)\(self.mode))")
+                        Text("\(UIApplication.appVersion!) (\(UIApplication.appBuildNumber!))\(self.mode)")
                     }
                 }
                 Section("Developed by Teams Ace 229V and Jelly 2733J") {}

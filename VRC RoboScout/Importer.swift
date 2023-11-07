@@ -194,7 +194,7 @@ struct Importer: View {
                 TabView(selection: $tab_selection) {
                     Favorites(tab_selection: $tab_selection, lookup_type: $lookup_type)
                         .tabItem {
-                            if settings.getMinimalistic() {
+                            if UserSettings.getMinimalistic() {
                                 Image(systemName: "star")
                             }
                             else {
@@ -209,7 +209,7 @@ struct Importer: View {
                         .tag(0)
                     WorldSkillsRankings()
                         .tabItem {
-                            if settings.getMinimalistic() {
+                            if UserSettings.getMinimalistic() {
                                 Image(systemName: "globe")
                             }
                             else {
@@ -223,7 +223,7 @@ struct Importer: View {
                         .tag(1)
                     TrueSkillRankings()
                         .tabItem {
-                            if settings.getMinimalistic() {
+                            if UserSettings.getMinimalistic() {
                                 Image(systemName: "chart.line.uptrend.xyaxis")
                             }
                             else {
@@ -237,7 +237,7 @@ struct Importer: View {
                         .tag(2)
                     Lookup(lookup_type: $lookup_type)
                         .tabItem {
-                            if settings.getMinimalistic() {
+                            if UserSettings.getMinimalistic() {
                                 Image(systemName: "magnifyingglass")
                             }
                             else {
@@ -252,7 +252,7 @@ struct Importer: View {
                         .tag(3)
                     Settings()
                         .tabItem {
-                            if settings.getMinimalistic() {
+                            if UserSettings.getMinimalistic() {
                                 Image(systemName: "gear")
                             }
                             else {

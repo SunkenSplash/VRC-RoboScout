@@ -209,15 +209,25 @@ struct EventTeamMatches: View {
                                 Text(name.wrappedValue.split(separator: "&&")[8]).font(.system(size: 12)).frame(width: 60, alignment: .leading)
                             }
                             VStack {
-                                Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 2))
-                                Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[3])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 3))
+                                if String(teams_map[String(name.wrappedValue.split(separator: "&&")[3])] ?? "") != "" {
+                                    Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 2))
+                                    Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[3])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 3))
+                                }
+                                else {
+                                    Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 2))
+                                }
                             }.frame(width: 70)
                             Text(scoreToDisplay(match: name.wrappedValue, index: 6)).foregroundColor(.red).font(.system(size: 18)).frame(alignment: .leading).underline(conditionalUnderline(match: name.wrappedValue, index: 6)).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1).bold()
                             Spacer()
                             Text(scoreToDisplay(match: name.wrappedValue, index: 7)).foregroundColor(.blue).font(.system(size: 18)).frame(alignment: .trailing).underline(conditionalUnderline(match: name.wrappedValue, index: 7)).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1).bold()
                             VStack {
-                                Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 4))
-                                Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[5])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 5))
+                                if String(teams_map[String(name.wrappedValue.split(separator: "&&")[5])] ?? "") != "" {
+                                    Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 4))
+                                    Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[5])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 5))
+                                }
+                                else {
+                                    Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 4))
+                                }
                             }.frame(width: 70)
                         }.frame(maxHeight: 30)
                     }

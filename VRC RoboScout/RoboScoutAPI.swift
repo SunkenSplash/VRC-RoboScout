@@ -19,14 +19,16 @@ enum RoboScoutAPIError: Error {
 public class RoboScoutAPI {
     
     public var world_skills_cache: [[String: Any]]
+    public var regions_map: [String: Int]
     public var vrc_data_analysis_cache: [[String: Any]]
-    public var season_id_map: OrderedDictionary<Int, String>
+    public var season_id_map: [OrderedDictionary<Int, String>] // [VRC, VEXU]
     public var current_skills_season_id: Int
     
     public init() {
         self.world_skills_cache = [[String: Any]]()
+        self.regions_map = [String: Int]()
         self.vrc_data_analysis_cache = [[String: Any]]()
-        self.season_id_map = OrderedDictionary<Int, String>()
+        self.season_id_map = [OrderedDictionary<Int, String>]()
         self.current_skills_season_id = 0
     }
 
@@ -131,7 +133,7 @@ public class RoboScoutAPI {
     
     public static func robotevents_competition_scraper(params: [String: Any] = [:]) -> [String] {
         
-        var request_url = "https://www.robotevents.com/robot-competitions/vex-robotics-competition"
+        var request_url = "https://www.robotevents.com/robot-competitions/\(UserSettings.getGradeLevel() == "College" ? "college-competition" : "vex-robotics-competition")"
         var params = params
         
         if params["page"] == nil {
@@ -171,12 +173,12 @@ public class RoboScoutAPI {
                 print(String(format: "RobotEvents Scraper (page %d): %@", params["page"] as? Int ?? 0, components.url?.description ?? request_url))
                 let html = String(data: response_data!, encoding: .utf8)!
                 
-                let regex = try! NSRegularExpression(pattern: "https://www\\.robotevents\\.com/robot-competitions/vex-robotics-competition/RE-VRC([+-]?(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*))(?:[Ee]([+-]?\\d+))?([+-]?(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*))(?:[Ee]([+-]?\\d+))?html", options: [.caseInsensitive])
+                let regex = try! NSRegularExpression(pattern: "https://www\\.robotevents\\.com/robot-competitions/\(UserSettings.getGradeLevel() == "College" ? "college-competition" : "vex-robotics-competition")/RE-\(UserSettings.getGradeLevel() != "College" ? "VRC" : "VEXU" )([+-]?(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*))(?:[Ee]([+-]?\\d+))?([+-]?(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*))(?:[Ee]([+-]?\\d+))?html", options: [.caseInsensitive])
                 let range = NSRange(location: 0, length: html.count)
                 let matches = regex.matches(in: html, options: [], range: range)
                 
                 for match in matches {
-                    sku_array.append(String(html[Range(match.range, in: html)!]).replacingOccurrences(of: "https://www.robotevents.com/robot-competitions/vex-robotics-competition/", with: "").replacingOccurrences(of: ".html", with: ""))
+                    sku_array.append(String(html[Range(match.range, in: html)!]).replacingOccurrences(of: "https://www.robotevents.com/robot-competitions/\(UserSettings.getGradeLevel() == "College" ? "college-competition" : "vex-robotics-competition")/", with: "").replacingOccurrences(of: ".html", with: ""))
                 }
                 
                 semaphore.signal()
@@ -231,15 +233,23 @@ public class RoboScoutAPI {
     }
     
     public func generate_season_id_map() {
+        self.season_id_map = [[:], [:]]
         let seasons_data = RoboScoutAPI.robotevents_request(request_url: "/seasons/")
         
         for season_data in seasons_data {
-            if (season_data["program"] as! [String: Any])["id"] as! Int == 1 {
-                self.season_id_map[(season_data)["id"] as! Int] = (season_data)["name"] as? String ?? ""
+            let program_id = (season_data["program"] as! [String: Any])["id"] as! Int
+            let grade_level_index = (program_id == 1 ? 0 : (program_id == 4 ? 1 : -1))
+            if grade_level_index == -1 {
+                continue
             }
+            self.season_id_map[grade_level_index][(season_data)["id"] as! Int] = (season_data)["name"] as? String ?? ""
         }
 
         print("Season ID map generated")
+    }
+    
+    public static func selected_program_id() -> Int {
+        return UserSettings.getGradeLevel() == "College" ? 4 : 1
     }
 
     public func selected_season_id() -> Int {
@@ -247,14 +257,15 @@ public class RoboScoutAPI {
     }
     
     public func active_season_id() -> Int {
-        return !self.season_id_map.isEmpty ? self.season_id_map.keys[0] : 181
+        return !self.season_id_map.isEmpty ? (UserSettings.getGradeLevel() != "College" ? self.season_id_map[0] : self.season_id_map[1]).keys[0] : (UserSettings.getGradeLevel() != "College" ? 181 : 182)
     }
     
     public func update_world_skills_cache(season: Int? = nil) {
 
         let semaphore = DispatchSemaphore(value: 0)
-            
-        let components = URLComponents(string: String(format: "https://www.robotevents.com/api/seasons/%d/skills", season ?? self.selected_season_id()))!
+                    
+        var components = URLComponents(string: String(format: "https://www.robotevents.com/api/seasons/%d/skills", season ?? self.selected_season_id()))!
+        components.queryItems = [URLQueryItem(name: "grade_level", value: UserSettings.getGradeLevel())]
                     
         let request = NSMutableURLRequest(url: components.url! as URL)
         request.httpMethod = "GET"
@@ -268,6 +279,9 @@ public class RoboScoutAPI {
                 if json != nil {
                     self.world_skills_cache = json!
                     self.current_skills_season_id = season ?? self.selected_season_id()
+                    for entry in self.world_skills_cache {
+                        self.regions_map[(entry["team"] as! [String: Any])["eventRegion"] as? String ?? ""] = (entry["team"] as! [String: Any])["eventRegionId"] as? Int ?? 0
+                    }
                     print("World skills cache updated")
                 }
                 else {
@@ -1025,7 +1039,7 @@ public class Event {
         
         var m = [[Int]]()
         var scores = [[Int]]()
-        var margins = [[Int]]()
+        var oppScores = [[Int]]()
         
         var division_teams = [Team]()
         
@@ -1061,7 +1075,7 @@ public class Event {
                         
             var red = [Int]()
             var blue = [Int]()
-            
+                        
             for team in division_teams {
                 if match.red_alliance[0].id == team.id || match.red_alliance[1].id == team.id {
                     red.append(1)
@@ -1081,22 +1095,22 @@ public class Event {
             
             scores.append([match.red_score])
             scores.append([match.blue_score])
-            margins.append([match.red_score - match.blue_score])
-            margins.append([match.blue_score - match.red_score])
+            oppScores.append([match.blue_score])
+            oppScores.append([match.red_score])
         }
         
-        guard !m.isEmpty && !scores.isEmpty && !margins.isEmpty else {
+        guard !m.isEmpty && !scores.isEmpty && !oppScores.isEmpty else {
             throw RoboScoutAPIError.missing_data("Missing match data for performance rating calculations")
         }
         
         let mM = MfArray(m)
         let mScores = MfArray(scores)
-        let mMargins = MfArray(margins)
+        let mOppScores = MfArray(oppScores)
         
         let pinv = try! Matft.linalg.pinv(mM)
         
         let mOPRs = Matft.matmul(pinv, mScores)
-        let mCCWMs = Matft.matmul(pinv, mMargins)
+        let mDPRs = Matft.matmul(pinv, mOppScores)
         
         func convertToList(mfarray: MfArray) -> [Double] {
             var list = [Double]()
@@ -1109,11 +1123,11 @@ public class Event {
         }
         
         let OPRs = convertToList(mfarray: mOPRs)
-        let CCWMs = convertToList(mfarray: mCCWMs)
+        let DPRs = convertToList(mfarray: mDPRs)
         
         var i = 0
         for team in division_teams {
-            self.team_performance_ratings[division]![team.id] = TeamPerformanceRatings(team: team, event: self, opr: OPRs[i], dpr: OPRs[i] - CCWMs[i], ccwm: CCWMs[i])
+            self.team_performance_ratings[division]![team.id] = TeamPerformanceRatings(team: team, event: self, opr: OPRs[i], dpr: DPRs[i], ccwm: OPRs[i] - DPRs[i])
             i += 1
         }
     }
@@ -1170,7 +1184,9 @@ public class Event {
             return livestream_link
         }
         
-        let request_url = "https://www.robotevents.com/robot-competitions/vex-robotics-competition/\(self.sku).html"
+        print(UserSettings.getGradeLevel())
+        
+        let request_url = "https://www.robotevents.com/robot-competitions/\(UserSettings.getGradeLevel() == "College" ? "college-competition" : "vex-robotics-competition")/\(self.sku).html"
         
         let semaphore = DispatchSemaphore(value: 0)
         
@@ -1358,7 +1374,7 @@ public class Team {
             return
         }
         
-        let data = RoboScoutAPI.robotevents_request(request_url: "/teams", params: self.id != 0 ? ["id": self.id, "program": 1] : ["number": self.number, "program": 1])
+        let data = RoboScoutAPI.robotevents_request(request_url: "/teams", params: self.id != 0 ? ["id": self.id, "program": RoboScoutAPI.selected_program_id()] : ["number": self.number, "program": [1, 4]])
         
         if data.isEmpty {
             return
@@ -1396,7 +1412,18 @@ public class Team {
     }
     
     public func fetch_events(season: Int? = nil) {
-        let data = RoboScoutAPI.robotevents_request(request_url: "/events", params: ["team": self.id, "season": season ?? API.selected_season_id()])
+        
+        var season_id: Int
+        let grade = (self.grade == "High School" || self.grade == "Middle School") ? "High School" : "College"
+        let selected_grade = (UserSettings.getGradeLevel() == "High School" || UserSettings.getGradeLevel() == "Middle School") ? "High School" : "College"
+        if grade != selected_grade {
+            season_id = API.season_id_map[grade == "High School" ? 0 : 1].keys[API.season_id_map[grade == "High School" ? 1 : 0].index(forKey: API.selected_season_id()) ?? 0]
+        }
+        else {
+            season_id = API.selected_season_id()
+        }
+        
+        let data = RoboScoutAPI.robotevents_request(request_url: "/events", params: ["team": self.id, "season": season ?? season_id])
         for event in data {
             self.events.append(Event(id: event["id"] as! Int, fetch: false, data: event))
         }

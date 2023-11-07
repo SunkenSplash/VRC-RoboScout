@@ -170,9 +170,13 @@ struct MatchNotes: View {
             ScrollView {
                 VStack(spacing: 11) {
                     TeamNotes(event: event, match: match, team: (event.get_team(id: match.red_alliance[0].id) ?? Team()), showingSheet: $showingSheet)
-                    TeamNotes(event: event, match: match, team: (event.get_team(id: match.red_alliance[1].id) ?? Team()), showingSheet: $showingSheet)
+                    if UserSettings.getGradeLevel() != "College" {
+                        TeamNotes(event: event, match: match, team: (event.get_team(id: match.red_alliance[1].id) ?? Team()), showingSheet: $showingSheet)
+                    }
                     TeamNotes(event: event, match: match, team: (event.get_team(id: match.blue_alliance[0].id) ?? Team()), showingSheet: $showingSheet)
-                    TeamNotes(event: event, match: match, team: (event.get_team(id: match.blue_alliance[1].id) ?? Team()), showingSheet: $showingSheet)
+                    if UserSettings.getGradeLevel() != "College" {
+                        TeamNotes(event: event, match: match, team: (event.get_team(id: match.blue_alliance[1].id) ?? Team()), showingSheet: $showingSheet)
+                    }
                 }.padding(.horizontal)
                     .padding(.vertical, 40)
                 Spacer()
