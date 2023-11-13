@@ -156,7 +156,6 @@ struct EventDivisionMatches: View {
                     }
                 }.onChange(of: prediction_manager.state) { new_state in
                     if new_state == PredictionState.calculating {
-                        print("predicting")
                         fetch_info(predict: true)
                     }
                     else if new_state == PredictionState.off {

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3D01A8C329DF3D55000BBDEB /* EventDivisionRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D01A8C229DF3D55000BBDEB /* EventDivisionRankings.swift */; };
+		3D0583BB2AFC4CF70047A393 /* Matft in Frameworks */ = {isa = PBXBuildFile; productRef = 3D0583BA2AFC4CF70047A393 /* Matft */; };
 		3D0BE6F929A3F0C700C3EA8A /* Lookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0BE6F829A3F0C700C3EA8A /* Lookup.swift */; };
 		3D1E57AA29F17D3500DA6296 /* EventDivisionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E57A929F17D3500DA6296 /* EventDivisionView.swift */; };
 		3D1E7F4A2AA8A3F1009BA258 /* ChangeAppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E7F492AA8A3F1009BA258 /* ChangeAppIcon.swift */; };
@@ -22,12 +23,21 @@
 		3D3219D129D3327500EF5500 /* EventTeamMatches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219D029D3327500EF5500 /* EventTeamMatches.swift */; };
 		3D386C3529F19DAB00035B3B /* RoboScoutAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D386C3429F19DAB00035B3B /* RoboScoutAPI.swift */; };
 		3D50E10829C8915C002FE201 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D50E10729C8915C002FE201 /* Launch Screen.storyboard */; };
+		3D5FA4952AFEAA4F00149E88 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5FA4942AFEAA4F00149E88 /* AppDelegate.swift */; };
 		3D672BDF2A46544A000211A7 /* EventDivisionAwards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D672BDE2A46544A000211A7 /* EventDivisionAwards.swift */; };
 		3D73E3AC2AB330CD005BE836 /* RoboScoutDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D73E3AB2AB330CD005BE836 /* RoboScoutDataController.swift */; };
 		3D84D77A2A40A6320043F8ED /* EventDivisionMatches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84D7792A40A6320043F8ED /* EventDivisionMatches.swift */; };
 		3D86DDB12A3A3ACC00826BB4 /* Matft in Frameworks */ = {isa = PBXBuildFile; productRef = 3D86DDB02A3A3ACC00826BB4 /* Matft */; };
 		3D919AEF29F6F70C00E1724F /* EventSkillsRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D919AEE29F6F70C00E1724F /* EventSkillsRankings.swift */; };
 		3D91B13D2A9BECDB007B54F7 /* DataExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D91B13C2A9BECDB007B54F7 /* DataExporter.swift */; };
+		3D943E622AFBD247009EF365 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D943E152AFBC823009EF365 /* WidgetKit.framework */; };
+		3D943E632AFBD247009EF365 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D943E172AFBC823009EF365 /* SwiftUI.framework */; };
+		3D943E662AFBD248009EF365 /* MatchUpdatesBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D943E652AFBD248009EF365 /* MatchUpdatesBundle.swift */; };
+		3D943E682AFBD248009EF365 /* MatchUpdatesLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D943E672AFBD248009EF365 /* MatchUpdatesLiveActivity.swift */; };
+		3D943E6E2AFBD24B009EF365 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D943E6D2AFBD24B009EF365 /* Assets.xcassets */; };
+		3D943E722AFBD24B009EF365 /* MatchUpdatesExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3D943E612AFBD247009EF365 /* MatchUpdatesExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3D943E7A2AFBD881009EF365 /* MatchUpdatesLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D943E672AFBD248009EF365 /* MatchUpdatesLiveActivity.swift */; };
+		3D943E7C2AFBFA22009EF365 /* RoboScoutActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D943E7B2AFBFA22009EF365 /* RoboScoutActivityController.swift */; };
 		3DA0AE5C29B2251B009D4782 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA0AE5B29B2251B009D4782 /* Settings.swift */; };
 		3DAFC80E2A2640EB00A0C41A /* CoreML in Resources */ = {isa = PBXBuildFile; fileRef = 3DAFC80D2A2640EB00A0C41A /* CoreML */; };
 		3DAFC8132A26420600A0C41A /* AdamScore 500.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 3DAFC8122A26420500A0C41A /* AdamScore 500.mlpackage */; };
@@ -43,6 +53,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		3D943E702AFBD24B009EF365 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3DB11E42299543D9001DDB02 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3D943E602AFBD247009EF365;
+			remoteInfo = MatchUpdatesExtension;
+		};
 		3DB11E5C299543DC001DDB02 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3DB11E42299543D9001DDB02 /* Project object */;
@@ -66,6 +83,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				3D943E722AFBD24B009EF365 /* MatchUpdatesExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -89,11 +107,20 @@
 		3D3219D029D3327500EF5500 /* EventTeamMatches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTeamMatches.swift; sourceTree = "<group>"; };
 		3D386C3429F19DAB00035B3B /* RoboScoutAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoboScoutAPI.swift; sourceTree = "<group>"; };
 		3D50E10729C8915C002FE201 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		3D5FA4942AFEAA4F00149E88 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3D672BDE2A46544A000211A7 /* EventDivisionAwards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDivisionAwards.swift; sourceTree = "<group>"; };
 		3D73E3AB2AB330CD005BE836 /* RoboScoutDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoboScoutDataController.swift; sourceTree = "<group>"; };
 		3D84D7792A40A6320043F8ED /* EventDivisionMatches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDivisionMatches.swift; sourceTree = "<group>"; };
 		3D919AEE29F6F70C00E1724F /* EventSkillsRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSkillsRankings.swift; sourceTree = "<group>"; };
 		3D91B13C2A9BECDB007B54F7 /* DataExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExporter.swift; sourceTree = "<group>"; };
+		3D943E152AFBC823009EF365 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		3D943E172AFBC823009EF365 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		3D943E612AFBD247009EF365 /* MatchUpdatesExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MatchUpdatesExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D943E652AFBD248009EF365 /* MatchUpdatesBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchUpdatesBundle.swift; sourceTree = "<group>"; };
+		3D943E672AFBD248009EF365 /* MatchUpdatesLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchUpdatesLiveActivity.swift; sourceTree = "<group>"; };
+		3D943E6D2AFBD24B009EF365 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3D943E6F2AFBD24B009EF365 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3D943E7B2AFBFA22009EF365 /* RoboScoutActivityController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoboScoutActivityController.swift; sourceTree = "<group>"; };
 		3DA0AE5B29B2251B009D4782 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		3DAFC80D2A2640EB00A0C41A /* CoreML */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CoreML; sourceTree = "<group>"; };
 		3DAFC8122A26420500A0C41A /* AdamScore 500.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; name = "AdamScore 500.mlpackage"; path = "CoreML/AdamScore 500.mlpackage"; sourceTree = SOURCE_ROOT; };
@@ -113,6 +140,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3D943E5E2AFBD247009EF365 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D0583BB2AFC4CF70047A393 /* Matft in Frameworks */,
+				3D943E632AFBD247009EF365 /* SwiftUI.framework in Frameworks */,
+				3D943E622AFBD247009EF365 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3DB11E47299543D9001DDB02 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -142,6 +179,8 @@
 			isa = PBXGroup;
 			children = (
 				3D1E57EE29F18D0400DA6296 /* Intents.framework */,
+				3D943E152AFBC823009EF365 /* WidgetKit.framework */,
+				3D943E172AFBC823009EF365 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -154,11 +193,23 @@
 			path = CoreData;
 			sourceTree = "<group>";
 		};
+		3D943E642AFBD248009EF365 /* MatchUpdates */ = {
+			isa = PBXGroup;
+			children = (
+				3D943E652AFBD248009EF365 /* MatchUpdatesBundle.swift */,
+				3D943E672AFBD248009EF365 /* MatchUpdatesLiveActivity.swift */,
+				3D943E6D2AFBD24B009EF365 /* Assets.xcassets */,
+				3D943E6F2AFBD24B009EF365 /* Info.plist */,
+			);
+			path = MatchUpdates;
+			sourceTree = "<group>";
+		};
 		3DB11E41299543D9001DDB02 = {
 			isa = PBXGroup;
 			children = (
 				3DAFC80D2A2640EB00A0C41A /* CoreML */,
 				3DB11E4C299543D9001DDB02 /* VRC RoboScout */,
+				3D943E642AFBD248009EF365 /* MatchUpdates */,
 				3DB11E5E299543DC001DDB02 /* VRC RoboScoutTests */,
 				3DB11E68299543DC001DDB02 /* VRC RoboScoutUITests */,
 				3D1E57ED29F18D0400DA6296 /* Frameworks */,
@@ -172,6 +223,7 @@
 				3DB11E4A299543D9001DDB02 /* VRC RoboScout.app */,
 				3DB11E5B299543DC001DDB02 /* VRC RoboScoutTests.xctest */,
 				3DB11E65299543DC001DDB02 /* VRC RoboScoutUITests.xctest */,
+				3D943E612AFBD247009EF365 /* MatchUpdatesExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -187,6 +239,8 @@
 				3DEA14662AD73AD6001E1C23 /* Config.plist */,
 				3D386C3429F19DAB00035B3B /* RoboScoutAPI.swift */,
 				3D73E3AB2AB330CD005BE836 /* RoboScoutDataController.swift */,
+				3D943E7B2AFBFA22009EF365 /* RoboScoutActivityController.swift */,
+				3D5FA4942AFEAA4F00149E88 /* AppDelegate.swift */,
 				3DB11E4D299543D9001DDB02 /* VRCRoboScoutApp.swift */,
 				3D3219C629D0BD5500EF5500 /* Importer.swift */,
 				3DB11E4F299543D9001DDB02 /* Favorites.swift */,
@@ -232,6 +286,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3D943E602AFBD247009EF365 /* MatchUpdatesExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3D943E732AFBD24C009EF365 /* Build configuration list for PBXNativeTarget "MatchUpdatesExtension" */;
+			buildPhases = (
+				3D943E5D2AFBD247009EF365 /* Sources */,
+				3D943E5E2AFBD247009EF365 /* Frameworks */,
+				3D943E5F2AFBD247009EF365 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MatchUpdatesExtension;
+			packageProductDependencies = (
+				3D0583BA2AFC4CF70047A393 /* Matft */,
+			);
+			productName = MatchUpdatesExtension;
+			productReference = 3D943E612AFBD247009EF365 /* MatchUpdatesExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		3DB11E49299543D9001DDB02 /* VRC RoboScout */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3DB11E6F299543DC001DDB02 /* Build configuration list for PBXNativeTarget "VRC RoboScout" */;
@@ -244,6 +318,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				3D943E712AFBD24B009EF365 /* PBXTargetDependency */,
 			);
 			name = "VRC RoboScout";
 			packageProductDependencies = (
@@ -296,9 +371,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1420;
+				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
+					3D943E602AFBD247009EF365 = {
+						CreatedOnToolsVersion = 15.0.1;
+					};
 					3DB11E49299543D9001DDB02 = {
 						CreatedOnToolsVersion = 14.2;
 					};
@@ -331,11 +409,20 @@
 				3DB11E49299543D9001DDB02 /* VRC RoboScout */,
 				3DB11E5A299543DC001DDB02 /* VRC RoboScoutTests */,
 				3DB11E64299543DC001DDB02 /* VRC RoboScoutUITests */,
+				3D943E602AFBD247009EF365 /* MatchUpdatesExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3D943E5F2AFBD247009EF365 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D943E6E2AFBD24B009EF365 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3DB11E48299543D9001DDB02 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -365,6 +452,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3D943E5D2AFBD247009EF365 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D943E662AFBD248009EF365 /* MatchUpdatesBundle.swift in Sources */,
+				3D943E682AFBD248009EF365 /* MatchUpdatesLiveActivity.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3DB11E46299543D9001DDB02 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -386,13 +482,16 @@
 				3DB11E4E299543D9001DDB02 /* VRCRoboScoutApp.swift in Sources */,
 				3D0BE6F929A3F0C700C3EA8A /* Lookup.swift in Sources */,
 				3D3219C929D1CFF300EF5500 /* TeamEventsView.swift in Sources */,
+				3D943E7A2AFBD881009EF365 /* MatchUpdatesLiveActivity.swift in Sources */,
 				3D386C3529F19DAB00035B3B /* RoboScoutAPI.swift in Sources */,
 				3D1E7F4A2AA8A3F1009BA258 /* ChangeAppIcon.swift in Sources */,
 				3DAFC8132A26420600A0C41A /* AdamScore 500.mlpackage in Sources */,
+				3D5FA4952AFEAA4F00149E88 /* AppDelegate.swift in Sources */,
 				3D3219CD29D1EF1D00EF5500 /* EventInformation.swift in Sources */,
 				3D2FDAF529A7A4A6009E9740 /* WorldSkillsRankings.swift in Sources */,
 				3D73E3AC2AB330CD005BE836 /* RoboScoutDataController.swift in Sources */,
 				3D3219CB29D1EA0D00EF5500 /* EventView.swift in Sources */,
+				3D943E7C2AFBFA22009EF365 /* RoboScoutActivityController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,6 +515,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		3D943E712AFBD24B009EF365 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3D943E602AFBD247009EF365 /* MatchUpdatesExtension */;
+			targetProxy = 3D943E702AFBD24B009EF365 /* PBXContainerItemProxy */;
+		};
 		3DB11E5D299543DC001DDB02 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3DB11E49299543D9001DDB02 /* VRC RoboScout */;
@@ -429,6 +533,74 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		3D943E742AFBD24C009EF365 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LDYP2MX4AG;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MatchUpdates/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MatchUpdates;
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Calendar access is needed to add events.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sunkensplashstudios.VRCRoboScout.MatchUpdates;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3D943E752AFBD24C009EF365 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LDYP2MX4AG;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MatchUpdates/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MatchUpdates;
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Calendar access is needed to add events.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sunkensplashstudios.VRCRoboScout.MatchUpdates;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		3DB11E6D299543DC001DDB02 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -559,7 +731,7 @@
 				CODE_SIGN_ENTITLEMENTS = "VRC RoboScout/VRCRoboScout.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = LDYP2MX4AG;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -570,6 +742,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Calendar access is needed to add events.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -588,7 +761,7 @@
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sunkensplashstudios.VRCRoboScout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -612,7 +785,7 @@
 				CODE_SIGN_ENTITLEMENTS = "VRC RoboScout/VRCRoboScout.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = LDYP2MX4AG;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -624,6 +797,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Calendar access is needed to add events.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -642,7 +816,7 @@
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sunkensplashstudios.VRCRoboScout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -754,6 +928,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3D943E732AFBD24C009EF365 /* Build configuration list for PBXNativeTarget "MatchUpdatesExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3D943E742AFBD24C009EF365 /* Debug */,
+				3D943E752AFBD24C009EF365 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		3DB11E45299543D9001DDB02 /* Build configuration list for PBXProject "VRC RoboScout" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -804,6 +987,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3D0583BA2AFC4CF70047A393 /* Matft */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3D86DDAF2A3A3ACC00826BB4 /* XCRemoteSwiftPackageReference "Matft" */;
+			productName = Matft;
+		};
 		3D86DDB02A3A3ACC00826BB4 /* Matft */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3D86DDAF2A3A3ACC00826BB4 /* XCRemoteSwiftPackageReference "Matft" */;

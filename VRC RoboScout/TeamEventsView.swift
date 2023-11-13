@@ -129,7 +129,7 @@ struct TeamEventsView: View {
 
 struct TeamEventsView_Previews: PreviewProvider {
     static var previews: some View {
-        TeamEventsView(team_number: "2733J")
+        TeamEventsView(team_number: "229V")
     }
 }
 

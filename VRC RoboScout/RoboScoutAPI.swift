@@ -724,7 +724,7 @@ public class Match {
     }
     
     func completed() -> Bool {
-        if self.started == nil && self.red_score == 0 && self.blue_score == 0 {
+        if (self.started == nil || self.started?.timeIntervalSinceNow ?? 0 > -300 ) && self.red_score == 0 && self.blue_score == 0 {
             return false
         }
         return true

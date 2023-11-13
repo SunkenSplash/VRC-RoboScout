@@ -7,6 +7,14 @@
 
 import SwiftUI
 import CoreData
+import ActivityKit
+
+enum AlertText: String {
+    case enabled = "Match updates enabled. Your upcoming and most recent matches will be shown on your lock screen."
+    case disabled = "Match updates disabled. You may reenable them at any time."
+    case missingMatches = "Could not start match updates. Please try again when the match list has been released."
+    case missingPermission = "You have disabled Live Activities for VRC RoboScout. Please reenable them in the settings app."
+}
 
 struct EventTeamMatches: View {
     
@@ -24,6 +32,8 @@ struct EventTeamMatches: View {
     @State private var matches_list = [String]()
     @State private var showLoading = true
     @State private var showingTeamNotes = false
+    @State private var alertText = AlertText.enabled
+    @State private var showAlert = false
     
     @State var teamMatchNotes: [TeamMatchNote]? = nil
     
@@ -249,6 +259,8 @@ struct EventTeamMatches: View {
         }.onAppear{
             updateDataSource()
             fetch_info()
+        }.alert(isPresented: $showAlert) {
+            Alert(title: Text(alertText.rawValue), dismissButton: .default(Text("OK")))
         }
             .background(.clear)
             .toolbar {
@@ -259,6 +271,54 @@ struct EventTeamMatches: View {
                         .foregroundColor(settings.navTextColor())
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    if #available(iOS 16.2, *) {
+                        Button(action: {
+                            if ActivityAuthorizationInfo().areActivitiesEnabled {
+                                Task {
+                                    do {
+                                        if !activities.matchUpdatesActive(event: self.event, team: self.team) {
+                                            try await activities.startMatchUpdatesActivity(event: self.event, team: self.team, matches: self.matches)
+                                            DispatchQueue.main.async {
+                                                self.alertText = AlertText.enabled
+                                                self.showAlert = true
+                                            }
+                                        }
+                                        else {
+                                            await activities.endMatchUpdatesActivity(event: self.event, team: self.team)
+                                            DispatchQueue.main.async {
+                                                self.alertText = AlertText.disabled
+                                                self.showAlert = false
+                                            }
+                                        }
+                                    } catch {
+                                        DispatchQueue.main.async {
+                                            self.alertText = AlertText.missingMatches
+                                            self.showAlert = true
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                self.alertText = AlertText.missingPermission
+                                self.showAlert = true
+                            }
+                        }, label: {
+                            if ActivityAuthorizationInfo().areActivitiesEnabled {
+                                if !activities.matchUpdatesActive(event: self.event, team: self.team) && matches.count >= 2 {
+                                    Image(systemName: "bell").foregroundColor(settings.navTextColor())
+                                }
+                                else if matches.count >= 2 {
+                                    Image(systemName: "bell.fill").foregroundColor(settings.navTextColor())
+                                }
+                                else {
+                                    Image(systemName: "bell.slash").foregroundColor(settings.navTextColor())
+                                }
+                            }
+                            else {
+                                Image(systemName: "bell.slash").foregroundColor(settings.navTextColor())
+                            }
+                        })
+                    }
                     Button(action: {
                         showingTeamNotes = true
                     }, label: {

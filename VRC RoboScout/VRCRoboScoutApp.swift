@@ -8,6 +8,7 @@
 import SwiftUI
 
 let API = RoboScoutAPI()
+let activities = RoboScoutActivityController()
 let defaults = UserDefaults.standard
 
 #if canImport(UIKit)
@@ -286,6 +287,8 @@ class UserSettings: ObservableObject {
 
 @main
 struct VRCRoboScout: App {
+    
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     @StateObject var favorites = FavoriteStorage(favorite_teams: defaults.object(forKey: "favorite_teams") as? [String] ?? [String](), favorite_events: defaults.object(forKey: "favorite_events") as? [String] ?? [String]())
     @StateObject var settings = UserSettings()
