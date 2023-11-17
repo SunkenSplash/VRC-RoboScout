@@ -15,7 +15,6 @@
 		3D1E7F4C2AAA1643009BA258 /* MatchNotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E7F4B2AAA1643009BA258 /* MatchNotes.swift */; };
 		3D1E7F4F2AAA2B4F009BA258 /* RoboScoutData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E7F4D2AAA2B4F009BA258 /* RoboScoutData.xcdatamodeld */; };
 		3D2FDAF529A7A4A6009E9740 /* WorldSkillsRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */; };
-		3D3219C729D0BD5500EF5500 /* Importer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219C629D0BD5500EF5500 /* Importer.swift */; };
 		3D3219C929D1CFF300EF5500 /* TeamEventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219C829D1CFF300EF5500 /* TeamEventsView.swift */; };
 		3D3219CB29D1EA0D00EF5500 /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219CA29D1EA0D00EF5500 /* EventView.swift */; };
 		3D3219CD29D1EF1D00EF5500 /* EventInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219CC29D1EF1D00EF5500 /* EventInformation.swift */; };
@@ -47,6 +46,7 @@
 		3DB11E60299543DC001DDB02 /* VRCRoboScoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E5F299543DC001DDB02 /* VRCRoboScoutTests.swift */; };
 		3DB11E6A299543DC001DDB02 /* VRCRoboScoutUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E69299543DC001DDB02 /* VRCRoboScoutUITests.swift */; };
 		3DB11E6C299543DC001DDB02 /* VRCRoboScoutUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB11E6B299543DC001DDB02 /* VRCRoboScoutUITestsLaunchTests.swift */; };
+		3DB21DD52B054D6400B12803 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB21DD42B054D6400B12803 /* RootView.swift */; };
 		3DC3F47529ACFF6000C5EA86 /* TrueSkillRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC3F47429ACFF6000C5EA86 /* TrueSkillRankings.swift */; };
 		3DD419D82AF5A51200A4D3AB /* roboscouticon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3DD419D72AF5A51200A4D3AB /* roboscouticon.png */; };
 		3DEA14672AD73AD6001E1C23 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3DEA14662AD73AD6001E1C23 /* Config.plist */; };
@@ -99,7 +99,6 @@
 		3D1E7F4B2AAA1643009BA258 /* MatchNotes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchNotes.swift; sourceTree = "<group>"; };
 		3D1E7F4E2AAA2B4F009BA258 /* RoboScoutData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RoboScoutData.xcdatamodel; sourceTree = "<group>"; };
 		3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldSkillsRankings.swift; sourceTree = "<group>"; };
-		3D3219C629D0BD5500EF5500 /* Importer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Importer.swift; sourceTree = "<group>"; };
 		3D3219C829D1CFF300EF5500 /* TeamEventsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamEventsView.swift; sourceTree = "<group>"; };
 		3D3219CA29D1EA0D00EF5500 /* EventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
 		3D3219CC29D1EF1D00EF5500 /* EventInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventInformation.swift; sourceTree = "<group>"; };
@@ -134,6 +133,7 @@
 		3DB11E65299543DC001DDB02 /* VRC RoboScoutUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "VRC RoboScoutUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB11E69299543DC001DDB02 /* VRCRoboScoutUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRCRoboScoutUITests.swift; sourceTree = "<group>"; };
 		3DB11E6B299543DC001DDB02 /* VRCRoboScoutUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRCRoboScoutUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		3DB21DD42B054D6400B12803 /* RootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		3DC3F47429ACFF6000C5EA86 /* TrueSkillRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrueSkillRankings.swift; sourceTree = "<group>"; };
 		3DD419D72AF5A51200A4D3AB /* roboscouticon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = roboscouticon.png; sourceTree = "<group>"; };
 		3DEA14662AD73AD6001E1C23 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
@@ -242,7 +242,7 @@
 				3D943E7B2AFBFA22009EF365 /* RoboScoutActivityController.swift */,
 				3D5FA4942AFEAA4F00149E88 /* AppDelegate.swift */,
 				3DB11E4D299543D9001DDB02 /* VRCRoboScoutApp.swift */,
-				3D3219C629D0BD5500EF5500 /* Importer.swift */,
+				3DB21DD42B054D6400B12803 /* RootView.swift */,
 				3DB11E4F299543D9001DDB02 /* Favorites.swift */,
 				3D3219C829D1CFF300EF5500 /* TeamEventsView.swift */,
 				3D3219CA29D1EA0D00EF5500 /* EventView.swift */,
@@ -476,8 +476,8 @@
 				3D84D77A2A40A6320043F8ED /* EventDivisionMatches.swift in Sources */,
 				3D919AEF29F6F70C00E1724F /* EventSkillsRankings.swift in Sources */,
 				3D3219CF29D31BD500EF5500 /* EventTeams.swift in Sources */,
+				3DB21DD52B054D6400B12803 /* RootView.swift in Sources */,
 				3D1E7F4F2AAA2B4F009BA258 /* RoboScoutData.xcdatamodeld in Sources */,
-				3D3219C729D0BD5500EF5500 /* Importer.swift in Sources */,
 				3D3219D129D3327500EF5500 /* EventTeamMatches.swift in Sources */,
 				3DB11E4E299543D9001DDB02 /* VRCRoboScoutApp.swift in Sources */,
 				3D0BE6F929A3F0C700C3EA8A /* Lookup.swift in Sources */,

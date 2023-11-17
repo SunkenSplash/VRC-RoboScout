@@ -172,6 +172,14 @@ struct NoData: View {
     }
 }
 
+struct ProcessingData: View {
+    var body: some View {
+        ProgressView().font(.system(size: 30)).foregroundColor(.secondary)
+        Spacer().frame(height: 5)
+        Text("Processing Data").foregroundColor(.secondary)
+    }
+}
+
 class UserSettings: ObservableObject {
     private var colorString: String
     private var minimalistic: Bool
@@ -296,7 +304,7 @@ struct VRCRoboScout: App {
     
     var body: some Scene {
         WindowGroup {
-            Importer()
+            RootView()
                 .environmentObject(favorites)
                 .environmentObject(settings)
                 .environmentObject(dataController)
@@ -307,6 +315,11 @@ struct VRCRoboScout: App {
                     #else
                     print("Release configuration")
                     #endif
+                    DispatchQueue.global(qos: .userInteractive).async {
+                        API.generate_season_id_map()
+                        API.update_world_skills_cache()
+                        API.update_vrc_data_analysis_cache()
+                    }
                 }
         }
     }

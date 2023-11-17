@@ -8,7 +8,7 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-struct TrueSkillTeam: Identifiable {
+struct TrueSkillTeam: Identifiable, Hashable {
     let id = UUID()
     let number: String
     let trueskill: Double
@@ -61,48 +61,44 @@ class TrueSkillTeams: ObservableObject {
         // Favorites
         if filter_array.count != 0 {
             var rank = 1
-            for team in API.vrc_data_analysis_cache {
-                if !filter_array.contains(team["number"] as! String) {
+            for team in API.vrc_data_analysis_cache.teams {
+                if !filter_array.contains(team.team_number) {
                     continue
                 }
-                self.trueskill_teams.append(TrueSkillTeam(number: team["number"] as! String, trueskill: team["trueskill"] as! Double, abs_ranking: team["abs_ranking"] as! Int, ranking: team["trueskill_ranking"] as! Int, ranking_change: team["trueskill_ranking_change"] as! Int, ccwm: team["ccwm"] as! Double, total_wins: team["total_wins"] as! Int, total_losses: team["total_losses"] as! Int , total_ties: team["total_ties"] as! Int))
+                self.trueskill_teams.append(TrueSkillTeam(number: team.team_number, trueskill: team.trueskill, abs_ranking: rank, ranking: team.ts_ranking, ranking_change: team.ranking_change, ccwm: team.ccwm, total_wins: team.total_wins, total_losses: team.total_losses, total_ties: team.total_ties))
                 rank += 1
             }
         }
         // Region
         else if region != "" {
             var rank = 1
-            for team in API.vrc_data_analysis_cache {
-                if region != "" && region != (team["region"] as! String) {
+            for team in API.vrc_data_analysis_cache.teams {
+                if region != "" && region != team.loc_region {
                     continue
                 }
-                self.trueskill_teams.append(TrueSkillTeam(number: team["number"] as! String, trueskill: team["trueskill"] as! Double, abs_ranking: team["abs_ranking"] as! Int, ranking: team["trueskill_ranking"] as! Int, ranking_change: team["trueskill_ranking_change"] as! Int, ccwm: team["ccwm"] as! Double, total_wins: team["total_wins"] as! Int, total_losses: team["total_losses"] as! Int , total_ties: team["total_ties"] as! Int))
+                self.trueskill_teams.append(TrueSkillTeam(number: team.team_number, trueskill: team.trueskill, abs_ranking: rank, ranking: team.ts_ranking, ranking_change: team.ranking_change, ccwm: team.ccwm, total_wins: team.total_wins, total_losses: team.total_losses, total_ties: team.total_ties))
                 rank += 1
             }
         }
         // Letter
         else if letter != "0" {
             var rank = 1
-            for team in API.vrc_data_analysis_cache {
-                if letter != (team["number"] as! String).last {
+            for team in API.vrc_data_analysis_cache.teams {
+                if letter != team.team_number.last {
                     continue
                 }
-                self.trueskill_teams.append(TrueSkillTeam(number: team["number"] as! String, trueskill: team["trueskill"] as! Double, abs_ranking: team["abs_ranking"] as! Int, ranking: team["trueskill_ranking"] as! Int, ranking_change: team["trueskill_ranking_change"] as! Int, ccwm: team["ccwm"] as! Double, total_wins: team["total_wins"] as! Int, total_losses: team["total_losses"] as! Int , total_ties: team["total_ties"] as! Int))
+                self.trueskill_teams.append(TrueSkillTeam(number: team.team_number, trueskill: team.trueskill, abs_ranking: rank, ranking: team.ts_ranking, ranking_change: team.ranking_change, ccwm: team.ccwm, total_wins: team.total_wins, total_losses: team.total_losses, total_ties: team.total_ties))
                 rank += 1
             }
         }
         // World
         else {
-            for var i in 0..<API.vrc_data_analysis_cache.count {
-                if API.vrc_data_analysis_cache.count == 0 || API.vrc_data_analysis_cache.count == i {
-                    return
-                }
-                if i == API.vrc_data_analysis_cache.count {
-                    i -= 1
-                    continue
-                }
-                let team = API.vrc_data_analysis_cache[i]
-                self.trueskill_teams.append(TrueSkillTeam(number: team["number"] as! String, trueskill: team["trueskill"] as! Double, abs_ranking: team["abs_ranking"] as! Int, ranking: team["trueskill_ranking"] as! Int, ranking_change: team["trueskill_ranking_change"] as! Int, ccwm: team["ccwm"] as! Double, total_wins: team["total_wins"] as! Int, total_losses: team["total_losses"] as! Int , total_ties: team["total_ties"] as! Int))
+            if API.vrc_data_analysis_cache.teams.count == 0 {
+                return
+            }
+            for i in 0..<API.vrc_data_analysis_cache.teams.count {
+                let team = API.vrc_data_analysis_cache.teams[i]
+                self.trueskill_teams.append(TrueSkillTeam(number: team.team_number, trueskill: team.trueskill, abs_ranking: i + 1, ranking: team.ts_ranking, ranking_change: team.ranking_change, ccwm: team.ccwm, total_wins: team.total_wins, total_losses: team.total_losses, total_ties: team.total_ties))
             }
         }
     }
@@ -118,10 +114,11 @@ struct TrueSkillRankings: View {
     @State private var region = ""
     @State private var letter: Character = "0"
     @State private var trueskill_rankings = TrueSkillTeams(fetch: false)
+    @State private var show_leaderboard = false
         
     var body: some View {
         VStack {
-            if API.vrc_data_analysis_cache.isEmpty {
+            if API.vrc_data_analysis_cache.teams.isEmpty {
                 NoData()
             }
             else {
@@ -170,14 +167,24 @@ struct TrueSkillRankings: View {
                 }.fontWeight(.medium)
                     .font(.system(size: 19))
                     .padding(20)
-                ScrollViewReader { proxy in
+                if (show_leaderboard) {
                     List($trueskill_rankings.trueskill_teams) { team in
                         TrueSkillRow(team_trueskill: team.wrappedValue).id(team.wrappedValue.abs_ranking)
                     }
                 }
             }
         }.onAppear{
+            self.show_leaderboard = true
             navigation_bar_manager.title = $display_trueskill.wrappedValue
+            if self.trueskill_rankings.trueskill_teams.isEmpty {
+                display_trueskill = "World TrueSkill"
+                navigation_bar_manager.title = display_trueskill
+                region = ""
+                trueskill_rankings = TrueSkillTeams(fetch: false)
+            }
+        }
+        .onDisappear{
+            self.show_leaderboard = false
         }
     }
 }

@@ -81,7 +81,7 @@ struct Settings: View {
                         }
                     HStack {
                         Spacer()
-                        if showLoading {
+                        if showLoading || API.season_id_map.isEmpty {
                             ProgressView()
                         }
                         else {

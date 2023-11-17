@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct WorldSkillsTeam: Identifiable {
+struct WorldSkillsTeam: Identifiable, Hashable {
     let id = UUID()
     let number: String
     let ranking: Int
@@ -17,6 +17,17 @@ struct WorldSkillsTeam: Identifiable {
     let highest_driver: Int
     let highest_programming: Int
     let combined: Int
+    
+    init(world_skills: WorldSkills, ranking: Int, additional_ranking: Int? = nil) {
+        self.number = world_skills.team.number
+        self.ranking = ranking
+        self.additional_ranking = additional_ranking ?? 0
+        self.driver = world_skills.driver
+        self.programming = world_skills.programming
+        self.highest_driver = world_skills.highest_driver
+        self.highest_programming = world_skills.highest_programming
+        self.combined = world_skills.combined
+    }
 }
 
 struct WorldSkillsRow: View {
@@ -56,51 +67,51 @@ class WorldSkillsTeams: ObservableObject {
     var world_skills_teams: [WorldSkillsTeam]
     
     init(region: Int = 0, letter: Character = "0", filter_array: [String] = [], fetch: Bool = false) {
-        if fetch && API.world_skills_cache.count == 0 {
+        if fetch && API.world_skills_cache.teams.count == 0 {
             API.update_world_skills_cache()
         }
         self.world_skills_teams = [WorldSkillsTeam]()
         // Favorites
         if filter_array.count != 0 {
             var rank = 1
-            for team in API.world_skills_cache {
-                if !filter_array.contains((team["team"] as! [String: Any])["team"] as! String) {
+            for team in API.world_skills_cache.teams {
+                if !filter_array.contains(team.team.number) {
                     continue
                 }
-                self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: rank, additional_ranking: team["rank"] as! Int, driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, highest_driver: (team["scores"] as! [String: Any])["maxDriver"] as! Int, highest_programming: (team["scores"] as! [String: Any])["maxProgramming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
+                self.world_skills_teams.append(WorldSkillsTeam(world_skills: team, ranking: rank, additional_ranking: team.ranking))
                 rank += 1
             }
         }
         // Region
         else if region != 0 {
             var rank = 1
-            for team in API.world_skills_cache {
-                if region != (team["team"] as! [String: Any])["eventRegionId"] as! Int {
+            for team in API.world_skills_cache.teams {
+                if region != team.event_region_id {
                     continue
                 }
-                self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: rank, additional_ranking: team["rank"] as! Int, driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, highest_driver: (team["scores"] as! [String: Any])["maxDriver"] as! Int, highest_programming: (team["scores"] as! [String: Any])["maxProgramming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
+                self.world_skills_teams.append(WorldSkillsTeam(world_skills: team, ranking: rank, additional_ranking: team.ranking))
                 rank += 1
             }
         }
         // Letter
         else if letter != "0" {
             var rank = 1
-            for team in API.world_skills_cache {
-                if letter != ((team["team"] as! [String: Any])["team"] as! String).last {
+            for team in API.world_skills_cache.teams {
+                if letter != team.team.number.last {
                     continue
                 }
-                self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: rank, additional_ranking: team["rank"] as! Int, driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, highest_driver: (team["scores"] as! [String: Any])["maxDriver"] as! Int, highest_programming: (team["scores"] as! [String: Any])["maxProgramming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
+                self.world_skills_teams.append(WorldSkillsTeam(world_skills: team, ranking: rank, additional_ranking: team.ranking))
                 rank += 1
             }
         }
         // World
         else {
-            if API.world_skills_cache.count == 0 {
+            if API.world_skills_cache.teams.count == 0 {
                 return
             }
-            for i in 0..<API.world_skills_cache.count {
-                let team = API.world_skills_cache[i]
-                self.world_skills_teams.append(WorldSkillsTeam(number: (team["team"] as! [String: Any])["team"] as! String, ranking: team["rank"] as! Int, additional_ranking: 0, driver: (team["scores"] as! [String: Any])["driver"] as! Int, programming: (team["scores"] as! [String: Any])["programming"] as! Int, highest_driver: (team["scores"] as! [String: Any])["maxDriver"] as! Int, highest_programming: (team["scores"] as! [String: Any])["maxProgramming"] as! Int, combined: (team["scores"] as! [String: Any])["score"] as! Int))
+            for i in 0..<API.world_skills_cache.teams.count {
+                let team = API.world_skills_cache.teams[i]
+                self.world_skills_teams.append(WorldSkillsTeam(world_skills: team, ranking: team.ranking))
             }
         }
     }
@@ -118,10 +129,11 @@ struct WorldSkillsRankings: View {
     @State private var world_skills_rankings = WorldSkillsTeams(fetch: false)
     @State private var season_id = API.selected_season_id()
     @State private var grade_level = UserSettings.getGradeLevel()
+    @State private var show_leaderboard = false
     
     var body: some View {
         VStack {
-            if API.world_skills_cache.isEmpty {
+            if API.world_skills_cache.teams.isEmpty {
                 NoData()
             }
             else {
@@ -174,15 +186,16 @@ struct WorldSkillsRankings: View {
                 }.fontWeight(.medium)
                     .font(.system(size: 19))
                     .padding(20)
-                ScrollViewReader { proxy in
+                if (show_leaderboard) {
                     List($world_skills_rankings.world_skills_teams) { team in
                         WorldSkillsRow(team_world_skills: team.wrappedValue).id(team.wrappedValue.ranking)
                     }
                 }
             }
         }.onAppear{
+            self.show_leaderboard = true
             navigation_bar_manager.title = $display_skills.wrappedValue
-            if (API.selected_season_id() != self.season_id) || (UserSettings.getGradeLevel() != self.grade_level) {
+            if (API.selected_season_id() != self.season_id) || (UserSettings.getGradeLevel() != self.grade_level) || (self.world_skills_rankings.world_skills_teams.isEmpty) {
                 display_skills = "World Skills"
                 navigation_bar_manager.title = display_skills
                 region_id = 0
@@ -191,6 +204,9 @@ struct WorldSkillsRankings: View {
                 self.season_id = API.selected_season_id()
                 self.grade_level = UserSettings.getGradeLevel()
             }
+        }
+        .onDisappear{
+            self.show_leaderboard = false
         }
     }
 }

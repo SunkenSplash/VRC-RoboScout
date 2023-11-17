@@ -206,7 +206,7 @@ struct TeamLookup: View {
     @State var fetched: Bool = false
     @State private var team: Team = Team()
     @State private var vrc_data_analysis = VRCDataAnalysis()
-    @State private var world_skills = WorldSkills(team: Team())
+    @State private var world_skills = WorldSkills()
     @State private var avg_rank: Double = 0.0
     @State private var award_counts = OrderedDictionary<String, Int>()
     @State private var showLoading: Bool = false
@@ -226,7 +226,7 @@ struct TeamLookup: View {
             print("Error loading AdamScore model")
             return "Error"
         }
-        guard let score = try? model.prediction(world_skills_ranking: Double(world_skills.ranking), trueskill_ranking: Double(vrc_data_analysis.trueskill_ranking), average_qualification_ranking: avg_rank, winrate: Double(vrc_data_analysis.total_wins) / Double(vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties)) else {
+        guard let score = try? model.prediction(world_skills_ranking: Double(world_skills.ranking), trueskill_ranking: Double(vrc_data_analysis.ts_ranking), average_qualification_ranking: avg_rank, winrate: Double(vrc_data_analysis.total_wins) / Double(vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties)) else {
             print("Runtime error with AdamScore model")
             return "Error"
         }
@@ -251,7 +251,7 @@ struct TeamLookup: View {
             }
             
             let fetced_vrc_data_analysis = API.vrc_data_analysis_for(team: fetched_team, fetch: false)
-            let fetched_world_skills = API.world_skills_for(team: fetched_team)
+            let fetched_world_skills = API.world_skills_for(team: fetched_team) ?? WorldSkills(team: team, data: [String: Any]())
             let fetched_avg_rank = fetched_team.average_ranking()
             fetched_team.fetch_awards()
             
@@ -273,7 +273,7 @@ struct TeamLookup: View {
                         
             DispatchQueue.main.async {
                 team = fetched_team
-                vrc_data_analysis = fetced_vrc_data_analysis
+                vrc_data_analysis = fetced_vrc_data_analysis ?? VRCDataAnalysis()
                 world_skills = fetched_world_skills
                 avg_rank = fetched_avg_rank
                 award_counts = fetched_award_counts
@@ -391,16 +391,16 @@ struct TeamLookup: View {
                 }
                 HStack {
                     Menu("TrueSkill Ranking") {
-                        Text(fetched && $vrc_data_analysis.wrappedValue.trueskill_ranking != 0 ? "\(displayRoundedTenths(number: vrc_data_analysis.trueskill)) TrueSkill" : "No TrueSkill data")
-                        Text((vrc_data_analysis.trueskill_ranking_change >= 0 ? "Up " : "Down ") + "\(abs(vrc_data_analysis.trueskill_ranking_change))" + " places since last update")
+                        Text(fetched && $vrc_data_analysis.wrappedValue.ts_ranking != 0 ? "\(displayRoundedTenths(number: vrc_data_analysis.trueskill)) TrueSkill" : "No TrueSkill data")
+                        Text((vrc_data_analysis.ranking_change >= 0 ? "Up " : "Down ") + "\(abs(vrc_data_analysis.ranking_change))" + " places since last update")
                     }
                     Spacer()
-                    Text(fetched && $vrc_data_analysis.wrappedValue.trueskill_ranking != 0 ? "# \(vrc_data_analysis.trueskill_ranking) of \(API.vrc_data_analysis_cache.count)" : "")
+                    Text(fetched && $vrc_data_analysis.wrappedValue.ts_ranking != 0 ? "# \(vrc_data_analysis.ts_ranking) of \(API.vrc_data_analysis_cache.teams.count)" : "")
                 }
                 HStack {
                     Text("World Skills Ranking")
                     Spacer()
-                    Text(fetched && world_skills.ranking != 0 ? "# \(world_skills.ranking) of \(API.world_skills_cache.count)" : "")
+                    Text(fetched && world_skills.ranking != 0 ? "# \(world_skills.ranking) of \(API.world_skills_cache.teams.count)" : "")
                 }
                 HStack {
                     Menu("World Skills Score") {

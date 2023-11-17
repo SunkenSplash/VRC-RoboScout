@@ -236,8 +236,8 @@ struct DataExporter: View {
                             }
                             data += number
                             let team = event.teams.first(where: { $0.number == number })!
-                            let world_skills = API.world_skills_for(team: team)
-                            let vrc_data_analysis = API.vrc_data_analysis_for(team: team, fetch: false)
+                            let world_skills = API.world_skills_for(team: team) ?? WorldSkills(team: team, data: [String: Any]())
+                            let vrc_data_analysis = API.vrc_data_analysis_for(team: team, fetch: false) ?? VRCDataAnalysis()
                             for (option, state) in selected {
                                 guard state else { continue }
                                 if option == "Team Name" {
@@ -296,7 +296,7 @@ struct DataExporter: View {
                                     data += ",\(world_skills.driver)"
                                 }
                                 else if option == "TrueSkill Ranking" {
-                                    data += ",\(vrc_data_analysis.trueskill_ranking)"
+                                    data += ",\(vrc_data_analysis.ts_ranking)"
                                 }
                                 else if option == "TrueSkill Score" {
                                     data += ",\(vrc_data_analysis.trueskill)"

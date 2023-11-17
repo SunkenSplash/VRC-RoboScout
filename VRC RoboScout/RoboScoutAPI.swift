@@ -16,18 +16,100 @@ enum RoboScoutAPIError: Error {
     case missing_data(String)
 }
 
+public struct WorldSkillsResponse: Decodable {
+    
+    public struct WorldSkillsResponseTeam: Decodable {
+        var id: Int
+        var program: String
+        var team: String
+        var teamName: String
+        var organization: String
+        var city: String
+        var region: String?
+        var country: String
+        var eventRegion: String
+        var eventRegionId: Int
+    }
+    
+    public struct WorldSkillsResponseEvent: Decodable {
+        var sku: String
+    }
+    
+    public struct WorldSkillsResponseScores: Decodable {
+        var score: Int
+        var programming: Int
+        var driver: Int
+        var maxProgramming: Int
+        var maxDriver: Int
+    }
+    
+    var rank: Int
+    var team: WorldSkillsResponseTeam
+    var event: WorldSkillsResponseEvent
+    var scores: WorldSkillsResponseScores
+}
+
+public struct WorldSkillsCache {
+    var teams: [WorldSkills]
+    
+    public init() {
+        self.teams = [WorldSkills]()
+    }
+    
+    public init(responses: [WorldSkillsResponse]) {
+        self.teams = responses.map{
+            WorldSkills(team: Team(id: $0.team.id, number: $0.team.team, fetch: false), ranking: $0.rank, event: Event(sku: $0.event.sku, fetch: false), driver: $0.scores.driver, programming: $0.scores.programming, highest_driver: $0.scores.maxDriver, highest_programming: $0.scores.maxProgramming, combined: $0.scores.score, event_region: $0.team.eventRegion, event_region_id: $0.team.eventRegionId)
+        }
+    }
+}
+
+public struct VRCDataAnalysisResponse: Decodable {
+    var ts_ranking: Int
+    var ranking_change: Int?
+    var team_number: String
+    var id: Int
+    var loc_region: String
+    var loc_country: String
+    var trueskill: Double
+    var ccwm: Double
+    var total_wins: Int
+    var total_losses: Int
+    var total_ties: Int
+    var ap_per_match: Double
+    var awp_per_match: Double
+    var wp_per_match: Double
+    var opr: Double
+    var dpr: Double
+    var qualified_for_regionals: Int
+    var qualified_for_worlds: Int
+}
+
+public struct VRCDataAnalysisCache {
+    var teams: [VRCDataAnalysis]
+    
+    public init() {
+        self.teams = [VRCDataAnalysis]()
+    }
+    
+    public init(responses: [VRCDataAnalysisResponse]) {
+        self.teams = responses.map{
+            VRCDataAnalysis(response: $0)
+        }
+    }
+}
+
 public class RoboScoutAPI {
     
-    public var world_skills_cache: [[String: Any]]
+    public var world_skills_cache: WorldSkillsCache
     public var regions_map: [String: Int]
-    public var vrc_data_analysis_cache: [[String: Any]]
+    public var vrc_data_analysis_cache: VRCDataAnalysisCache
     public var season_id_map: [OrderedDictionary<Int, String>] // [VRC, VEXU]
     public var current_skills_season_id: Int
     
     public init() {
-        self.world_skills_cache = [[String: Any]]()
+        self.world_skills_cache = WorldSkillsCache()
         self.regions_map = [String: Int]()
-        self.vrc_data_analysis_cache = [[String: Any]]()
+        self.vrc_data_analysis_cache = VRCDataAnalysisCache()
         self.season_id_map = [OrderedDictionary<Int, String>]()
         self.current_skills_season_id = 0
     }
@@ -273,19 +355,20 @@ public class RoboScoutAPI {
         
         let task = URLSession.shared.dataTask(with: request as URLRequest) { (response_data, response, error) in
             if response_data != nil {
-                // Convert the data to JSON
-                let json = try? JSONSerialization.jsonObject(with: response_data!) as? [[String: Any]]
+                // Decode
+                let data: WorldSkillsCache
                 
-                if json != nil {
-                    self.world_skills_cache = json!
+                do {
+                    data = WorldSkillsCache(responses: try JSONDecoder().decode([WorldSkillsResponse].self, from: response_data!))
+                    self.world_skills_cache = data
                     self.current_skills_season_id = season ?? self.selected_season_id()
-                    for entry in self.world_skills_cache {
-                        self.regions_map[(entry["team"] as! [String: Any])["eventRegion"] as? String ?? ""] = (entry["team"] as! [String: Any])["eventRegionId"] as? Int ?? 0
+                    for team in self.world_skills_cache.teams {
+                        self.regions_map[team.event_region] = team.event_region_id
                     }
                     print("World skills cache updated")
                 }
-                else {
-                    self.world_skills_cache = [[String: Any]]()
+                catch let error as NSError {
+                    print("NSERROR " + error.description)
                     print("Failed to update world skills cache")
                 }
                 semaphore.signal()
@@ -298,37 +381,24 @@ public class RoboScoutAPI {
         _ = semaphore.wait(timeout: DispatchTime.distantFuture)
     }
         
-    public func world_skills_for(team: Team) -> WorldSkills {
-        if self.world_skills_cache.count == 0  {
+    public func world_skills_for(team: Team) -> WorldSkills? {
+        if self.world_skills_cache.teams.isEmpty {
             self.update_world_skills_cache()
         }
-        
-        var skills_data = [String: Any]()
-        for skills_entry in self.world_skills_cache {
-            if (skills_entry["team"] as! [String: Any])["id"] as! Int == team.id {
-                skills_data = skills_entry
-                break
-            }
-        }
-        return WorldSkills(team: team, data: skills_data)
+        return self.world_skills_cache.teams.first{ $0.team.id == team.id }
     }
                     
-    public func world_skills_place(ranking: Int) -> WorldSkills {
-        if self.world_skills_cache.count == 0 {
+    public func world_skills_place(ranking: Int) -> WorldSkills? {
+        if self.world_skills_cache.teams.isEmpty {
             self.update_world_skills_cache()
         }
-        var skills_data = [String: Any]()
-        for skills_entry in self.world_skills_cache {
-            if skills_entry["rank"] as! Int == ranking {
-                skills_data = skills_entry
-                break
-            }
+        if ranking < 1 || ranking > self.world_skills_cache.teams.count {
+            return nil
         }
-        return WorldSkills(team: Team(id: (skills_data["team"] as! [String: Any])["id"] as! Int), data: skills_data)
+        return self.world_skills_cache.teams[ranking - 1]
     }
-                
+    
     public func update_vrc_data_analysis_cache() {
-        
         let semaphore = DispatchSemaphore(value: 0)
             
         let components = URLComponents(string: "https://vrc-data-analysis.com/v1/allteams")!
@@ -336,82 +406,22 @@ public class RoboScoutAPI {
         let request = NSMutableURLRequest(url: components.url! as URL)
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
+                
         let task = URLSession.shared.dataTask(with: request as URLRequest) { (response_data, response, error) in
             if response_data != nil {
+                // Decode
+                let data: VRCDataAnalysisCache
+                
                 do {
-                    // Convert the data to JSON
-                    let json = try JSONSerialization.jsonObject(with: response_data!) as? [[String: Any]]
-                    
-                    if json == nil {
-                        print("Failed to update VRC Data Analysis cache")
-                        return
-                    }
-                    
-                    self.vrc_data_analysis_cache = [[String: Any]]()
-                    
-                    var abs_ranking = 0
-                    var prev_count = 0
-                    for team in json! {
-                        
-                        if team["ts_ranking"] as? Int ?? 0 == 99999 {
-                            break
-                        }
-                        
-                        let team = team as [String: Any]
-                        
-                        var team_data_dict = [String: Any]()
-                        
-                        team_data_dict = [
-                            "abs_ranking": abs_ranking,
-                            "trueskill_ranking": team["ts_ranking"] as? Int ?? 0,
-                            "trueskill_ranking_change": team["ranking_change"] as? Int ?? 0,
-                            "name": team["team_name"] as? String ?? "",
-                            "id": Int(team["id"] as? Double ?? 0.0),
-                            "number": team["team_number"] as? String ?? "",
-                            "grade": team["grade"] as? String ?? "",
-                            "region": team["event_region"] as? String ?? "",
-                            "country": team["loc_country"] as? String ?? "",
-                            "trueskill": team["trueskill"] as? Double ?? 0.0,
-                            "ccwm": team["ccwm"] as? Double ?? 0.0,
-                            "opr": team["opr"] as? Double ?? 0.0,
-                            "dpr": team["dpr"] as? Double ?? 0.0,
-                            "ap_per_match": team["ap_per_match"] as? Double ?? 0.0,
-                            "awp_per_match": team["awp_per_match"] as? Double ?? 0.0,
-                            "wp_per_match": team["wp_per_match"] as? Double ?? 0.0,
-                            "total_wins": Int(team["total_wins"] as? Double ?? 0.0),
-                            "total_losses": Int(team["total_losses"] as? Double ?? 0.0),
-                            "total_ties": Int(team["total_ties"] as? Double ?? 0.0),
-                            "elimination_wins": Int(team["elimination_wins"] as? Double ?? 0.0),
-                            "elimination_losses": Int(team["elimination_losses"] as? Double ?? 0.0),
-                            "elimination_ties": Int(team["elimination_ties"] as? Double ?? 0.0),
-                            "qualifier_wins": Int(team["qual_wins"] as? Double ?? 0.0),
-                            "qualifier_losses": Int(team["qual_losses"] as? Double ?? 0.0),
-                            "qualifier_ties": Int(team["qual_ties"] as? Double ?? 0.0),
-                            "regionals_qualified": team["qualified_for_regionals"] as? Int == 1,
-                            "worlds_qualified": team["qualified_for_worlds"] as? Int == 1
-                        ]
-                        
-                        self.vrc_data_analysis_cache.append(team_data_dict)
-                        
-                        self.vrc_data_analysis_cache.sort(by: {
-                            ($0["abs_ranking"] as! Int) < ($1["abs_ranking"] as! Int)
-                        })
-                        
-                        if self.vrc_data_analysis_cache.count > prev_count {
-                            abs_ranking += 1
-                        }
-                        prev_count = self.vrc_data_analysis_cache.count
-                    }
-                    print("Updated VRC Data Analysis cache")
-                    
-                    semaphore.signal()
-                    
-
-                }  catch let error as NSError {
-                    print(error.localizedDescription)
-                    semaphore.signal()
+                    data = VRCDataAnalysisCache(responses:  try JSONDecoder().decode([VRCDataAnalysisResponse].self, from: response_data!))
+                    self.vrc_data_analysis_cache = data
+                    print("VRC Data Analysis cache updated")
                 }
+                catch let error as NSError {
+                    print("NSERROR " + error.description)
+                    print("Failed to update VRC Data Analysis cache")
+                }
+                semaphore.signal()
             } else if let error = error {
                 print(error.localizedDescription)
                 semaphore.signal()
@@ -421,120 +431,77 @@ public class RoboScoutAPI {
         _ = semaphore.wait(timeout: DispatchTime.distantFuture)
     }
     
-    public func fetch_raw_vrc_data_analysis() -> [[String: Any]] {
-        let semaphore = DispatchSemaphore(value: 0)
-            
-        let components = URLComponents(string: "https://vrc-data-analysis.com/v1/allteams")!
-                    
-        let request = NSMutableURLRequest(url: components.url! as URL)
-        request.httpMethod = "GET"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        var data = [[String: Any]]()
-        
-        let task = URLSession.shared.dataTask(with: request as URLRequest) { (response_data, response, error) in
-            if response_data != nil {
-                do {
-                    // Convert the data to JSON
-                    let json = ((try JSONSerialization.jsonObject(with: response_data!) as? [[String: Any]]) ?? [[String: Any]]()).filter({ ($0["ts_ranking"] as! Int) != 99999 })
-                    data = json
-                    semaphore.signal()
-                }  catch let error as NSError {
-                    print(error.localizedDescription)
-                    semaphore.signal()
-                }
-            } else if let error = error {
-                print(error.localizedDescription)
-                semaphore.signal()
-            }
-        }
-        task.resume()
-        _ = semaphore.wait(timeout: DispatchTime.distantFuture)
-        
-        return data
-    }
-    
-    public func vrc_data_analysis_for(team: Team, fetch: Bool) -> VRCDataAnalysis {
-        var vrc_data_analysis_data = [String: Any]()
-        if fetch {
-            vrc_data_analysis_data = RoboScoutAPI.vrc_data_analysis_request(request_url: "/team/\(team.number)")
-        }
-        else {
-            for vrc_data_analysis_entry in self.vrc_data_analysis_cache {
-                if vrc_data_analysis_entry["id"] as! Int == team.id {
-                    vrc_data_analysis_data = vrc_data_analysis_entry
-                    break
-                }
-            }
-        }
-        
-        return VRCDataAnalysis(data: vrc_data_analysis_data)
+    public func vrc_data_analysis_for(team: Team, fetch: Bool) -> VRCDataAnalysis? {
+        return self.vrc_data_analysis_cache.teams.first{ $0.id == team.id }
     }
     
 }
         
 public class VRCDataAnalysis {
     
-    public var id: Int
+    public var ts_ranking: Int
+    public var ranking_change: Int
     public var team_number: String
-    public var abs_ranking: Int
-    public var trueskill_ranking: Int
-    public var trueskill_ranking_change: Int
-    public var name: String
-    public var grade: String
-    public var region: String
-    public var country: String
+    public var id: Int
+    public var loc_region: String
+    public var loc_country: String
     public var trueskill: Double
     public var ccwm: Double
-    public var opr: Double
-    public var dpr: Double
-    public var ap_per_match: Double
-    public var awp_per_match: Double
-    public var wp_per_match: Double
     public var total_wins: Int
     public var total_losses: Int
     public var total_ties: Int
-    public var elimination_wins: Int
-    public var elimination_losses: Int
-    public var elimination_ties: Int
-    public var qualifier_wins: Int
-    public var qualifier_losses: Int
-    public var qualifier_ties: Int
-    public var regionals_qualified: Bool
-    public var worlds_qualified: Bool
+    public var ap_per_match: Double
+    public var awp_per_match: Double
+    public var wp_per_match: Double
+    public var opr: Double
+    public var dpr: Double
+    public var qualified_for_regionals: Int
+    public var qualified_for_worlds: Int
     
-    public init(data: [String: Any] = [:]) {
-        self.id = (data["id"] != nil) ? data["id"] as! Int : 0
-        self.team_number = (data["team_number"] != nil) ? data["team_number"] as! String : ""
-        self.abs_ranking = (data["abs_ranking"] != nil) ? data["abs_ranking"] as! Int : 0
-        self.trueskill_ranking = (data["trueskill_ranking"] != nil) ? data["trueskill_ranking"] as! Int : 0
-        self.trueskill_ranking_change = (data["trueskill_ranking_change"] != nil) ? data["trueskill_ranking_change"] as! Int : 0
-        self.name = (data["name"] != nil) ? data["name"] as! String : ""
-        self.grade = (data["grade"] != nil) ? data["grade"] as! String : ""
-        self.region = (data["region"] != nil) ? data["region"] as! String : ""
-        self.country = (data["country"] != nil) ? data["country"] as! String : ""
-        self.trueskill = (data["trueskill"] != nil) ? data["trueskill"] as! Double : 0.0
-        self.ccwm = (data["ccwm"] != nil) ? data["ccwm"] as! Double : 0.0
-        self.opr = (data["opr"] != nil) ? data["opr"] as! Double : 0.0
-        self.dpr = (data["dpr"] != nil) ? data["dpr"] as! Double : 0.0
-        self.ap_per_match = (data["ap_per_match"] != nil) ? data["ap_per_match"] as! Double : 0.0
-        self.awp_per_match = (data["awp_per_match"] != nil) ? data["awp_per_match"] as! Double : 0.0
-        self.wp_per_match = (data["wp_per_match"] != nil) ? data["wp_per_match"] as! Double : 0.0
-        self.total_wins = (data["total_wins"] != nil) ? data["total_wins"] as! Int : 0
-        self.total_losses = (data["total_losses"] != nil) ? data["total_losses"] as! Int : 0
-        self.total_ties = (data["total_ties"] != nil) ? data["total_ties"] as! Int : 0
-        self.elimination_wins = (data["elimination_wins"] != nil) ? data["elimination_wins"] as! Int : 0
-        self.elimination_losses = (data["elimination_losses"] != nil) ? data["elimination_losses"] as! Int : 0
-        self.elimination_ties = (data["elimination_ties"] != nil) ? data["elimination_ties"] as! Int : 0
-        self.qualifier_wins = (data["qualifier_wins"] != nil) ? data["qualifier_wins"] as! Int : 0
-        self.qualifier_losses = (data["qualifier_losses"] != nil) ? data["qualifier_losses"] as! Int : 0
-        self.qualifier_ties = (data["qualifier_ties"] != nil) ? data["qualifier_ties"] as! Int : 0
-        self.regionals_qualified = (data["regionals_qualified"] != nil) ? data["regionals_qualified"] as! Bool : false
-        self.worlds_qualified = (data["worlds_qualified"] != nil) ? data["worlds_qualified"] as! Bool : false
+    public init(response: VRCDataAnalysisResponse) {
+        self.ts_ranking = response.ts_ranking
+        self.ranking_change = response.ranking_change ?? 0
+        self.team_number = response.team_number
+        self.id = response.id
+        self.loc_region = response.loc_region
+        self.loc_country = response.loc_country
+        self.trueskill = response.trueskill
+        self.ccwm = response.ccwm
+        self.total_wins = response.total_wins
+        self.total_losses = response.total_losses
+        self.total_ties = response.total_ties
+        self.ap_per_match = response.ap_per_match
+        self.awp_per_match = response.awp_per_match
+        self.wp_per_match = response.wp_per_match
+        self.opr = response.opr
+        self.dpr = response.dpr
+        self.qualified_for_regionals = response.qualified_for_regionals
+        self.qualified_for_worlds = response.qualified_for_worlds
+    }
+    
+    public init() {
+        self.ts_ranking = 0
+        self.ranking_change = 0
+        self.team_number = ""
+        self.id = 0
+        self.loc_region = ""
+        self.loc_country = ""
+        self.trueskill = 0
+        self.ccwm = 0
+        self.total_wins = 0
+        self.total_losses = 0
+        self.total_ties = 0
+        self.ap_per_match = 0
+        self.awp_per_match = 0
+        self.wp_per_match = 0
+        self.opr = 0
+        self.dpr = 0
+        self.qualified_for_regionals = 0
+        self.qualified_for_worlds = 0
     }
     
     public func toString() -> String {
-        return String(format: "%@ #%d - %f", self.team_number, self.trueskill_ranking, self.trueskill)
+        return String(format: "%@ #%d - %f", self.team_number, self.ts_ranking, self.trueskill)
     }
 }
 
@@ -543,8 +510,8 @@ public class Division: Hashable {
     public var name: String
     
     public func hash(into hasher: inout Hasher) {
-            hasher.combine(0)
-        }
+        hasher.combine(0)
+    }
     
     public init(data: [String: Any] = [:]) {
         self.id = data["id"] as? Int ?? 0
@@ -1303,6 +1270,21 @@ public class WorldSkills {
     public var highest_driver: Int
     public var highest_programming: Int
     public var combined: Int
+    public var event_region: String
+    public var event_region_id: Int
+    
+    public init(team: Team, ranking: Int, event: Event, driver: Int, programming: Int, highest_driver: Int, highest_programming: Int, combined: Int, event_region: String, event_region_id: Int) {
+        self.team = team
+        self.ranking = ranking
+        self.event = event
+        self.driver = driver
+        self.programming = programming
+        self.highest_driver = highest_driver
+        self.highest_programming = highest_programming
+        self.combined = combined
+        self.event_region = event_region
+        self.event_region_id = event_region_id
+    }
     
     public init(team: Team, data: [String: Any] = [:]) {
         if data["scores"] == nil {
@@ -1314,6 +1296,8 @@ public class WorldSkills {
             self.highest_driver = 0
             self.highest_programming = 0
             self.combined = 0
+            self.event_region = ""
+            self.event_region_id = 0
             return
         }
         self.team = team
@@ -1324,6 +1308,21 @@ public class WorldSkills {
         self.highest_driver = ((data["scores"] as! [String: Any])["maxDriver"] != nil) ? (data["scores"] as! [String: Any])["maxDriver"] as! Int : 0
         self.highest_programming = ((data["scores"] as! [String: Any])["maxProgramming"] != nil) ? (data["scores"] as! [String: Any])["maxProgramming"] as! Int : 0
         self.combined = ((data["scores"] as! [String: Any])["score"] != nil) ? (data["scores"] as! [String: Any])["score"] as! Int : 0
+        self.event_region = ((data["team"] as! [String: Any])["eventRegion"] != nil) ? (data["team"] as! [String: Any])["eventRegion"] as! String : ""
+        self.event_region_id = ((data["team"] as! [String: Any])["eventRegionId"] != nil) ? (data["team"] as! [String: Any])["eventRegionId"] as! Int : 0
+    }
+    
+    public init() {
+        self.team = Team()
+        self.ranking = 0
+        self.event = Event()
+        self.driver = 0
+        self.programming = 0
+        self.highest_driver = 0
+        self.highest_programming = 0
+        self.combined = 0
+        self.event_region = ""
+        self.event_region_id = 0
     }
     
     public func toString() -> String {
