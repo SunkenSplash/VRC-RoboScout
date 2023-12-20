@@ -35,7 +35,7 @@ struct EventInformation: View {
                 HStack {
                     Spacer()
                     HStack {
-                        Image(systemName: "play.tv").foregroundStyle(Color.accentColor)
+                        Image(systemName: "play.tv").foregroundColor(settings.accentColor())
                         Link("Watch Livestream", destination: URL(string: self.livestream_link)!)
                     }
                     Spacer()
@@ -207,6 +207,7 @@ struct EventInformation: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(settings.tabColor(), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .tint(settings.accentColor())
     }
 }
 

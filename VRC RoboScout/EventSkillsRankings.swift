@@ -121,6 +121,7 @@ struct EventSkillsRankings: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(settings.tabColor(), for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .tint(settings.accentColor())
     }
 }
 

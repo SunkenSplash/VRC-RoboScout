@@ -215,7 +215,7 @@ struct DataExporter: View {
                 }
             }.padding()
             Spacer()
-            ProgressView(value: progress).padding()
+            ProgressView(value: progress).padding().tint(settings.accentColor())
             if progress != 1 {
                 Button("Generate") {
                     if progress != 0 {
@@ -237,7 +237,7 @@ struct DataExporter: View {
                             data += number
                             let team = event.teams.first(where: { $0.number == number })!
                             let world_skills = API.world_skills_for(team: team) ?? WorldSkills(team: team, data: [String: Any]())
-                            let vrc_data_analysis = API.vrc_data_analysis_for(team: team, fetch: false) ?? VRCDataAnalysis()
+                            let vrc_data_analysis = API.vrc_data_analysis_for(team: team, fetch_re_match_statistics: false)
                             for (option, state) in selected {
                                 guard state else { continue }
                                 if option == "Team Name" {
@@ -247,7 +247,7 @@ struct DataExporter: View {
                                     data += ",\(team.robot_name.replacingOccurrences(of: ",", with: ""))"
                                 }
                                 else if option == "Team Location" {
-                                    data += ",\(generate_location(team: team))"
+                                    data += ",\(generate_location(team: team).replacingOccurrences(of: ",", with: ""))"
                                 }
                                 else if option == "Average Qualifiers Ranking (slow)" {
                                     data += ",\(team.average_ranking())"
@@ -355,6 +355,7 @@ struct DataExporter: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(settings.tabColor(), for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .tint(settings.accentColor())
     }
 }
 

@@ -12,6 +12,7 @@ struct EventDivisionMatches: View {
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var navigation_bar_manager: NavigationBarManager
     @EnvironmentObject var prediction_manager: PredictionManager
+    @EnvironmentObject var dataController: RoboScoutDataController
     
     @Binding var teams_map: [String: String]
     
@@ -22,19 +23,22 @@ struct EventDivisionMatches: View {
     @State private var matches_list = [String]()
     @State private var showLoading = true
     
-    func scoreToDisplay(match: String, index: Int) -> String {
-        let split = match.split(separator: "&&")
+    @ViewBuilder
+    func centerDisplay(matchString: String) -> some View {
+        let split = matchString.split(separator: "&&")
         let match = matches[Int(split[0]) ?? 0]
         
-        guard match.completed() || (match.predicted && predictions) else {
-            return ""
-        }
-        
-        if index == 6 {
-            return String(describing: (match.predicted && predictions) ? match.predicted_red_score : match.red_score)
+        if match.completed() || (match.predicted && predictions) {
+            HStack {
+                Text(String(describing: (match.predicted && predictions) ? match.predicted_red_score : match.red_score)).foregroundColor(.red).font(.system(size: 18)).frame(alignment: .leading).opacity((match.predicted && predictions) ? 0.6 : 1).bold()
+                Spacer()
+                Text(String(describing: (match.predicted && predictions) ? match.predicted_blue_score : match.blue_score)).foregroundColor(.blue).font(.system(size: 18)).frame(alignment: .trailing).opacity((match.predicted && predictions) ? 0.6 : 1).bold()
+            }
         }
         else {
-            return String(describing: (match.predicted && predictions) ? match.predicted_blue_score : match.blue_score)
+            Spacer()
+            Text(match.field).font(.system(size: 15)).foregroundColor(.secondary)
+            Spacer()
         }
     }
     
@@ -60,6 +64,12 @@ struct EventDivisionMatches: View {
                 DispatchQueue.main.async {
                     self.predictions = false
                     self.prediction_manager.state = PredictionState.off
+                }
+            }
+            
+            if matches.isEmpty {
+                DispatchQueue.main.async {
+                    self.prediction_manager.state = PredictionState.disabled
                 }
             }
             
@@ -124,13 +134,13 @@ struct EventDivisionMatches: View {
             }
             else {
                 List($matches_list) { name in
-                    NavigationLink(destination: MatchNotes(event: event, match: matches[Int(name.wrappedValue.split(separator: "&&")[0])!]).environmentObject(settings)) {
+                    NavigationLink(destination: MatchNotes(event: event, match: matches[Int(name.wrappedValue.split(separator: "&&")[0])!]).environmentObject(settings).environmentObject(dataController)) {
                         HStack {
                             VStack {
                                 Text(name.wrappedValue.split(separator: "&&")[1]).font(.system(size: 15)).frame(width: 60, alignment: .leading).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1).bold()
                                 Spacer().frame(maxHeight: 4)
                                 Text(name.wrappedValue.split(separator: "&&")[8]).font(.system(size: 12)).frame(width: 60, alignment: .leading)
-                            }
+                            }.frame(width: 40)
                             VStack {
                                 if String(teams_map[String(name.wrappedValue.split(separator: "&&")[3])] ?? "") != "" {
                                     Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15))
@@ -140,9 +150,7 @@ struct EventDivisionMatches: View {
                                     Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15))
                                 }
                             }.frame(width: 70)
-                            Text(scoreToDisplay(match: name.wrappedValue, index: 6)).foregroundColor(.red).font(.system(size: 18)).frame(alignment: .leading).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1).bold()
-                            Spacer()
-                            Text(scoreToDisplay(match: name.wrappedValue, index: 7)).foregroundColor(.blue).font(.system(size: 18)).frame(alignment: .trailing).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1).bold()
+                            centerDisplay(matchString: name.wrappedValue)
                             VStack {
                                 if String(teams_map[String(name.wrappedValue.split(separator: "&&")[5])] ?? "") != "" {
                                     Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 15))

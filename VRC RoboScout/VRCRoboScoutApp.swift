@@ -172,11 +172,11 @@ struct NoData: View {
     }
 }
 
-struct ProcessingData: View {
+struct ImportingData: View {
     var body: some View {
-        ProgressView().font(.system(size: 30)).foregroundColor(.secondary)
+        ProgressView().font(.system(size: 30)).tint(.secondary)
         Spacer().frame(height: 5)
-        Text("Processing Data").foregroundColor(.secondary)
+        Text("Importing Data").foregroundColor(.secondary)
     }
 }
 
@@ -185,6 +185,8 @@ class UserSettings: ObservableObject {
     private var minimalistic: Bool
     private var adam_score: Bool
     private var grade_level: String
+    private var performance_ratings_calculation_option: String
+    private var team_info_default_page: String
     private var selected_season_id: Int
     
     static var keyIndex = Int.random(in: 0..<10)
@@ -194,6 +196,8 @@ class UserSettings: ObservableObject {
         defaults.object(forKey: "minimalistic") as? Int ?? 1 == 1 ? (self.minimalistic = true) : (self.minimalistic = false)
         defaults.object(forKey: "adam_score") as? Int ?? 1 == 1 ? (self.adam_score = true) : (self.adam_score = false)
         self.grade_level = defaults.object(forKey: "grade_level") as? String ?? "High School"
+        self.performance_ratings_calculation_option = defaults.object(forKey: "performance_ratings_calculation_option") as? String ?? "real"
+        self.team_info_default_page = defaults.object(forKey: "team_info_default_page") as? String ?? "events"
         self.selected_season_id = defaults.object(forKey: "selected_season_id") as? Int ?? 181
     }
     
@@ -201,6 +205,9 @@ class UserSettings: ObservableObject {
         self.colorString = defaults.object(forKey: "color") as? String ?? UIColor.StringFromUIColor(color: .systemRed)
         defaults.object(forKey: "minimalistic") as? Int ?? 1 == 1 ? (self.minimalistic = true) : (self.minimalistic = false)
         defaults.object(forKey: "adam_score") as? Int ?? 1 == 1 ? (self.adam_score = true) : (self.adam_score = false)
+        self.grade_level = defaults.object(forKey: "grade_level") as? String ?? "High School"
+        self.performance_ratings_calculation_option = defaults.object(forKey: "performance_ratings_calculation_option") as? String ?? "real"
+        self.team_info_default_page = defaults.object(forKey: "team_info_default_page") as? String ?? "events"
         self.selected_season_id = defaults.object(forKey: "selected_season_id") as? Int ?? API.selected_season_id()
     }
     
@@ -209,6 +216,8 @@ class UserSettings: ObservableObject {
         defaults.set(self.minimalistic ? 1 : 0, forKey: "minimalistic")
         defaults.set(self.adam_score ? 1 : 0, forKey: "adam_score")
         defaults.set(self.grade_level, forKey: "grade_level")
+        defaults.set(self.performance_ratings_calculation_option, forKey: "performance_ratings_calculation_option")
+        defaults.set(self.team_info_default_page, forKey: "team_info_default_page")
         defaults.set(self.selected_season_id, forKey: "selected_season_id")
     }
     
@@ -226,6 +235,14 @@ class UserSettings: ObservableObject {
     
     func setGradeLevel(grade_level: String) {
         self.grade_level = grade_level
+    }
+    
+    func setPerformanceRatingsCalculationOption(option: String) {
+        self.performance_ratings_calculation_option = option
+    }
+    
+    func setTeamInfoDefaultPage(page: String) {
+        self.team_info_default_page = page
     }
     
     func setSelectedSeasonID(id: Int) {
@@ -286,6 +303,14 @@ class UserSettings: ObservableObject {
     
     static func getGradeLevel() -> String {
         return defaults.object(forKey: "grade_level") as? String ?? "High School"
+    }
+    
+    static func getPerformanceRatingsCalculationOption() -> String {
+        return defaults.object(forKey: "performance_ratings_calculation_option") as? String ?? "real"
+    }
+    
+    static func getTeamInfoDefaultPage() -> String {
+        return defaults.object(forKey: "team_info_default_page") as? String ?? "events"
     }
 
     static func getSelectedSeasonID() -> Int {

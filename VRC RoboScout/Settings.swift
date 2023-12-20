@@ -18,9 +18,11 @@ struct Settings: View {
     @State var selected_color = UserSettings().accentColor()
     @State var minimalistic = UserSettings.getMinimalistic()
     @State var adam_score = UserSettings.getAdamScore()
+    @State var performance_ratings_calculation_option = UserSettings.getPerformanceRatingsCalculationOption() == "via"
     @State var grade_level = UserSettings.getGradeLevel()
     @State var selected_season_id = UserSettings.getSelectedSeasonID()
     @State var apiKey = UserSettings.getRobotEventsAPIKey() ?? ""
+    @State var team_info_default_page = UserSettings.getTeamInfoDefaultPage() == "statistics"
     @State var showLoading = false
     @State var showApply = false
     @State var clearedTeams = false
@@ -56,7 +58,25 @@ struct Settings: View {
     
     var body: some View {
         VStack {
-            Form {
+            List {
+            Link(destination: URL(string: "https://www.paypal.com/donate/?business=FGDW39F77H6PW&no_recurring=0&item_name=Donations+allow+me+to+bring+new+features+and+functionality+to+VRC+RoboScout.+Thank+you+for+your+support%21&currency_code=USD")!, label: {
+                    HStack {
+                        Image(systemName: "gift")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 40, height: 40)
+                            .cornerRadius(8)
+                        VStack(alignment: .center) {
+                            Text("Donate to VRC RoboScout").bold()
+                            Text("Donations support development. Thank you <3").font(.system(size: 15)).foregroundColor(.secondary).multilineTextAlignment(.center)
+                        }.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+                        Spacer()
+                    }.padding()
+                }).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .background(settings.accentColor().opacity(0.3))
+                    .cornerRadius(20)
                 Section("Competition") {
                     Picker("Competition", selection: $grade_level) {
                         Text("VRC MS").tag("Middle School")
@@ -72,6 +92,7 @@ struct Settings: View {
                                 settings.setSelectedSeasonID(id: API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1].keys.sorted().reversed()[0])
                                 settings.updateUserDefaults()
                                 API.update_world_skills_cache()
+                                API.update_vrc_data_analysis_cache()
                                 DispatchQueue.main.async {
                                     self.selected_season_id = UserSettings.getSelectedSeasonID()
                                     self.showLoading = false
@@ -110,6 +131,10 @@ struct Settings: View {
                         settings.setAdamScore(state: adam_score)
                         settings.updateUserDefaults()
                     }
+                    /*Toggle("VEX via OPR, DPR, CCWM", isOn: $performance_ratings_calculation_option).onChange(of: performance_ratings_calculation_option) { _ in
+                        settings.setPerformanceRatingsCalculationOption(option: performance_ratings_calculation_option ? "via" : "real")
+                        settings.updateUserDefaults()
+                    }*/
                 }
                 Section("Appearance") {
                     NavigationLink(destination: ChangeAppIcon().environmentObject(settings)) {
@@ -133,6 +158,12 @@ struct Settings: View {
                                 exit(0)
                             }
                         }
+                    }
+                }
+                Section("Customization") {
+                    Toggle("Show statistics by default on Team Info page", isOn: $team_info_default_page).onChange(of: team_info_default_page) { _ in
+                        settings.setTeamInfoDefaultPage(page: team_info_default_page ? "statistics" : "events")
+                        settings.updateUserDefaults()
                     }
                 }
                 Section("Danger") {

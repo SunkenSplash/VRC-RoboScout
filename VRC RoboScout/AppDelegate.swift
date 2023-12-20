@@ -19,6 +19,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let tokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         print("Device Token: \(tokenString)")
+        defaults.set(tokenString, forKey: "device_token")
         
         // Update the published property for SwiftUI views to observe
         DispatchQueue.main.async {

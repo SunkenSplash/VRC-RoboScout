@@ -27,14 +27,14 @@ struct TrueSkillRow: View {
     var body: some View {
         HStack {
             HStack {
-                Text("#\(team_trueskill.ranking)")
+                Text("#\(team_trueskill.ranking)").font(.system(size: 18))
                 if team_trueskill.ranking_change != 0 {
                     Text("\(team_trueskill.ranking_change >= 0 ? Image(systemName: "arrow.up") : Image(systemName: "arrow.down"))\(abs(team_trueskill.ranking_change))").font(.system(size: 12)).foregroundColor(team_trueskill.ranking_change >= 0 ? .green : .red)
                 }
                 Spacer()
             }.frame(width: 100)
             Spacer()
-            Text("\(team_trueskill.number)")
+            Text("\(team_trueskill.number)").font(.system(size: 18))
             Spacer()
             HStack {
                 Spacer()
@@ -43,7 +43,7 @@ struct TrueSkillRow: View {
                     Text("Total Wins: \(team_trueskill.total_wins)")
                     Text("Total Losses: \(team_trueskill.total_losses)")
                     Text("Total Ties: \(team_trueskill.total_ties)")
-                }
+                }.font(.system(size: 18))
             }.frame(width: 100)
         }
     }
@@ -115,10 +115,22 @@ struct TrueSkillRankings: View {
     @State private var letter: Character = "0"
     @State private var trueskill_rankings = TrueSkillTeams(fetch: false)
     @State private var show_leaderboard = false
+    @State private var importing = true
+    
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
         
     var body: some View {
         VStack {
-            if API.vrc_data_analysis_cache.teams.isEmpty {
+            if importing && API.vrc_data_analysis_cache.teams.isEmpty {
+                ImportingData()
+                    .onReceive(timer) { _ in
+                        if API.imported_trueskill {
+                            trueskill_rankings = TrueSkillTeams(fetch: false)
+                            importing = false
+                        }
+                    }
+            }
+            else if !importing && API.vrc_data_analysis_cache.teams.isEmpty {
                 NoData()
             }
             else {
@@ -138,7 +150,7 @@ struct TrueSkillRankings: View {
                             letter = "0"
                             trueskill_rankings = TrueSkillTeams(fetch: false)
                         }
-                        ForEach(API.regions_map.keys.sorted(by: <)) { region_str in
+                        ForEach(API.vrc_data_analysis_regions_map.sorted(by: <)) { region_str in
                             Button(region_str) {
                                 display_trueskill = "\(region_str) TrueSkill"
                                 navigation_bar_manager.title = display_trueskill

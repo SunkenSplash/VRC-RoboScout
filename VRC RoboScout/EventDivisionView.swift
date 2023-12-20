@@ -69,6 +69,7 @@ struct EventDivisionView: View {
                 .environmentObject(settings)
                 .environmentObject(navigation_bar_manager)
                 .environmentObject(prediction_manager)
+                .environmentObject(dataController)
                 .tint(settings.accentColor())
             EventDivisionRankings(event: self.event, division: self.division, teams_map: teams_map)
                 .tabItem {

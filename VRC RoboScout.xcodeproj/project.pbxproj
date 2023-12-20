@@ -21,7 +21,9 @@
 		3D3219CF29D31BD500EF5500 /* EventTeams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219CE29D31BD500EF5500 /* EventTeams.swift */; };
 		3D3219D129D3327500EF5500 /* EventTeamMatches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219D029D3327500EF5500 /* EventTeamMatches.swift */; };
 		3D386C3529F19DAB00035B3B /* RoboScoutAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D386C3429F19DAB00035B3B /* RoboScoutAPI.swift */; };
+		3D4C0C302B0BCC1E0071D664 /* MatrixInversionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D4C0C2F2B0BCC1D0071D664 /* MatrixInversionTests.swift */; };
 		3D50E10829C8915C002FE201 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D50E10729C8915C002FE201 /* Launch Screen.storyboard */; };
+		3D56DC512B28B25E004DA5B9 /* TeamInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D56DC502B28B25D004DA5B9 /* TeamInfoView.swift */; };
 		3D5FA4952AFEAA4F00149E88 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5FA4942AFEAA4F00149E88 /* AppDelegate.swift */; };
 		3D672BDF2A46544A000211A7 /* EventDivisionAwards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D672BDE2A46544A000211A7 /* EventDivisionAwards.swift */; };
 		3D73E3AC2AB330CD005BE836 /* RoboScoutDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D73E3AB2AB330CD005BE836 /* RoboScoutDataController.swift */; };
@@ -105,7 +107,9 @@
 		3D3219CE29D31BD500EF5500 /* EventTeams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTeams.swift; sourceTree = "<group>"; };
 		3D3219D029D3327500EF5500 /* EventTeamMatches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTeamMatches.swift; sourceTree = "<group>"; };
 		3D386C3429F19DAB00035B3B /* RoboScoutAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoboScoutAPI.swift; sourceTree = "<group>"; };
+		3D4C0C2F2B0BCC1D0071D664 /* MatrixInversionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixInversionTests.swift; sourceTree = "<group>"; };
 		3D50E10729C8915C002FE201 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		3D56DC502B28B25D004DA5B9 /* TeamInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamInfoView.swift; sourceTree = "<group>"; };
 		3D5FA4942AFEAA4F00149E88 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3D672BDE2A46544A000211A7 /* EventDivisionAwards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDivisionAwards.swift; sourceTree = "<group>"; };
 		3D73E3AB2AB330CD005BE836 /* RoboScoutDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoboScoutDataController.swift; sourceTree = "<group>"; };
@@ -245,6 +249,7 @@
 				3DB21DD42B054D6400B12803 /* RootView.swift */,
 				3DB11E4F299543D9001DDB02 /* Favorites.swift */,
 				3D3219C829D1CFF300EF5500 /* TeamEventsView.swift */,
+				3D56DC502B28B25D004DA5B9 /* TeamInfoView.swift */,
 				3D3219CA29D1EA0D00EF5500 /* EventView.swift */,
 				3D3219CC29D1EF1D00EF5500 /* EventInformation.swift */,
 				3D3219CE29D31BD500EF5500 /* EventTeams.swift */,
@@ -270,6 +275,7 @@
 			isa = PBXGroup;
 			children = (
 				3DB11E5F299543DC001DDB02 /* VRCRoboScoutTests.swift */,
+				3D4C0C2F2B0BCC1D0071D664 /* MatrixInversionTests.swift */,
 			);
 			path = "VRC RoboScoutTests";
 			sourceTree = "<group>";
@@ -469,6 +475,7 @@
 				3DA0AE5C29B2251B009D4782 /* Settings.swift in Sources */,
 				3D1E57AA29F17D3500DA6296 /* EventDivisionView.swift in Sources */,
 				3D1E7F4C2AAA1643009BA258 /* MatchNotes.swift in Sources */,
+				3D56DC512B28B25E004DA5B9 /* TeamInfoView.swift in Sources */,
 				3DB11E50299543D9001DDB02 /* Favorites.swift in Sources */,
 				3DC3F47529ACFF6000C5EA86 /* TrueSkillRankings.swift in Sources */,
 				3D672BDF2A46544A000211A7 /* EventDivisionAwards.swift in Sources */,
@@ -499,6 +506,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D4C0C302B0BCC1E0071D664 /* MatrixInversionTests.swift in Sources */,
 				3DB11E60299543DC001DDB02 /* VRCRoboScoutTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -555,7 +563,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sunkensplashstudios.VRCRoboScout.MatchUpdates;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -589,7 +597,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sunkensplashstudios.VRCRoboScout.MatchUpdates;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -726,7 +734,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-Dark AppIcon-ACE AppIcon-Revision AppIcon-CW AppIcon-Canada AppIcon-WW AppIcon-SS AppIcon-GS AppIcon-LL AppIcon-P AppIcon-Autumn AppIcon-UK AppIcon-Circuits";
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-Dark AppIcon-ACE AppIcon-Delrin AppIcon-Revision AppIcon-SIGBots AppIcon-P AppIcon-Purple AppIcon-Aqua AppIcon-Blue AppIcon-Cute AppIcon-Century AppIcon-PT AppIcon-Kauz AppIcon-Tigris AppIcon-CW AppIcon-Saurus AppIcon-Canes AppIcon-Balls AppIcon-Chunger AppIcon-Circuits AppIcon-Gear AppIcon-SS AppIcon-Autumn AppIcon-Canada AppIcon-UK AppIcon-LL AppIcon-WW AppIcon-GS";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "VRC RoboScout/VRCRoboScout.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -761,7 +769,7 @@
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
-				MARKETING_VERSION = 1.4.0;
+				MARKETING_VERSION = 1.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sunkensplashstudios.VRCRoboScout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -780,7 +788,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-Dark AppIcon-ACE AppIcon-Revision AppIcon-CW AppIcon-Canada AppIcon-WW AppIcon-SS AppIcon-GS AppIcon-LL AppIcon-P AppIcon-Autumn AppIcon-UK AppIcon-Circuits";
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-Dark AppIcon-ACE AppIcon-Delrin AppIcon-Revision AppIcon-SIGBots AppIcon-P AppIcon-Purple AppIcon-Aqua AppIcon-Blue AppIcon-Cute AppIcon-Century AppIcon-PT AppIcon-Kauz AppIcon-Tigris AppIcon-CW AppIcon-Saurus AppIcon-Canes AppIcon-Balls AppIcon-Chunger AppIcon-Circuits AppIcon-Gear AppIcon-SS AppIcon-Autumn AppIcon-Canada AppIcon-UK AppIcon-LL AppIcon-WW AppIcon-GS";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "VRC RoboScout/VRCRoboScout.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -816,7 +824,7 @@
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
-				MARKETING_VERSION = 1.4.0;
+				MARKETING_VERSION = 1.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sunkensplashstudios.VRCRoboScout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

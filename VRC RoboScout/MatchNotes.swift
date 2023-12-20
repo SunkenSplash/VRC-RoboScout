@@ -11,12 +11,14 @@ import CoreData
 struct TeamNotes: View {
     
     @EnvironmentObject var dataController: RoboScoutDataController
+    @EnvironmentObject var settings: UserSettings
     
     @State var event: Event
     @State var match: Match
     @State var team: Team
     @State var showingNotes = false
     @State var editingNote = false
+    @State var showingStats = false
     
     @Binding var showingSheet: Bool
     
@@ -45,70 +47,94 @@ struct TeamNotes: View {
     var body: some View {
         HStack(spacing: 16) {
             VStack(alignment: .leading) {
-                Text(team.number).font(.largeTitle)
+                Text(team.number).font(.title)
                 Text(team.name).foregroundColor(.secondary).font(.system(size: 15))
             }
             Spacer()
-            VStack {
-                Image(systemName: "note.text").frame(width: 20, height: 20)
-                Text("View Notes").font(.system(size: 10))
-            }.padding(EdgeInsets(top: 12, leading: 8, bottom: 12, trailing: 8))
-                .background(match.alliance_for(team: team) == Alliance.red ? Color.red.opacity(0.3) : Color.blue.opacity(0.3))
-                .cornerRadius(13)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    showingNotes = true
-                }.sheet(isPresented: $showingNotes) {
-                    Text("\(team.number) Match Notes").font(.title).padding()
-                    ScrollView {
-                        ForEach((teamMatchNotes ?? [TeamMatchNote]()).filter{ ($0.note ?? "") != "" }, id: \.self) { teamNote in
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(teamNote.match_name ?? "Unknown Match").font(.headline).foregroundStyle(teamNote.winning_alliance == 0 ? (teamNote.played ? Color.yellow : Color.primary) : (teamNote.winning_alliance == teamNote.team_alliance ? Color.green : Color.red))
-                                    Text(teamNote.note ?? "No note.")
-                                }
-                                Spacer()
-                            }.padding()
-                        }
-                    }.onAppear{
-                        showingSheet = true
-                    }.onDisappear{
-                        showingSheet = false
+            VStack(spacing: 10) {
+                HStack {
+                    Image(systemName: "magnifyingglass").frame(width: 20, height: 20)
+                    Text("View Statistics").font(.system(size: 10))
+                }.padding(EdgeInsets(top: 12, leading: 26, bottom: 12, trailing: 26))
+                    .background(match.alliance_for(team: team) == Alliance.red ? Color.red.opacity(0.3) : Color.blue.opacity(0.3))
+                    .cornerRadius(13)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        showingStats = true
+                    }.sheet(isPresented: $showingStats) {
+                        Text("Team Statistics").font(.title).padding()
+                        TeamLookup(team_number: team.number, editable: false, fetch: true)
+                            .environmentObject(settings)
+                            .environmentObject(dataController)
+                            .onAppear{
+                            showingSheet = true
+                            }.onDisappear{
+                                showingSheet = false
+                            }
                     }
-                }
-            VStack {
-                Image(systemName: "square.and.pencil").frame(width: 20, height: 20)
-                Text("Add Note").font(.system(size: 10))
-            }.padding(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
-                .background(match.alliance_for(team: team) == Alliance.red ? Color.red.opacity(0.3) : Color.blue.opacity(0.3))
-                .cornerRadius(13)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    editingNote = true
-                }.sheet(isPresented: $editingNote) {
+                HStack(spacing: 10) {
                     VStack {
-                        Text("\(match.name) Match Note").font(.title).padding()
-                        VStack {
-                            TextField("Write a match note for team \(team.number)...", text: $matchNote, axis: .vertical).lineLimit(5...).padding(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
-                                .background(Color(UIColor.secondarySystemBackground))
-                                .cornerRadius(20)
-                                .onDisappear{
-                                    if matchNote.isEmpty {
-                                        dataController.deleteNote(note: teamMatchNote!, save: false)
-                                    }
-                                    else {
-                                        teamMatchNote!.note = matchNote
-                                        dataController.saveContext()
-                                    }
+                        Image(systemName: "note.text").frame(width: 20, height: 20)
+                        Text("View Notes").font(.system(size: 10))
+                    }.padding(EdgeInsets(top: 12, leading: 8, bottom: 12, trailing: 8))
+                        .background(match.alliance_for(team: team) == Alliance.red ? Color.red.opacity(0.3) : Color.blue.opacity(0.3))
+                        .cornerRadius(13)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            showingNotes = true
+                        }.sheet(isPresented: $showingNotes) {
+                            Text("\(team.number) Match Notes").font(.title).padding()
+                            ScrollView {
+                                ForEach((teamMatchNotes ?? [TeamMatchNote]()).filter{ ($0.note ?? "") != "" }, id: \.self) { teamNote in
+                                    HStack {
+                                        VStack(alignment: .leading) {
+                                            Text(teamNote.match_name ?? "Unknown Match").font(.headline).foregroundStyle(teamNote.winning_alliance == 0 ? (teamNote.played ? Color.yellow : Color.primary) : (teamNote.winning_alliance == teamNote.team_alliance ? Color.green : Color.red))
+                                            Text(teamNote.note ?? "No note.")
+                                        }
+                                        Spacer()
+                                    }.padding()
                                 }
-                        }.padding()
-                        Spacer()
-                    }.onAppear{
-                        showingSheet = true
-                    }.onDisappear{
-                        showingSheet = false
-                    }
+                            }.onAppear{
+                                showingSheet = true
+                            }.onDisappear{
+                                showingSheet = false
+                            }
+                        }
+                    VStack {
+                        Image(systemName: "square.and.pencil").frame(width: 20, height: 20)
+                        Text("Add Note").font(.system(size: 10))
+                    }.padding(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
+                        .background(match.alliance_for(team: team) == Alliance.red ? Color.red.opacity(0.3) : Color.blue.opacity(0.3))
+                        .cornerRadius(13)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            editingNote = true
+                        }.sheet(isPresented: $editingNote) {
+                            VStack {
+                                Text("\(match.name) Match Note").font(.title).padding()
+                                VStack {
+                                    TextField("Write a match note for team \(team.number)...", text: $matchNote, axis: .vertical).lineLimit(5...).padding(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
+                                        .background(Color(UIColor.secondarySystemBackground))
+                                        .cornerRadius(20)
+                                        .onDisappear{
+                                            if matchNote.isEmpty {
+                                                dataController.deleteNote(note: teamMatchNote!, save: true)
+                                            }
+                                            else {
+                                                teamMatchNote!.note = matchNote
+                                                dataController.saveContext()
+                                            }
+                                        }
+                                }.padding()
+                                Spacer()
+                            }.onAppear{
+                                showingSheet = true
+                            }.onDisappear{
+                                showingSheet = false
+                            }
+                        }
                 }
+            }.frame(width: 160)
         }.onAppear{
             updateDataSource()
             if let note = (teamMatchNotes ?? [TeamMatchNote]()).first(where: { $0.match_id == match.id }) {
@@ -196,6 +222,7 @@ struct MatchNotes: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(settings.tabColor(), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .tint(settings.accentColor())
     }
 }
 

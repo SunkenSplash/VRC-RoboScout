@@ -36,11 +36,11 @@ struct WorldSkillsRow: View {
     var body: some View {
         HStack {
             HStack {
-                Text(team_world_skills.additional_ranking == 0 ? "#\(team_world_skills.ranking)" : "#\(team_world_skills.ranking) (#\(team_world_skills.additional_ranking))")
+                Text(team_world_skills.additional_ranking == 0 ? "#\(team_world_skills.ranking)" : "#\(team_world_skills.ranking) (#\(team_world_skills.additional_ranking))").font(.system(size: 18))
                 Spacer()
             }.frame(width: 80)
             Spacer()
-            Text("\(team_world_skills.number)")
+            Text("\(team_world_skills.number)").font(.system(size: 18))
             Spacer()
             HStack {
                 Menu("\(team_world_skills.combined)") {
@@ -49,7 +49,7 @@ struct WorldSkillsRow: View {
                     Text("\(team_world_skills.driver) Driver")
                     Text("\(team_world_skills.highest_programming) Highest Programming")
                     Text("\(team_world_skills.highest_driver) Highest Driver")
-                }
+                }.font(.system(size: 18))
                 HStack {
                     Spacer()
                     VStack {
@@ -130,10 +130,22 @@ struct WorldSkillsRankings: View {
     @State private var season_id = API.selected_season_id()
     @State private var grade_level = UserSettings.getGradeLevel()
     @State private var show_leaderboard = false
+    @State private var importing = true
+    
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
         VStack {
-            if API.world_skills_cache.teams.isEmpty {
+            if importing && API.world_skills_cache.teams.isEmpty {
+                ImportingData()
+                    .onReceive(timer) { _ in
+                        if API.imported_skills {
+                            world_skills_rankings = WorldSkillsTeams(fetch: false)
+                            importing = false
+                        }
+                    }
+            }
+            else if !importing && API.world_skills_cache.teams.isEmpty {
                 NoData()
             }
             else {

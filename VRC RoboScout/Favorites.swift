@@ -16,7 +16,7 @@ struct FavoriteTeamsRow: View {
     var team: String
 
     var body: some View {
-        NavigationLink(destination: TeamEventsView(team_number: team).environmentObject(settings).environmentObject(dataController)) {
+        NavigationLink(destination: TeamInfoView(teamNumber: team).environmentObject(settings).environmentObject(dataController)) {
             Text(team)
         }
     }

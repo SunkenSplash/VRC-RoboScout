@@ -43,7 +43,7 @@ struct Lookup: View {
                 Text("Events").tag(1)
             }.pickerStyle(.segmented).padding()
             Spacer()
-            if lookup_type  == 0 {
+            if lookup_type == 0 {
                 TeamLookup()
                     .environmentObject(favorites)
                     .environmentObject(settings)
@@ -65,7 +65,7 @@ class EventSearch: ObservableObject {
     @Published var event_indexes: [String]
     @Published var events: [Event]
     
-    init(name_query: String? = nil, season_query: Int? = nil, page: Int = 1) {
+    init(name_query: String? = nil, season_query: Int? = nil, no_leagues: Bool = false, page: Int = 1) {
         event_indexes = [String]()
         events = [Event]()
         if name_query == nil {
@@ -80,6 +80,9 @@ class EventSearch: ObservableObject {
         }
         if season_query != nil {
             scraper_params["seasonId"] = season_query!
+        }
+        if no_leagues || name_query == nil || name_query == "" {
+            scraper_params["eventType"] = 1
         }
         scraper_params["page"] = page
         
@@ -114,11 +117,12 @@ struct EventLookup: View {
     @State private var season_query: Int = API.selected_season_id()
     @State private var page: Int = 1
     @State private var showLoading = false
+    @State private var loaded = false
     
-    func event_query(name_query: String, season_query: Int, page: Int = 1) {
+    func event_query(name_query: String, season_query: Int, no_leagues: Bool = false, page: Int = 1) {
         showLoading = true
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            let fetched_events = EventSearch(name_query: name_query, season_query: season_query, page: page)
+            let fetched_events = EventSearch(name_query: name_query, season_query: season_query, no_leagues: no_leagues, page: page)
             
             DispatchQueue.main.async {
                 self.events = fetched_events
@@ -174,7 +178,7 @@ struct EventLookup: View {
                     page -= 1
                     event_query(name_query: name_query, season_query: season_query, page: page)
                 }, label: {
-                    Image(systemName: "arrow.left").font(.system(size: 25))
+                    Image(systemName: "chevron.left").font(.system(size: 25))
                 }).disabled(page <= 1 || showLoading).opacity((events.events.isEmpty && !showLoading) ? 0 : 1).padding(20)
                 Text(String(describing: page)).font(.system(size: 25)).opacity((events.events.isEmpty && !showLoading) ? 0 : 1).padding()
                 Button(action: {
@@ -183,13 +187,16 @@ struct EventLookup: View {
                     page += 1
                     event_query(name_query: name_query, season_query: season_query, page: page)
                 }, label: {
-                    Image(systemName: "arrow.right").font(.system(size: 25))
+                    Image(systemName: "chevron.right").font(.system(size: 25))
                 }).disabled(events.events.count < 20 || showLoading).opacity((events.events.isEmpty && !showLoading) ? 0 : 1).padding(20)
                 Spacer()
             }
         }.onAppear{
-            season_query = UserSettings.getSelectedSeasonID()
-            event_query(name_query: name_query, season_query: season_query)
+            if !loaded {
+                season_query = UserSettings.getSelectedSeasonID()
+                event_query(name_query: name_query, season_query: season_query, no_leagues: true)
+                loaded = true
+            }
         }
     }
 }
@@ -200,9 +207,9 @@ struct TeamLookup: View {
     @EnvironmentObject var favorites: FavoriteStorage
     @EnvironmentObject var dataController: RoboScoutDataController
     
-    @State var team_number: String = ""
+    @State var team_number: String
     @State var favorited: Bool = false
-    @State var fetch: Bool = false
+    @State var fetch: Bool
     @State var fetched: Bool = false
     @State private var team: Team = Team()
     @State private var vrc_data_analysis = VRCDataAnalysis()
@@ -211,6 +218,13 @@ struct TeamLookup: View {
     @State private var award_counts = OrderedDictionary<String, Int>()
     @State private var showLoading: Bool = false
     @State private var showingSheet = false
+    @State private var editable: Bool
+    
+    init(team_number: String = "", editable: Bool = true, fetch: Bool = false) {
+        self._team_number = State(initialValue: team_number)
+        self._editable = State(initialValue: editable)
+        self._fetch = State(initialValue: fetch)
+    }
     
     let adam_score_map = [
         "Low",
@@ -250,7 +264,7 @@ struct TeamLookup: View {
                 return
             }
             
-            let fetced_vrc_data_analysis = API.vrc_data_analysis_for(team: fetched_team, fetch: false)
+            let fetced_vrc_data_analysis = API.vrc_data_analysis_for(team: fetched_team, fetch_re_match_statistics: true)
             let fetched_world_skills = API.world_skills_for(team: fetched_team) ?? WorldSkills(team: team, data: [String: Any]())
             let fetched_avg_rank = fetched_team.average_ranking()
             fetched_team.fetch_awards()
@@ -273,7 +287,7 @@ struct TeamLookup: View {
                         
             DispatchQueue.main.async {
                 team = fetched_team
-                vrc_data_analysis = fetced_vrc_data_analysis ?? VRCDataAnalysis()
+                vrc_data_analysis = fetced_vrc_data_analysis
                 world_skills = fetched_world_skills
                 avg_rank = fetched_avg_rank
                 award_counts = fetched_award_counts
@@ -307,7 +321,7 @@ struct TeamLookup: View {
                         showLoading = true
                         fetch_info(number: team_number)
                     }
-                ).frame(alignment: .center).multilineTextAlignment(.center).font(.system(size: 36))
+                ).disabled(!editable).frame(alignment: .center).multilineTextAlignment(.center).font(.system(size: 36))
                     .onAppear{
                         if fetch {
                             fetch_info(number: team_number)
@@ -423,7 +437,7 @@ struct TeamLookup: View {
                         Text("Total Ties: \(vrc_data_analysis.total_ties)")
                     }
                     Spacer()
-                    Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 ? "\(vrc_data_analysis.total_wins)-\(vrc_data_analysis.total_losses)-\(vrc_data_analysis.total_ties)" : "")
+                    Text(fetched ? "\(vrc_data_analysis.total_wins)-\(vrc_data_analysis.total_losses)-\(vrc_data_analysis.total_ties)" : "")
                 }
                 HStack {
                     Menu("Awards") {
@@ -432,20 +446,30 @@ struct TeamLookup: View {
                         }
                     }
                     Spacer()
-                    Text(team.registered ? "\(self.team.awards.count)" : "")
+                    Text(fetched && team.registered ? "\(self.team.awards.count)" : "")
+                }
+                HStack {
+                    Text("Qualifications")
+                    Spacer()
+                    Text("\(vrc_data_analysis.qualified_for_worlds == 1 ? "Worlds" : "")\(vrc_data_analysis.qualified_for_worlds == 1 && vrc_data_analysis.qualified_for_regionals == 1 ? ", " : "")\(vrc_data_analysis.qualified_for_regionals == 1 ? "Regionals" : "")\(fetched && vrc_data_analysis.qualified_for_worlds == 0 && vrc_data_analysis.qualified_for_regionals == 0 ? "None" : "")")
                 }
                 if UserSettings.getAdamScore() {
                     HStack {
-                        Button("AdamScore™") {
+                        Button(action: {
                             showingSheet = true
-                        }.sheet(isPresented: $showingSheet) {
+                        }, label: {
+                            HStack {
+                                Text("AdamScore™")
+                                Image(systemName: "questionmark.circle")
+                            }
+                        }).sheet(isPresented: $showingSheet) {
                             VStack {
                                 Spacer().frame(height: 20)
                                 Text("AdamScore™")
                                     .font(.headline)
                                     .padding()
                                 VStack(alignment: .leading) {
-                                    Text("AdamScore™ is a machine learning model trained on data from Team Ace's scout, Adam. 500 teams were manually reviewed and rated and the AdamScore™ model aims to predict the overall performance of any team.").padding()
+                                    Text("AdamScore™ is a machine learning model trained on data from Team ACE's scout, Adam. 500 teams were manually reviewed and rated and the AdamScore™ model aims to predict the overall performance of any team.").padding()
                                     Text("The possible ratings are low, low mid, mid, high mid, high, and very high.").padding()
                                     Text("The following metrics are looked at:").padding()
                                 }
@@ -458,13 +482,15 @@ struct TeamLookup: View {
                         Text(fetched && $vrc_data_analysis.wrappedValue.trueskill != 0.0 && world_skills.ranking != 0 ? adam_score() : "")
                     }
                 }
-                HStack {
-                    NavigationLink(destination: TeamEventsView(team_number: team.number).environmentObject(settings).environmentObject(dataController)) {
-                        Text("Events")
+                if editable {
+                    HStack {
+                        NavigationLink(destination: TeamEventsView(team_number: team.number).environmentObject(settings).environmentObject(dataController)) {
+                            Text("Events")
+                        }
                     }
                 }
             }
-        }
+        }.tint(settings.accentColor())
     }
 }
 

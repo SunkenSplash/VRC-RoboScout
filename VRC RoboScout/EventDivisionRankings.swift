@@ -178,7 +178,7 @@ struct EventDivisionRankings: View {
                 NavigationView {
                     List {
                         ForEach(searchResults, id: \.self) { rank in
-                            NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: self.event, team: Team(id: team_ranking(rank: rank).team.id, fetch: false)).environmentObject(settings).environmentObject(dataController)) {
+                            NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: self.event, team: Team(id: team_ranking(rank: rank).team.id, fetch: false), division: self.division).environmentObject(settings).environmentObject(dataController)) {
                                 VStack {
                                     HStack {
                                         Text(teams_map[String(team_ranking(rank: rank).team.id)] ?? "").font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 70, alignment: .leading).bold()

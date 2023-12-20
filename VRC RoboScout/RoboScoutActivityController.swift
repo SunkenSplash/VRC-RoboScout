@@ -22,26 +22,14 @@ class RoboScoutActivityController {
     
     private var activities = [String: String]() // ["eventID-teamID": "activityID"]
     
-    func registerForNotifications() {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            switch settings.authorizationStatus {
-            case .authorized:
-                print("Already authorized for notifications")
-            case .denied:
-                print("Notifications denied. Please enable in Settings.")
-            case .notDetermined:
-                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-                    if let error = error {
-                        print("Error requesting notification authorization: \(error)")
-                    } else if granted {
-                        DispatchQueue.main.async {
-                            UIApplication.shared.registerForRemoteNotifications()
-                        }
-                    }
-                }
-            default:
-                break
-            }
+    func registerForNotifications() async throws {
+        let notificationCenter = UNUserNotificationCenter.current()
+        let authorizationOptions: UNAuthorizationOptions = [.alert, .sound, .badge]
+        do {
+            // 4. Request authorization to the user
+            let authorizationGranted = try await notificationCenter.requestAuthorization(options: authorizationOptions)
+        } catch {
+            throw error
         }
     }
     
@@ -85,6 +73,12 @@ class RoboScoutActivityController {
         
     }
     
+    func notificationTest() async {
+        try! await self.registerForNotifications()
+        let deviceToken = defaults.object(forKey: "device_token") ?? ""
+        _ = RoboScoutAPI.roboserver_request(request_url: "/test/\(deviceToken)")
+    }
+    
     @available(iOS 16.2, *)
     func startMatchUpdatesActivity(event: Event, team: Team, matches: [Match]) async throws {
         let attributes = MatchUpdatesAttributes(
@@ -102,7 +96,7 @@ class RoboScoutActivityController {
             matches: matchesToStrings(matches: Array(matches[0...upcomingMatchIndex]), event: event)
         )
         do {
-            self.registerForNotifications()
+            try! await self.registerForNotifications()
             let activity = try Activity.request(attributes: attributes, content: .init(state: initialContentState, staleDate: nil), pushType: .token)
             let id = activity.id
             self.activities["\(event.id)-\(team.id)"] = id
@@ -110,7 +104,6 @@ class RoboScoutActivityController {
                 let pushTokenString = pushToken.reduce("") {
                       $0 + String(format: "%02x", $1)
                 }
-                
                 print("New push token: \(pushTokenString)")
                 // try await self.sendPushToken(event: event, team: team, pushTokenString: pushTokenString)
             }

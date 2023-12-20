@@ -14,10 +14,10 @@ enum FetchNotesResult {
 
 class RoboScoutDataController: ObservableObject {
     
-    // Create NSPersistentContainer
-    let persistentContainer: NSPersistentContainer = {
-        // creates the NSPersistentContainer object
-        let container = NSPersistentContainer(name: "RoboScoutData")
+    // Create NSPersistentCloudKitContainer 
+    let persistentContainer: NSPersistentCloudKitContainer  = {
+        // creates the NSPersistentCloudKitContainer  object
+        let container = NSPersistentCloudKitContainer (name: "RoboScoutData")
 
         // load the saved database if it exists, creates it if it does not, and returns an error under failure conditions
         container.loadPersistentStores { (description, error) in
@@ -34,7 +34,6 @@ class RoboScoutDataController: ObservableObject {
         let viewContext = persistentContainer.viewContext
         if viewContext.hasChanges {
             do {
-                print("Saving context")
                 try viewContext.save()
             } catch {
                 // Replace this implementation with code to handle the error appropriately.
@@ -46,7 +45,6 @@ class RoboScoutDataController: ObservableObject {
     }
     
     func createNewNote() -> TeamMatchNote {
-        print("Created new TeamMatchNote")
         let newNote = NSEntityDescription.insertNewObject(forEntityName: "TeamMatchNote", into: persistentContainer.viewContext) as! TeamMatchNote
         return newNote
     }
@@ -64,7 +62,6 @@ class RoboScoutDataController: ObservableObject {
 
         do {
             let notes = try viewContext.fetch(fetchRequest)
-            print("Fetched \(notes.count) notes")
             completion(.success(notes))
         } catch {
             print("Failed to fetch notes")
@@ -75,7 +72,6 @@ class RoboScoutDataController: ObservableObject {
     func deleteNote(note: TeamMatchNote, save: Bool = true) {
         // Delete the user-selected item from the context
         let viewContext = persistentContainer.viewContext
-        print("Deleting TeamMatchNote")
         viewContext.delete(note)
         
         if save {

@@ -74,20 +74,23 @@ struct EventTeamMatches: View {
         
         return false
     }
-
-    func scoreToDisplay(match: String, index: Int) -> String {
-        let split = match.split(separator: "&&")
+    
+    @ViewBuilder
+    func centerDisplay(matchString: String) -> some View {
+        let split = matchString.split(separator: "&&")
         let match = matches[Int(split[0]) ?? 0]
         
-        guard match.completed() || (match.predicted && predictions) else {
-            return ""
-        }
-        
-        if index == 6 {
-            return String(describing: (match.predicted && predictions) ? match.predicted_red_score : match.red_score)
+        if match.completed() || (match.predicted && predictions) {
+            HStack {
+                Text(String(describing: (match.predicted && predictions) ? match.predicted_red_score : match.red_score)).foregroundColor(.red).font(.system(size: 18)).frame(alignment: .leading).underline(conditionalUnderline(match: matchString, index: 6)).opacity((match.predicted && predictions) ? 0.6 : 1).bold()
+                Spacer()
+                Text(String(describing: (match.predicted && predictions) ? match.predicted_blue_score : match.blue_score)).foregroundColor(.blue).font(.system(size: 18)).frame(alignment: .trailing).underline(conditionalUnderline(match: matchString, index: 7)).opacity((match.predicted && predictions) ? 0.6 : 1).bold()
+            }
         }
         else {
-            return String(describing: (match.predicted && predictions) ? match.predicted_blue_score : match.blue_score)
+            Spacer()
+            Text(match.field).font(.system(size: 15)).foregroundColor(.secondary)
+            Spacer()
         }
     }
     
@@ -134,9 +137,13 @@ struct EventTeamMatches: View {
             }
             
             if division == nil {
-                matches = self.team.matches_at(event: event)
+                let matches = self.team.matches_at(event: event)
+                if !matches.isEmpty {
+                    self.division = (self.team.matches_at(event: event)[0]).division
+                }
             }
-            else {
+            
+            if division != nil {
                 do {
                     self.event.fetch_matches(division: division!)
                     try self.event.calculate_team_performance_ratings(division: division!)
@@ -217,7 +224,7 @@ struct EventTeamMatches: View {
                                 Text(name.wrappedValue.split(separator: "&&")[1]).font(.system(size: 15)).frame(width: 60, alignment: .leading).foregroundColor(conditionalColor(match: name.wrappedValue)).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1).bold()
                                 Spacer().frame(maxHeight: 4)
                                 Text(name.wrappedValue.split(separator: "&&")[8]).font(.system(size: 12)).frame(width: 60, alignment: .leading)
-                            }
+                            }.frame(width: 40)
                             VStack {
                                 if String(teams_map[String(name.wrappedValue.split(separator: "&&")[3])] ?? "") != "" {
                                     Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 2))
@@ -227,9 +234,7 @@ struct EventTeamMatches: View {
                                     Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 2))
                                 }
                             }.frame(width: 70)
-                            Text(scoreToDisplay(match: name.wrappedValue, index: 6)).foregroundColor(.red).font(.system(size: 18)).frame(alignment: .leading).underline(conditionalUnderline(match: name.wrappedValue, index: 6)).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1).bold()
-                            Spacer()
-                            Text(scoreToDisplay(match: name.wrappedValue, index: 7)).foregroundColor(.blue).font(.system(size: 18)).frame(alignment: .trailing).underline(conditionalUnderline(match: name.wrappedValue, index: 7)).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1).bold()
+                            centerDisplay(matchString: name.wrappedValue)
                             VStack {
                                 if String(teams_map[String(name.wrappedValue.split(separator: "&&")[5])] ?? "") != "" {
                                     Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 4))
@@ -274,21 +279,23 @@ struct EventTeamMatches: View {
                     if #available(iOS 16.2, *) {
                         Button(action: {
                             if ActivityAuthorizationInfo().areActivitiesEnabled {
+                                self.showAlert = false
                                 Task {
                                     do {
                                         if !activities.matchUpdatesActive(event: self.event, team: self.team) {
-                                            try await activities.startMatchUpdatesActivity(event: self.event, team: self.team, matches: self.matches)
                                             DispatchQueue.main.async {
                                                 self.alertText = AlertText.enabled
                                                 self.showAlert = true
                                             }
+                                            await activities.notificationTest()
+                                            try await activities.startMatchUpdatesActivity(event: self.event, team: self.team, matches: self.matches)
                                         }
                                         else {
-                                            await activities.endMatchUpdatesActivity(event: self.event, team: self.team)
                                             DispatchQueue.main.async {
                                                 self.alertText = AlertText.disabled
                                                 self.showAlert = false
                                             }
+                                            await activities.endMatchUpdatesActivity(event: self.event, team: self.team)
                                         }
                                     } catch {
                                         DispatchQueue.main.async {
@@ -324,28 +331,33 @@ struct EventTeamMatches: View {
                     }, label: {
                         Image(systemName: "note.text").foregroundColor(settings.navTextColor())
                     })
-                    if division != nil {
-                        Button(action: {
-                            predictions = !predictions
-                            calculating = true
-                            fetch_info(predict: predictions)
-                        }, label: {
-                            if calculating && predictions {
-                                ProgressView().foregroundColor(settings.navTextColor())
-                            }
-                            else if predictions {
-                                Image(systemName: "bolt.fill").foregroundColor(settings.navTextColor())
-                            }
-                            else {
-                                Image(systemName: "bolt").foregroundColor(settings.navTextColor())
-                            }
-                        })
-                    }
+                    Button(action: {
+                        if matches.isEmpty {
+                            return
+                        }
+                        predictions = !predictions
+                        calculating = true
+                        fetch_info(predict: predictions)
+                    }, label: {
+                        if calculating && predictions {
+                            ProgressView().foregroundColor(settings.navTextColor())
+                        }
+                        else if predictions {
+                            Image(systemName: "bolt.fill").foregroundColor(settings.navTextColor())
+                        }
+                        else if !matches.isEmpty {
+                            Image(systemName: "bolt").foregroundColor(settings.navTextColor())
+                        }
+                        else {
+                            Image(systemName: "bolt.slash")
+                        }
+                    })
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(settings.tabColor(), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .tint(settings.accentColor())
     }
 }
 

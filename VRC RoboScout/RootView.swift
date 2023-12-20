@@ -54,6 +54,7 @@ struct RootView: View {
                     }
                     .environmentObject(favorites)
                     .environmentObject(settings)
+                    .environmentObject(dataController)
                     .environmentObject(navigation_bar_manager)
                     .tint(settings.accentColor())
                     .tag(1)
@@ -68,6 +69,7 @@ struct RootView: View {
                     }
                     .environmentObject(favorites)
                     .environmentObject(settings)
+                    .environmentObject(dataController)
                     .environmentObject(navigation_bar_manager)
                     .tint(settings.accentColor())
                     .tag(2)
@@ -109,10 +111,17 @@ struct RootView: View {
                 .background(.clear)
                         .toolbar {
                             ToolbarItem(placement: .principal) {
-                                Text(navigation_bar_manager.title)
-                                    .fontWeight(.medium)
-                                    .font(.system(size: 19))
-                                    .foregroundColor(settings.navTextColor())
+                                VStack {
+                                    Text(navigation_bar_manager.title)
+                                        .fontWeight(.medium)
+                                        .font(.system(size: 19))
+                                        .foregroundColor(settings.navTextColor())
+                                    if navigation_bar_manager.title.contains("TrueSkill") {
+                                        Text("Powered by vrc-data-analysis.com")
+                                            .font(.system(size: 12))
+                                            .foregroundColor(settings.navTextColor().opacity(0.75))
+                                    }
+                                }
                             }
                             if navigation_bar_manager.title.contains("Skills") {
                                 ToolbarItem(placement: .navigationBarTrailing) {

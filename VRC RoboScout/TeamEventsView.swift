@@ -102,7 +102,9 @@ struct TeamEventsView: View {
                 Spacer()
             }
             else if events.event_indexes.isEmpty {
+                Spacer()
                 NoData()
+                Spacer()
             }
             else {
                 List(events.event_indexes) { event_index in
@@ -123,6 +125,7 @@ struct TeamEventsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(settings.tabColor(), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .tint(settings.accentColor())
         
     }
 }

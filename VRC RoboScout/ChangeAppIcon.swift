@@ -11,10 +11,25 @@ enum AppIcon: String, CaseIterable, Identifiable {
     case primary = "AppIcon"
     case dark = "AppIcon-Dark"
     case ace = "AppIcon-ACE"
+    case delrin = "AppIcon-Delrin"
     case revision = "AppIcon-Revision"
+    case sigbots = "AppIcon-SIGBots"
     case p = "AppIcon-P"
+    case purple = "AppIcon-Purple"
+    case aqua = "AppIcon-Aqua"
+    case blue = "AppIcon-Blue"
+    case cute = "AppIcon-Cute"
+    case century = "AppIcon-Century"
+    case pt = "AppIcon-PT"
+    case kauz = "AppIcon-Kauz"
+    case tigris = "AppIcon-Tigris"
     case cw = "AppIcon-CW"
+    case saurus = "AppIcon-Saurus"
+    case canes = "AppIcon-Canes"
+    case balls = "AppIcon-Balls"
+    case chunger = "AppIcon-Chunger"
     case circuits = "AppIcon-Circuits"
+    case gear = "AppIcon-Gear"
     case ss = "AppIcon-SS"
     case autumn = "AppIcon-Autumn"
     case canada = "AppIcon-Canada"
@@ -41,14 +56,44 @@ enum AppIcon: String, CaseIterable, Identifiable {
             return "Dark"
         case .ace:
             return "ACE/ACE Robotics 229V"
+        case .delrin:
+            return "Delrin/ACE Robotics 229V"
         case .revision:
             return "Revision/Revision 515R"
+        case .sigbots:
+            return "Purdue SIGBots"
         case .p:
             return "Parker/Parker 9364C"
+        case .purple:
+            return "Purple/Angela 2029C"
+        case .aqua:
+            return "Aqua/Angela 2029C"
+        case .blue:
+            return "Blue/Angela 2029C"
+        case .cute:
+            return "Cute/Angela 2029C"
+        case .century:
+            return "Century/Keily 8838B"
+        case .pt:
+            return "Pronounce This/Pronounce This 2654P"
+        case .kauz:
+            return "ROBOKAUZ/ROBOKAUZ 21417A"
+        case .tigris:
+            return "Tigris/Davis 98377G"
         case .cw:
             return "Colorwave/Alex Y 877K"
+        case .saurus:
+            return "RoboSaurus/Selma 8079M"
+        case .canes:
+            return "RoboCanes/Henry 1970Y"
+        case .balls:
+            return "Balls/Nathaniel 643A"
+        case .chunger:
+            return "Chunger/Jason Chungus 8889A"
         case .circuits:
             return "Circuits/Nathaniel 643A"
+        case .gear:
+            return "Knights/Ajaya R 8568A"
         case .ss:
             return "Sunset/Andrew 4610C"
         case .autumn:
@@ -142,7 +187,7 @@ struct ChangeAppIcon: View {
                 }.padding(.horizontal)
                     .padding(.vertical, 40)
             }
-            Link("Submit your own!", destination: URL(string: "https://discord.gg/7b9qcMhVnW")!).padding()
+            Link("Submit your own!", destination: URL(string: "https://discord.gg/dae3Brb43N")!).padding()
         }
         .background(.clear)
         .toolbar {
