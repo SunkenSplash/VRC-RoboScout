@@ -17,7 +17,7 @@ struct TeamInfo: Identifiable {
 
 struct TeamInfoRow: View {
     var team_info: TeamInfo
-
+    
     var body: some View {
         HStack{
             Text(team_info.property)
@@ -35,7 +35,7 @@ struct Lookup: View {
     @EnvironmentObject var favorites: FavoriteStorage
     @EnvironmentObject var dataController: RoboScoutDataController
     @EnvironmentObject var navigation_bar_manager: NavigationBarManager
-        
+    
     var body: some View {
         VStack {
             Picker("Lookup", selection: $lookup_type) {
@@ -65,7 +65,7 @@ class EventSearch: ObservableObject {
     @Published var event_indexes: [String]
     @Published var events: [Event]
     
-    init(name_query: String? = nil, season_query: Int? = nil, no_leagues: Bool = false, page: Int = 1) {
+    init(name_query: String? = nil, season_query: Int? = nil, level_query: Int?=nil, grade_query: Int?=nil, region_query: Int?=nil,no_leagues: Bool = false, page: Int = 1) {
         event_indexes = [String]()
         events = [Event]()
         if name_query == nil {
@@ -84,6 +84,16 @@ class EventSearch: ObservableObject {
         if no_leagues || name_query == nil || name_query == "" {
             scraper_params["eventType"] = 1
         }
+        if level_query != 0 {
+            scraper_params["level_class_id"] = level_query
+        }
+        if grade_query != 0 {
+            scraper_params["grade_level_id"] = grade_query
+        }
+        if region_query != 0{
+            scraper_params["event_region"] = region_query
+        }
+        
         scraper_params["page"] = page
         
         let formatter = DateFormatter()
@@ -115,14 +125,17 @@ struct EventLookup: View {
     @State private var events: EventSearch = EventSearch()
     @State private var name_query: String = ""
     @State private var season_query: Int = API.selected_season_id()
+    @State private var level_query: Int = 0
+    @State private var grade_query: Int = 0
+    @State private var region_query: Int = 0
     @State private var page: Int = 1
     @State private var showLoading = false
     @State private var loaded = false
     
-    func event_query(name_query: String, season_query: Int, no_leagues: Bool = false, page: Int = 1) {
+    func event_query(name_query: String, season_query: Int, level_query: Int, grade_query: Int, region_query: Int, no_leagues: Bool = false, page: Int = 1) {
         showLoading = true
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            let fetched_events = EventSearch(name_query: name_query, season_query: season_query, no_leagues: no_leagues, page: page)
+            let fetched_events = EventSearch(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query, no_leagues: no_leagues, page: page)
             
             DispatchQueue.main.async {
                 self.events = fetched_events
@@ -151,22 +164,67 @@ struct EventLookup: View {
                 text: $name_query,
                 onCommit: {
                     showLoading = true
-                    event_query(name_query: name_query, season_query: season_query)
+                    event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
                 }
-            ).frame(alignment: .center).multilineTextAlignment(.center).font(.system(size: 36)).padding(11)
+            ).frame(alignment: .center).multilineTextAlignment(.center).font(.system(size: 36))
+            
+            Menu("Filter") {
+                Menu("Season") {
+                    ForEach(API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1].keys.sorted().reversed(), id: \.self) { season_id in
+                        Button(format_season_option(raw: API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1][season_id] ?? "Unknown")) {
+                            showLoading = true
+                            season_query = season_id
+                            event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
+                        }
+                    }
+                }
+                Menu("Level") {
+                    ForEach(0..<8) { lesson_id in
+                        Button(API.level_map[UserSettings.getGradeLevel() != "College" ? 0 : 1][lesson_id] ?? "Unknown") {
+                            showLoading = true
+                            level_query = lesson_id
+                            event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
+                        }
+                    }
+                }
+                Menu("Grade") {
+                    ForEach(0..<3) { grade_id in
+                        Button(API.grade_map[UserSettings.getGradeLevel() != "College" ? 0 : 1][grade_id] ?? "Unknown") {
+                            showLoading = true
+                            grade_query = grade_id
+                            event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
+                        }
+                    }
+                }
+                Menu("Region") {
+                    ForEach(API.regions_map.sorted(by: <), id: \.key) { region, id in
+                        Button(region) {
+                            showLoading = true
+                            region_query = id
+                            event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
+                            
+                        }
+                    }
+                }
+                
+                Button("Clear Filters") {
+                    showLoading = true
+                    season_query = API.selected_season_id()
+                    grade_query = 0
+                    level_query = 0
+                    region_query = 0
+                    event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
+                }
+            }.fontWeight(.medium)
+                .font(.system(size: 19))
+                .padding(20)
+            
             VStack {
                 if showLoading {
                     ProgressView()
                 }
-            }.frame(height: 10)
-            Picker("Season", selection: $season_query) {
-                ForEach(API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1].keys.sorted().reversed(), id: \.self) { season_id in
-                    Text(format_season_option(raw: API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1][season_id] ?? "Unknown")).tag(season_id)
-                }
-            }.onChange(of: season_query) { _ in
-                showLoading = true
-                event_query(name_query: name_query, season_query: season_query)
-            }
+            }.frame(height: 12)
+            
             List(events.event_indexes) { event_index in
                 EventRow(event: events.events[Int(event_index)!]).environmentObject(dataController)
             }
@@ -176,7 +234,7 @@ struct EventLookup: View {
                     showLoading = true
                     events = EventSearch()
                     page -= 1
-                    event_query(name_query: name_query, season_query: season_query, page: page)
+                    event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query, page: page)
                 }, label: {
                     Image(systemName: "chevron.left").font(.system(size: 25))
                 }).disabled(page <= 1 || showLoading).opacity((events.events.isEmpty && !showLoading) ? 0 : 1).padding(20)
@@ -185,7 +243,7 @@ struct EventLookup: View {
                     showLoading = true
                     events = EventSearch()
                     page += 1
-                    event_query(name_query: name_query, season_query: season_query, page: page)
+                    event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query, page: page)
                 }, label: {
                     Image(systemName: "chevron.right").font(.system(size: 25))
                 }).disabled(events.events.count < 20 || showLoading).opacity((events.events.isEmpty && !showLoading) ? 0 : 1).padding(20)
@@ -194,7 +252,7 @@ struct EventLookup: View {
         }.onAppear{
             if !loaded {
                 season_query = UserSettings.getSelectedSeasonID()
-                event_query(name_query: name_query, season_query: season_query, no_leagues: true)
+                event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query, no_leagues: true)
                 loaded = true
             }
         }
@@ -256,7 +314,7 @@ struct TeamLookup: View {
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             
             let fetched_team = Team(number: number)
-                        
+            
             if fetched_team.id == 0 {
                 DispatchQueue.main.async {
                     showLoading = false
@@ -284,7 +342,7 @@ struct TeamLookup: View {
                     is_favorited = true
                 }
             }
-                        
+            
             DispatchQueue.main.async {
                 team = fetched_team
                 vrc_data_analysis = fetced_vrc_data_analysis

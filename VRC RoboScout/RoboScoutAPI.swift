@@ -107,6 +107,40 @@ public class RoboScoutAPI {
     public var vrc_data_analysis_cache: VRCDataAnalysisCache
     public var imported_trueskill: Bool
     public var season_id_map: [OrderedDictionary<Int, String>] // [VRC, VEXU]
+    public var level_map: [OrderedDictionary<Int, String>] = [
+        OrderedDictionary(uniqueKeysWithValues: [
+            (0, "All"),
+            (1, "Event Region Championship"),
+            (2, "National Championship"),
+            (3, "World Championship"),
+            (4, "Signature Event"),
+            (5, "JROTC Brigade Championship"),
+            (6, "JROTC National Championship"),
+            (7, "Showcase Event")
+        ]),
+        OrderedDictionary(uniqueKeysWithValues: [
+            (0, "All"),
+            (1, "Event Region Championship"),
+            (2, "National Championship"),
+            (3, "World Championship"),
+            (4, "Signature Event"),
+            (5, "JROTC Brigade Championship"),
+            (6, "JROTC National Championship"),
+            (7, "Showcase Event")
+        ])
+    ]
+    public var grade_map: [OrderedDictionary<Int, String>] = [
+        OrderedDictionary(uniqueKeysWithValues: [
+            (0, "All"),
+            (1, "Middle School"),
+            (2, "High School"),
+        ]),
+        OrderedDictionary(uniqueKeysWithValues: [
+            (0, "All"),
+            (1, "Middle School"),
+            (2, "High School"),
+        ])
+    ]
     public var current_skills_season_id: Int
     
     public init() {
@@ -119,7 +153,7 @@ public class RoboScoutAPI {
         self.season_id_map = [OrderedDictionary<Int, String>]()
         self.current_skills_season_id = 0
     }
-
+    
     public static func robotevents_date(date: String, localize: Bool) -> Date? {
         let formatter = DateFormatter()
         // Example date: "2023-04-26T11:54:40-04:00"
@@ -156,7 +190,7 @@ public class RoboScoutAPI {
     public static func roboserver_request(request_url: String, params: [String: Any] = [:]) -> [[String: Any]] {
         var data = [[String: Any]]()
         var request_url = self.roboserver_url() + request_url
-            
+        
         let semaphore = DispatchSemaphore(value: 0)
         
         var components = URLComponents(string: request_url)!
@@ -173,7 +207,7 @@ public class RoboScoutAPI {
                 }
             }
         }
-
+        
         // Create URL Request using the request_url string, which is the URL we are going to use to get data from Robotevents
         let request = NSMutableURLRequest(url: URL(string: request_url)!)
         request.httpMethod = "GET"
@@ -240,7 +274,7 @@ public class RoboScoutAPI {
                     }
                 }
             }
-
+            
             // Create URL Request using the request_url string, which is the URL we are going to use to get data from Robotevents
             let request = NSMutableURLRequest(url: URL(string: request_url)!)
             request.setValue(String(format: "Bearer %@", self.robotevents_access_key()), forHTTPHeaderField: "Authorization")
@@ -297,7 +331,24 @@ public class RoboScoutAPI {
         if params["country_id"] == nil {
             params["country_id"] = "*"
         }
-                
+        
+        if params["level_class_id"] as? Int == 4 {
+            params["level_class_id"] = 9
+        }
+        if params["level_class_id"] as? Int == 5 {
+            params["level_class_id"] = 12
+        }
+        if params["level_class_id"] as? Int == 6 {
+            params["level_class_id"] = 13
+        }
+        
+        if params["grade_level_id"] as? Int == 1 {
+            params["grade_level_id"] = 2
+        }
+        else if params["grade_level_id"] as? Int == 2 {
+            params["grade_level_id"] = 3
+        }
+        
         let semaphore = DispatchSemaphore(value: 0)
         
         var components = URLComponents(string: request_url)!
@@ -314,7 +365,6 @@ public class RoboScoutAPI {
                 }
             }
         }
-        
         var sku_array = [String]()
         
         let request = NSMutableURLRequest(url: URL(string: request_url)!)
@@ -398,14 +448,14 @@ public class RoboScoutAPI {
             }
             self.season_id_map[grade_level_index][(season_data)["id"] as! Int] = (season_data)["name"] as? String ?? ""
         }
-
+        
         print("Season ID map generated")
     }
     
     public static func selected_program_id() -> Int {
         return UserSettings.getGradeLevel() == "College" ? 4 : 1
     }
-
+    
     public func selected_season_id() -> Int {
         return UserDefaults.standard.object(forKey: "selected_season_id") as? Int ?? self.active_season_id()
     }
@@ -417,12 +467,12 @@ public class RoboScoutAPI {
     public func update_world_skills_cache(season: Int? = nil) {
         
         self.imported_skills = false
-
+        
         let semaphore = DispatchSemaphore(value: 0)
-                    
+        
         var components = URLComponents(string: String(format: "https://www.robotevents.com/api/seasons/%d/skills", season ?? self.selected_season_id()))!
         components.queryItems = [URLQueryItem(name: "grade_level", value: UserSettings.getGradeLevel())]
-                    
+        
         let request = NSMutableURLRequest(url: components.url! as URL)
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -455,14 +505,14 @@ public class RoboScoutAPI {
         _ = semaphore.wait(timeout: DispatchTime.distantFuture)
         self.imported_skills = true
     }
-        
+    
     public func world_skills_for(team: Team) -> WorldSkills? {
         if self.world_skills_cache.teams.isEmpty {
             self.update_world_skills_cache()
         }
         return self.world_skills_cache.teams.first{ $0.team.id == team.id }
     }
-                    
+    
     public func world_skills_place(ranking: Int) -> WorldSkills? {
         if self.world_skills_cache.teams.isEmpty {
             self.update_world_skills_cache()
@@ -478,13 +528,13 @@ public class RoboScoutAPI {
         self.imported_trueskill = false
         
         let semaphore = DispatchSemaphore(value: 0)
-            
+        
         let components = URLComponents(string: String(format: "https://vrc-data-analysis.com/v1/allteams", season ?? self.selected_season_id()))!
-                    
+        
         let request = NSMutableURLRequest(url: components.url! as URL)
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-                
+        
         let task = URLSession.shared.dataTask(with: request as URLRequest) { (response_data, response, error) in
             if response_data != nil {
                 // Decode
@@ -558,7 +608,7 @@ public class RoboScoutAPI {
     }
     
 }
-        
+
 public class VRCDataAnalysis: Identifiable {
     
     public var ts_ranking: Int
@@ -692,7 +742,7 @@ public class Match: Identifiable {
     public var predicted: Bool
     
     public init(data: [String: Any] = [:], fetch: Bool = false) {
-
+        
         self.id = (data["id"] != nil) ? data["id"] as? Int ?? 0 : 0
         self.event = (data["event"] != nil) ? Event(id: ((data["event"] as! [String: Any])["id"] as! Int), fetch: fetch) : Event()
         self.division = (data["division"] != nil) ? Division(data: data["division"] as! [String : Any]) : Division()
@@ -702,7 +752,7 @@ public class Match: Identifiable {
         
         let round = (data["round"] != nil) ? data["round"] as? Int ?? 0 : 0
         self.round = round_map[round] ?? Round.none
-                
+        
         self.instance = (data["instance"] != nil) ? data["instance"] as? Int ?? 0 : 0
         self.matchnum = (data["matchnum"] != nil) ? data["matchnum"] as? Int ?? 0 : 0
         self.name = (data["name"] != nil) ? data["name"] as? String ?? "" : ""
@@ -738,10 +788,10 @@ public class Match: Identifiable {
         }
         
         /*if self.matchnum > 90 {
-            self.red_score = 0
-            self.blue_score = 0
-            self.started = nil
-        }*/
+         self.red_score = 0
+         self.blue_score = 0
+         self.started = nil
+         }*/
     }
     
     func fetch_full_info() {
@@ -830,7 +880,7 @@ public struct TeamAwardWinner {
 }
 
 public class Award: Identifiable {
-
+    
     public var id: Int
     public var event: Event
     public var order: Int
@@ -975,7 +1025,7 @@ public class Event: Identifiable {
     public var livestream_link: String?
     
     public init(id: Int = 0, sku: String = "", fetch: Bool = true, data: [String: Any] = [:]) {
-
+        
         self.id = (data["id"] != nil) ? data["id"] as! Int : id
         self.sku = (data["sku"] != nil) ? data["sku"] as! String : sku
         self.name = (data["name"] != nil) ? data["name"] as! String : ""
@@ -1035,7 +1085,7 @@ public class Event: Identifiable {
             self.divisions.append(Division(data: division))
         }
     }
-        
+    
     public func fetch_teams() {
         self.teams = [Team]()
         let data = RoboScoutAPI.robotevents_request(request_url: String(format: "/events/%d/teams", self.id))
@@ -1158,10 +1208,10 @@ public class Event: Identifiable {
             if false && (UserSettings.getPerformanceRatingsCalculationOption() != "via" && !match.completed()) {
                 continue
             }
-                        
+            
             var red = [Int]()
             var blue = [Int]()
-                        
+            
             for team in division_teams {
                 if match.red_alliance[0].id == team.id || match.red_alliance[1].id == team.id {
                     red.append(1)
@@ -1269,7 +1319,7 @@ public class Event: Identifiable {
         if let livestream_link {
             return livestream_link
         }
-                
+        
         let request_url = "https://www.robotevents.com/robot-competitions/\(UserSettings.getGradeLevel() == "College" ? "college-competition" : "vex-robotics-competition")/\(self.sku).html"
         
         let semaphore = DispatchSemaphore(value: 0)
@@ -1371,7 +1421,7 @@ public class EventSkills {
         self.programming = programming
         self.combined = driver + programming
     }
-        
+    
     public func toString() -> String {
         return String(format:"%@ @ %@ - %d", self.team.toString(), self.event.toString(), self.combined)
     }
@@ -1604,7 +1654,7 @@ public class Team: Identifiable {
         self.event_count = data.count
         return Double(total) / Double(data.count)
     }
-                                        
+    
     public func toString() -> String {
         return String(format: "%@ %@", self.name, self.number)
     }
