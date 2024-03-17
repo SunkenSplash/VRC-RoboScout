@@ -31,17 +31,17 @@ struct EventTeamView: View {
     var body: some View {
         VStack {
             Picker("Team Information", selection: $selectedView) {
-                Text("Matches").tag(UserSettings.getTeamInfoDefaultPage() == "events" ? 0 : 1)
-                Text("Statistics").tag(UserSettings.getTeamInfoDefaultPage() == "statistics" ? 0 : 1)
+                Text("Matches").tag(UserSettings.getMatchTeamDefaultPage() == "matches" ? 0 : 1)
+                Text("Statistics").tag(UserSettings.getMatchTeamDefaultPage() == "statistics" ? 0 : 1)
             }.pickerStyle(.segmented).padding()
             Spacer()
             if selectedView == (UserSettings.getMatchTeamDefaultPage() == "matches" ? 0 : 1) {
-                TeamLookup(team_number: teamNumber, editable: false, fetch: true)
+                EventTeamMatches(teams_map: $teams_map, event: event, team: Team(number: teamNumber, fetch: false), division: division)
                     .environmentObject(settings)
                     .environmentObject(dataController)
             }
             else if selectedView == (UserSettings.getMatchTeamDefaultPage() == "statistics" ? 0 : 1) {
-                EventTeamMatches(teams_map: $teams_map, event: event, team: Team(number: teamNumber, fetch: false), division: division)
+                TeamLookup(team_number: teamNumber, editable: false, fetch: true)
                     .environmentObject(settings)
                     .environmentObject(dataController)
             }
