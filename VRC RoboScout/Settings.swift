@@ -23,6 +23,7 @@ struct Settings: View {
     @State var selected_season_id = UserSettings.getSelectedSeasonID()
     @State var apiKey = UserSettings.getRobotEventsAPIKey() ?? ""
     @State var team_info_default_page = UserSettings.getTeamInfoDefaultPage() == "statistics"
+    @State var match_team_default_page = UserSettings.getMatchTeamDefaultPage() == "statistics"
     @State var showLoading = false
     @State var showApply = false
     @State var clearedTeams = false
@@ -163,6 +164,10 @@ struct Settings: View {
                 Section("Customization") {
                     Toggle("Show statistics by default on Team Info page", isOn: $team_info_default_page).onChange(of: team_info_default_page) { _ in
                         settings.setTeamInfoDefaultPage(page: team_info_default_page ? "statistics" : "events")
+                        settings.updateUserDefaults()
+                    }
+                    Toggle("Show statistics by default on Match Team page", isOn: $match_team_default_page).onChange(of: match_team_default_page) { _ in
+                        settings.setMatchTeamDefaultPage(page: match_team_default_page ? "statistics" : "matches")
                         settings.updateUserDefaults()
                     }
                 }

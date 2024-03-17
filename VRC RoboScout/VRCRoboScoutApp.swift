@@ -187,6 +187,7 @@ class UserSettings: ObservableObject {
     private var grade_level: String
     private var performance_ratings_calculation_option: String
     private var team_info_default_page: String
+    private var match_team_default_page: String
     private var selected_season_id: Int
     
     static var keyIndex = Int.random(in: 0..<10)
@@ -198,6 +199,7 @@ class UserSettings: ObservableObject {
         self.grade_level = defaults.object(forKey: "grade_level") as? String ?? "High School"
         self.performance_ratings_calculation_option = defaults.object(forKey: "performance_ratings_calculation_option") as? String ?? "real"
         self.team_info_default_page = defaults.object(forKey: "team_info_default_page") as? String ?? "events"
+        self.match_team_default_page = defaults.object(forKey: "match_team_default_page") as? String ?? "matches"
         self.selected_season_id = defaults.object(forKey: "selected_season_id") as? Int ?? 181
     }
     
@@ -208,6 +210,7 @@ class UserSettings: ObservableObject {
         self.grade_level = defaults.object(forKey: "grade_level") as? String ?? "High School"
         self.performance_ratings_calculation_option = defaults.object(forKey: "performance_ratings_calculation_option") as? String ?? "real"
         self.team_info_default_page = defaults.object(forKey: "team_info_default_page") as? String ?? "events"
+        self.match_team_default_page = defaults.object(forKey: "match_team_default_page") as? String ?? "matches"
         self.selected_season_id = defaults.object(forKey: "selected_season_id") as? Int ?? API.selected_season_id()
     }
     
@@ -218,6 +221,7 @@ class UserSettings: ObservableObject {
         defaults.set(self.grade_level, forKey: "grade_level")
         defaults.set(self.performance_ratings_calculation_option, forKey: "performance_ratings_calculation_option")
         defaults.set(self.team_info_default_page, forKey: "team_info_default_page")
+        defaults.set(self.match_team_default_page, forKey: "match_team_default_page")
         defaults.set(self.selected_season_id, forKey: "selected_season_id")
     }
     
@@ -243,6 +247,10 @@ class UserSettings: ObservableObject {
     
     func setTeamInfoDefaultPage(page: String) {
         self.team_info_default_page = page
+    }
+    
+    func setMatchTeamDefaultPage(page: String) {
+        self.match_team_default_page = page
     }
     
     func setSelectedSeasonID(id: Int) {
@@ -311,6 +319,10 @@ class UserSettings: ObservableObject {
     
     static func getTeamInfoDefaultPage() -> String {
         return defaults.object(forKey: "team_info_default_page") as? String ?? "events"
+    }
+    
+    static func getMatchTeamDefaultPage() -> String {
+        return defaults.object(forKey: "match_team_default_page") as? String ?? "matches"
     }
 
     static func getSelectedSeasonID() -> Int {

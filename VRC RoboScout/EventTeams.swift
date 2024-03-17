@@ -92,7 +92,7 @@ struct EventTeams: View {
                 NavigationView {
                     List {
                         ForEach(searchResults, id: \.self) { teamNum in
-                            NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: event, team: Team(number: teamNum, fetch: false), division: division).environmentObject(settings).environmentObject(dataController)) {
+                            NavigationLink(destination: EventTeamView(teams_map: $teams_map, event: event, teamNumber: teamNum, division: division).environmentObject(settings).environmentObject(dataController)) {
                                 HStack {
                                     Text((event_teams_map[teamNum] ?? Team()).number).font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 80, height: 30, alignment: .leading).bold()
                                     VStack {

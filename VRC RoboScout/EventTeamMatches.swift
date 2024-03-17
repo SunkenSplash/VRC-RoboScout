@@ -17,12 +17,10 @@ enum AlertText: String {
 }
 
 struct EventTeamMatches: View {
-    
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var dataController: RoboScoutDataController
     
     @Binding var teams_map: [String: String]
-    
     @State var event: Event
     @State var team: Team
     @State var division: Division?
@@ -206,7 +204,7 @@ struct EventTeamMatches: View {
             }
         }
     }
-        
+
     var body: some View {
         VStack {
             if showLoading {
