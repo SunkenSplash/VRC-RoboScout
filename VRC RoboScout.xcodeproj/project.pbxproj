@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01EF2B072BB7356D00A88DCE /* EventTeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EF2B062BB7356D00A88DCE /* EventTeamView.swift */; };
 		3D01A8C329DF3D55000BBDEB /* EventDivisionRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D01A8C229DF3D55000BBDEB /* EventDivisionRankings.swift */; };
 		3D0583BB2AFC4CF70047A393 /* Matft in Frameworks */ = {isa = PBXBuildFile; productRef = 3D0583BA2AFC4CF70047A393 /* Matft */; };
 		3D0BE6F929A3F0C700C3EA8A /* Lookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0BE6F829A3F0C700C3EA8A /* Lookup.swift */; };
@@ -51,7 +52,6 @@
 		3DB21DD52B054D6400B12803 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB21DD42B054D6400B12803 /* RootView.swift */; };
 		3DC3F47529ACFF6000C5EA86 /* TrueSkillRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC3F47429ACFF6000C5EA86 /* TrueSkillRankings.swift */; };
 		3DD419D82AF5A51200A4D3AB /* roboscouticon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3DD419D72AF5A51200A4D3AB /* roboscouticon.png */; };
-		3DEA14672AD73AD6001E1C23 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3DEA14662AD73AD6001E1C23 /* Config.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +93,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		01EF2B062BB7356D00A88DCE /* EventTeamView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTeamView.swift; sourceTree = "<group>"; };
 		3D01A8C229DF3D55000BBDEB /* EventDivisionRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDivisionRankings.swift; sourceTree = "<group>"; };
 		3D0BE6F829A3F0C700C3EA8A /* Lookup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lookup.swift; sourceTree = "<group>"; };
 		3D1E57A929F17D3500DA6296 /* EventDivisionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDivisionView.swift; sourceTree = "<group>"; };
@@ -140,7 +141,6 @@
 		3DB21DD42B054D6400B12803 /* RootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		3DC3F47429ACFF6000C5EA86 /* TrueSkillRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrueSkillRankings.swift; sourceTree = "<group>"; };
 		3DD419D72AF5A51200A4D3AB /* roboscouticon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = roboscouticon.png; sourceTree = "<group>"; };
-		3DEA14662AD73AD6001E1C23 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -235,12 +235,12 @@
 		3DB11E4C299543D9001DDB02 /* VRC RoboScout */ = {
 			isa = PBXGroup;
 			children = (
+				01EF2B062BB7356D00A88DCE /* EventTeamView.swift */,
 				3D1E7F542AAA3B5A009BA258 /* CoreData */,
 				3DB11E53299543DC001DDB02 /* VRCRoboScout.entitlements */,
 				3D50E10729C8915C002FE201 /* Launch Screen.storyboard */,
 				3DB11E51299543DC001DDB02 /* Assets.xcassets */,
 				3DD419D72AF5A51200A4D3AB /* roboscouticon.png */,
-				3DEA14662AD73AD6001E1C23 /* Config.plist */,
 				3D386C3429F19DAB00035B3B /* RoboScoutAPI.swift */,
 				3D73E3AB2AB330CD005BE836 /* RoboScoutDataController.swift */,
 				3D943E7B2AFBFA22009EF365 /* RoboScoutActivityController.swift */,
@@ -433,7 +433,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3DEA14672AD73AD6001E1C23 /* Config.plist in Resources */,
 				3DD419D82AF5A51200A4D3AB /* roboscouticon.png in Resources */,
 				3DAFC80E2A2640EB00A0C41A /* CoreML in Resources */,
 				3D50E10829C8915C002FE201 /* Launch Screen.storyboard in Resources */,
@@ -477,6 +476,7 @@
 				3D1E7F4C2AAA1643009BA258 /* MatchNotes.swift in Sources */,
 				3D56DC512B28B25E004DA5B9 /* TeamInfoView.swift in Sources */,
 				3DB11E50299543D9001DDB02 /* Favorites.swift in Sources */,
+				01EF2B072BB7356D00A88DCE /* EventTeamView.swift in Sources */,
 				3DC3F47529ACFF6000C5EA86 /* TrueSkillRankings.swift in Sources */,
 				3D672BDF2A46544A000211A7 /* EventDivisionAwards.swift in Sources */,
 				3D01A8C329DF3D55000BBDEB /* EventDivisionRankings.swift in Sources */,
