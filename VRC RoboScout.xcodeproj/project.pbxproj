@@ -235,7 +235,6 @@
 		3DB11E4C299543D9001DDB02 /* VRC RoboScout */ = {
 			isa = PBXGroup;
 			children = (
-				01EF2B062BB7356D00A88DCE /* EventTeamView.swift */,
 				3D1E7F542AAA3B5A009BA258 /* CoreData */,
 				3DB11E53299543DC001DDB02 /* VRCRoboScout.entitlements */,
 				3D50E10729C8915C002FE201 /* Launch Screen.storyboard */,
@@ -253,6 +252,7 @@
 				3D3219CA29D1EA0D00EF5500 /* EventView.swift */,
 				3D3219CC29D1EF1D00EF5500 /* EventInformation.swift */,
 				3D3219CE29D31BD500EF5500 /* EventTeams.swift */,
+				01EF2B062BB7356D00A88DCE /* EventTeamView.swift */,
 				3D91B13C2A9BECDB007B54F7 /* DataExporter.swift */,
 				3D3219D029D3327500EF5500 /* EventTeamMatches.swift */,
 				3D1E7F4B2AAA1643009BA258 /* MatchNotes.swift */,
