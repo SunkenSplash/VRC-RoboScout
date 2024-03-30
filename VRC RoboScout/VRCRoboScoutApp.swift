@@ -280,6 +280,20 @@ class UserSettings: ObservableObject {
             return accentColor()
         }
         else {
+            if let components = UIColor(self.accentColor()).cgColor.components {
+                if components.count >= 3 {
+                    let red = components[0]
+                    let green = components[1]
+                    let blue = components[2]
+                    let brightness = ((red * 299) + (green * 587) + (blue * 114)) / 1000
+                    
+                    if brightness < 0.5 {
+                        return .white
+                    } else {
+                        return .black
+                    }
+                }
+            }
             return .white
         }
     }
