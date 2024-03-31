@@ -35,7 +35,7 @@ struct EventInformation: View {
                 HStack {
                     Spacer()
                     HStack {
-                        Image(systemName: "play.tv").foregroundColor(settings.accentColor())
+                        Image(systemName: "play.tv").foregroundColor(settings.buttonColor())
                         Link("Watch Livestream", destination: URL(string: self.livestream_link)!)
                     }
                     Spacer()
@@ -188,7 +188,7 @@ struct EventInformation: View {
                     Text("Event Info")
                         .fontWeight(.medium)
                         .font(.system(size: 19))
-                        .foregroundColor(settings.navTextColor())
+                        .foregroundColor(settings.topBarContentColor())
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Link(destination: URL(string: "https://www.robotevents.com/robot-competitions/vex-robotics-competition/\(self.event.sku).html")!) {
@@ -198,7 +198,7 @@ struct EventInformation: View {
                         self.event.add_to_calendar()
                         calendarAlert = true
                     }, label: {
-                        Image(systemName: "calendar.badge.plus").foregroundColor(settings.navTextColor())
+                        Image(systemName: "calendar.badge.plus").foregroundColor(settings.topBarContentColor())
                     }).alert(isPresented: $calendarAlert) {
                        Alert(title: Text("Added to calendar"), dismissButton: .default(Text("OK")))
                     }
@@ -207,7 +207,7 @@ struct EventInformation: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(settings.tabColor(), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
-            .tint(settings.accentColor())
+            .tint(settings.buttonColor())
     }
 }
 
