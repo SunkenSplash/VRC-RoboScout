@@ -219,7 +219,7 @@ struct EventDivisionRankings: View {
                     }
                 }.navigationViewStyle(StackNavigationViewStyle())
                     .searchable(text: $teamNumberQuery, prompt: "Enter a team number...")
-                    .tint(settings.navTextColor())
+                    .tint(settings.topBarContentColor())
             }
         }.task{
             do {

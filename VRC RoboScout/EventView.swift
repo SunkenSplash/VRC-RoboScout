@@ -129,7 +129,7 @@ struct EventView: View {
                     }
                 }
             }
-        }.tint(settings.accentColor())
+        }.tint(settings.buttonColor())
             .task{
                 fetch_event_data()
             }
@@ -139,7 +139,7 @@ struct EventView: View {
                         Text(self.event.name)
                             .fontWeight(.medium)
                             .font(.system(size: 19))
-                            .foregroundColor(settings.navTextColor())
+                            .foregroundColor(settings.topBarContentColor())
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
@@ -160,10 +160,10 @@ struct EventView: View {
                             }
                         }, label: {
                             if favorited {
-                                Image(systemName: "star.fill").foregroundColor(settings.navTextColor())
+                                Image(systemName: "star.fill").foregroundColor(settings.topBarContentColor())
                             }
                             else {
-                                Image(systemName: "star").foregroundColor(settings.navTextColor())
+                                Image(systemName: "star").foregroundColor(settings.topBarContentColor())
                             }
                         })
                     }

@@ -55,7 +55,7 @@ struct EventDivisionView: View {
                 .environmentObject(settings)
                 .environmentObject(dataController)
                 .environmentObject(navigation_bar_manager)
-                .tint(settings.accentColor())
+                .tint(settings.buttonColor())
             EventDivisionMatches(teams_map: $teams_map, event: self.event, division: self.division)
                 .tabItem {
                     if UserSettings.getMinimalistic() {
@@ -70,7 +70,7 @@ struct EventDivisionView: View {
                 .environmentObject(navigation_bar_manager)
                 .environmentObject(prediction_manager)
                 .environmentObject(dataController)
-                .tint(settings.accentColor())
+                .tint(settings.buttonColor())
             EventDivisionRankings(event: self.event, division: self.division, teams_map: teams_map)
                 .tabItem {
                     if UserSettings.getMinimalistic() {
@@ -84,7 +84,7 @@ struct EventDivisionView: View {
                 .environmentObject(settings)
                 .environmentObject(dataController)
                 .environmentObject(navigation_bar_manager)
-                .tint(settings.accentColor())
+                .tint(settings.buttonColor())
                 .sheet(isPresented: $showingSheet) {
                     Text("Ranking Performance Ratings")
                         .font(.headline)
@@ -114,26 +114,26 @@ struct EventDivisionView: View {
                 .environmentObject(favorites)
                 .environmentObject(settings)
                 .environmentObject(navigation_bar_manager)
-                .tint(settings.accentColor())
+                .tint(settings.buttonColor())
         }.onAppear {
             let tabBarAppearance = UITabBarAppearance()
             tabBarAppearance.configureWithDefaultBackground()
             UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
-        }.tint(settings.accentColor())
+        }.tint(settings.buttonColor())
             .background(.clear)
                     .toolbar {
                         ToolbarItem(placement: .principal) {
                             Text(navigation_bar_manager.title)
                                 .fontWeight(.medium)
                                 .font(.system(size: 19))
-                                .foregroundColor(settings.navTextColor())
+                                .foregroundColor(settings.topBarContentColor())
                         }
                         if navigation_bar_manager.title.contains("Rankings") {
                             ToolbarItem(placement: .navigationBarTrailing) {
                                 Button(action: {
                                     showingSheet = true
                                 }, label: {
-                                    Image(systemName: "info.circle").foregroundColor(settings.navTextColor())
+                                    Image(systemName: "info.circle").foregroundColor(settings.topBarContentColor())
                                 })
                             }
                         }
@@ -149,16 +149,16 @@ struct EventDivisionView: View {
                                     self.event = self.event
                                 }, label: {
                                     if prediction_manager.state == PredictionState.disabled {
-                                        Image(systemName: "bolt.slash").foregroundColor(settings.navTextColor())
+                                        Image(systemName: "bolt.slash").foregroundColor(settings.topBarContentColor())
                                     }
                                     else if prediction_manager.state == PredictionState.off {
-                                        Image(systemName: "bolt").foregroundColor(settings.navTextColor())
+                                        Image(systemName: "bolt").foregroundColor(settings.topBarContentColor())
                                     }
                                     else if prediction_manager.state == PredictionState.calculating {
-                                        ProgressView().foregroundColor(settings.navTextColor())
+                                        ProgressView().foregroundColor(settings.topBarContentColor())
                                     }
                                     else {
-                                        Image(systemName: "bolt.fill").foregroundColor(settings.navTextColor())
+                                        Image(systemName: "bolt.fill").foregroundColor(settings.topBarContentColor())
                                     }
                                 })
                             }

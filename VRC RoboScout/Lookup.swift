@@ -548,7 +548,7 @@ struct TeamLookup: View {
                     }
                 }
             }
-        }.tint(settings.accentColor())
+        }.tint(settings.buttonColor())
     }
 }
 

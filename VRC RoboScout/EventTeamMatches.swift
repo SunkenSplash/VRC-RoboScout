@@ -271,7 +271,7 @@ struct EventTeamMatches: View {
                     Text("\(team.number) Match List")
                         .fontWeight(.medium)
                         .font(.system(size: 19))
-                        .foregroundColor(settings.navTextColor())
+                        .foregroundColor(settings.topBarContentColor())
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     if #available(iOS 16.2, *) {
@@ -310,24 +310,24 @@ struct EventTeamMatches: View {
                         }, label: {
                             if ActivityAuthorizationInfo().areActivitiesEnabled {
                                 if !activities.matchUpdatesActive(event: self.event, team: self.team) && matches.count >= 2 {
-                                    Image(systemName: "bell").foregroundColor(settings.navTextColor())
+                                    Image(systemName: "bell").foregroundColor(settings.topBarContentColor())
                                 }
                                 else if matches.count >= 2 {
-                                    Image(systemName: "bell.fill").foregroundColor(settings.navTextColor())
+                                    Image(systemName: "bell.fill").foregroundColor(settings.topBarContentColor())
                                 }
                                 else {
-                                    Image(systemName: "bell.slash").foregroundColor(settings.navTextColor())
+                                    Image(systemName: "bell.slash").foregroundColor(settings.topBarContentColor())
                                 }
                             }
                             else {
-                                Image(systemName: "bell.slash").foregroundColor(settings.navTextColor())
+                                Image(systemName: "bell.slash").foregroundColor(settings.topBarContentColor())
                             }
                         })
                     }
                     Button(action: {
                         showingTeamNotes = true
                     }, label: {
-                        Image(systemName: "note.text").foregroundColor(settings.navTextColor())
+                        Image(systemName: "note.text").foregroundColor(settings.topBarContentColor())
                     })
                     Button(action: {
                         if matches.isEmpty {
@@ -338,13 +338,13 @@ struct EventTeamMatches: View {
                         fetch_info(predict: predictions)
                     }, label: {
                         if calculating && predictions {
-                            ProgressView().foregroundColor(settings.navTextColor())
+                            ProgressView().foregroundColor(settings.topBarContentColor())
                         }
                         else if predictions {
-                            Image(systemName: "bolt.fill").foregroundColor(settings.navTextColor())
+                            Image(systemName: "bolt.fill").foregroundColor(settings.topBarContentColor())
                         }
                         else if !matches.isEmpty {
-                            Image(systemName: "bolt").foregroundColor(settings.navTextColor())
+                            Image(systemName: "bolt").foregroundColor(settings.topBarContentColor())
                         }
                         else {
                             Image(systemName: "bolt.slash")
@@ -355,7 +355,7 @@ struct EventTeamMatches: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(settings.tabColor(), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
-            .tint(settings.accentColor())
+            .tint(settings.buttonColor())
     }
 }
 

@@ -106,7 +106,7 @@ struct EventTeams: View {
                     }
                 }.navigationViewStyle(StackNavigationViewStyle())
                     .searchable(text: $teamNumberQuery, prompt: "Enter a team number...")
-                    .tint(settings.navTextColor())
+                    .tint(settings.topBarContentColor())
             }
         }
         .onAppear{
@@ -123,11 +123,11 @@ struct EventTeams: View {
                     Text("Event Teams")
                         .fontWeight(.medium)
                         .font(.system(size: 19))
-                        .foregroundColor(settings.navTextColor())
+                        .foregroundColor(settings.topBarContentColor())
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: DataExporter(event: event, event_teams_list: event_teams_list).environmentObject(settings)) {
-                        Image(systemName: "doc.badge.plus").foregroundColor(settings.navTextColor())
+                        Image(systemName: "doc.badge.plus").foregroundColor(settings.topBarContentColor())
                     }
                 }
             }

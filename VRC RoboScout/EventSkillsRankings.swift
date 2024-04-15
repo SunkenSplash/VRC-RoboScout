@@ -105,7 +105,7 @@ struct EventSkillsRankings: View {
                     }
                 }.navigationViewStyle(StackNavigationViewStyle())
                     .searchable(text: $teamNumberQuery, prompt: "Enter a team number...")
-                    .tint(settings.navTextColor())
+                    .tint(settings.topBarContentColor())
             }
         }.task{
             fetch_rankings()
@@ -115,13 +115,13 @@ struct EventSkillsRankings: View {
                 Text("Skills Rankings")
                     .fontWeight(.medium)
                     .font(.system(size: 19))
-                    .foregroundColor(settings.navTextColor())
+                    .foregroundColor(settings.topBarContentColor())
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(settings.tabColor(), for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
-        .tint(settings.accentColor())
+        .tint(settings.buttonColor())
     }
 }
 

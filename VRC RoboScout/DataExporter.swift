@@ -215,7 +215,7 @@ struct DataExporter: View {
                 }
             }.padding()
             Spacer()
-            ProgressView(value: progress).padding().tint(settings.accentColor())
+            ProgressView(value: progress).padding().tint(settings.buttonColor())
             if progress != 1 {
                 Button("Generate") {
                     if progress != 0 {
@@ -312,7 +312,7 @@ struct DataExporter: View {
                         progress = 1
                     }
                 }.padding(10)
-                    .background(settings.accentColor())
+                    .background(settings.buttonColor())
                     .foregroundColor(.white)
                     .cornerRadius(20)
             }
@@ -336,7 +336,7 @@ struct DataExporter: View {
                         }
                     }
                 }.padding(10)
-                    .background(settings.accentColor())
+                    .background(settings.buttonColor())
                     .foregroundColor(.white)
                     .cornerRadius(20)
             }
@@ -349,13 +349,13 @@ struct DataExporter: View {
                 Text("Export Data")
                     .fontWeight(.medium)
                     .font(.system(size: 19))
-                    .foregroundColor(settings.navTextColor())
+                    .foregroundColor(settings.topBarContentColor())
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(settings.tabColor(), for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
-        .tint(settings.accentColor())
+        .tint(settings.buttonColor())
     }
 }
 
