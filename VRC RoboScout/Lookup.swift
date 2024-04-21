@@ -146,7 +146,7 @@ struct EventLookup: View {
     
     func format_season_option(raw: String) -> String {
         var season = raw
-        season = season.replacingOccurrences(of: "VRC ", with: "").replacingOccurrences(of: "VEXU ", with: "")
+        season = season.replacingOccurrences(of: "VRC ", with: "").replacingOccurrences(of: "V5RC ", with: "").replacingOccurrences(of: "VEXU ", with: "").replacingOccurrences(of: "VURC ", with: "")
         
         let season_split = season.split(separator: "-")
         
