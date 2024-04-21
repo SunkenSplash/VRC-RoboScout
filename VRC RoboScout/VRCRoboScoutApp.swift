@@ -197,8 +197,8 @@ class UserSettings: ObservableObject {
     init() {
         self.buttonColorString = defaults.object(forKey: "buttonColor") as? String ?? UIColor.StringFromUIColor(color: .systemRed)
         self.topBarColorString = defaults.object(forKey: "topBarColor") as? String ?? UIColor.StringFromUIColor(color: .systemRed)
-        self.topBarContentColorString = defaults.object(forKey: "topBarContentColor") as? String ?? UIColor.StringFromUIColor(color: .systemGray)
         defaults.object(forKey: "minimalistic") as? Int ?? 1 == 1 ? (self.minimalistic = true) : (self.minimalistic = false)
+        self.topBarContentColorString = defaults.object(forKey: "topBarContentColor") as? String ?? UIColor.StringFromUIColor(color: self.minimalistic ? .systemRed : .white)
         defaults.object(forKey: "adam_score") as? Int ?? 1 == 1 ? (self.adam_score = true) : (self.adam_score = false)
         self.grade_level = defaults.object(forKey: "grade_level") as? String ?? "High School"
         self.performance_ratings_calculation_option = defaults.object(forKey: "performance_ratings_calculation_option") as? String ?? "real"
@@ -210,8 +210,8 @@ class UserSettings: ObservableObject {
     func readUserDefaults() {
         self.buttonColorString = defaults.object(forKey: "buttonColor") as? String ?? UIColor.StringFromUIColor(color: .systemRed)
         self.topBarColorString = defaults.object(forKey: "topBarColor") as? String ?? UIColor.StringFromUIColor(color: .systemRed)
-        self.topBarContentColorString = defaults.object(forKey: "topBarContentColor") as? String ?? UIColor.StringFromUIColor(color: .systemGray)
         defaults.object(forKey: "minimalistic") as? Int ?? 1 == 1 ? (self.minimalistic = true) : (self.minimalistic = false)
+        self.topBarContentColorString = defaults.object(forKey: "topBarContentColor") as? String ?? UIColor.StringFromUIColor(color: self.minimalistic ? .systemRed : .white)
         defaults.object(forKey: "adam_score") as? Int ?? 1 == 1 ? (self.adam_score = true) : (self.adam_score = false)
         self.grade_level = defaults.object(forKey: "grade_level") as? String ?? "High School"
         self.performance_ratings_calculation_option = defaults.object(forKey: "performance_ratings_calculation_option") as? String ?? "real"
@@ -291,9 +291,15 @@ class UserSettings: ObservableObject {
     
     func topBarContentColor() -> SwiftUI.Color {
         if let colorString = defaults.object(forKey: "topBarContentColor") as? String {
-            return Color(UIColor.UIColorFromString(string: colorString))
+            let color = Color(UIColor.UIColorFromString(string: colorString))
+            return color != topBarColor() ? color : Color.white
         } else {
-            return Color(UIColor.systemGray)
+            if UserSettings.getMinimalistic() {
+                return Color(UIColor.systemRed)
+            }
+            else {
+                return Color.white
+            }
         }
     }
     
