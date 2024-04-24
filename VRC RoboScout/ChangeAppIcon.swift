@@ -37,9 +37,9 @@ enum AppIcon: String, CaseIterable, Identifiable {
     case rsnet = "AppIcon-RSnet"
     case num = "AppIcon-Num"
     case riptide = "AppIcon-Riptide"
-    case shore = "AppIcon-Shore"
-    case canes = "AppIcon-Canes"
     case straitis = "AppIcon-Straitis"
+    case canes = "AppIcon-Canes"
+    case boogie = "AppIcon-Boogie"
     case mmtm = "AppIcon-Mmtm"
     case balls = "AppIcon-Balls"
     case sketchy = "AppIcon-Sketchy"
@@ -103,7 +103,7 @@ enum AppIcon: String, CaseIterable, Identifiable {
         case .launch:
             return "LAUNCH/2011"
         case .leopard:
-            return "Curious Leopard/Hank 26275A"
+            return "Curious Leopard/26275A"
         case .tempest:
             return "Tempest/Patrick 6104G"
         case .kauz:
@@ -130,14 +130,14 @@ enum AppIcon: String, CaseIterable, Identifiable {
             return "Numeric/Dennis 3110D"
         case .riptide:
             return "Riptide/Yuvi 7405R"
-        case .shore:
-            return "Shore/Nooz 2088S"
-        case .canes:
-            return "RoboCanes/Henry 1970Y"
         case .straitis:
             return "Straitis/Nooz 2088S"
+        case .canes:
+            return "RoboCanes/Henry 1970Y"
+        case .boogie:
+            return "Boogie/Chase 99904B"
         case .mmtm:
-            return "Momentum/Ivan 1064M"
+            return "MOMENTUM/Ivan 1064M"
         case .balls:
             return "Balls/Nathaniel 643A"
         case .sketchy:
@@ -155,7 +155,7 @@ enum AppIcon: String, CaseIterable, Identifiable {
         case .ss:
             return "Sunset/Andrew 4610C"
         case .cans:
-            return "CANs/Masaki 2158Z"
+            return "CANs/Zen 2158Z"
         case .ranch:
             return "RanchScout/Will BLRS"
         case .bagel:
