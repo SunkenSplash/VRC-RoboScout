@@ -164,6 +164,7 @@ struct EventLookup: View {
                 text: $name_query,
                 onCommit: {
                     showLoading = true
+                    page = 1
                     event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
                 }
             ).frame(alignment: .center).multilineTextAlignment(.center).font(.system(size: 36))
