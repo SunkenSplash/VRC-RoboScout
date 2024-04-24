@@ -41,7 +41,7 @@ struct RootView: View {
                     .environmentObject(settings)
                     .environmentObject(dataController)
                     .environmentObject(navigation_bar_manager)
-                    .tint(settings.accentColor())
+                    .tint(settings.buttonColor())
                     .tag(0)
                 WorldSkillsRankings()
                     .tabItem {
@@ -56,7 +56,7 @@ struct RootView: View {
                     .environmentObject(settings)
                     .environmentObject(dataController)
                     .environmentObject(navigation_bar_manager)
-                    .tint(settings.accentColor())
+                    .tint(settings.buttonColor())
                     .tag(1)
                 TrueSkillRankings()
                     .tabItem {
@@ -71,7 +71,7 @@ struct RootView: View {
                     .environmentObject(settings)
                     .environmentObject(dataController)
                     .environmentObject(navigation_bar_manager)
-                    .tint(settings.accentColor())
+                    .tint(settings.buttonColor())
                     .tag(2)
                 Lookup(lookup_type: $lookup_type)
                     .tabItem {
@@ -86,7 +86,7 @@ struct RootView: View {
                     .environmentObject(settings)
                     .environmentObject(dataController)
                     .environmentObject(navigation_bar_manager)
-                    .tint(settings.accentColor())
+                    .tint(settings.buttonColor())
                     .tag(3)
                 Settings()
                     .tabItem {
@@ -101,13 +101,13 @@ struct RootView: View {
                     .environmentObject(settings)
                     .environmentObject(dataController)
                     .environmentObject(navigation_bar_manager)
-                    .tint(settings.accentColor())
+                    .tint(settings.buttonColor())
                     .tag(4)
             }.onAppear {
                 let tabBarAppearance = UITabBarAppearance()
                 tabBarAppearance.configureWithDefaultBackground()
                 UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
-            }.tint(settings.accentColor())
+            }.tint(settings.buttonColor())
                 .background(.clear)
                         .toolbar {
                             ToolbarItem(placement: .principal) {
@@ -115,11 +115,11 @@ struct RootView: View {
                                     Text(navigation_bar_manager.title)
                                         .fontWeight(.medium)
                                         .font(.system(size: 19))
-                                        .foregroundColor(settings.navTextColor())
+                                        .foregroundColor(settings.topBarContentColor())
                                     if navigation_bar_manager.title.contains("TrueSkill") {
                                         Text("Powered by vrc-data-analysis.com")
                                             .font(.system(size: 12))
-                                            .foregroundColor(settings.navTextColor().opacity(0.75))
+                                            .foregroundColor(settings.topBarContentColor().opacity(0.75))
                                     }
                                 }
                             }
@@ -127,21 +127,21 @@ struct RootView: View {
                                 ToolbarItem(placement: .navigationBarTrailing) {
                                     Link(destination: URL(string: "https://www.robotevents.com/robot-competitions/vex-robotics-competition/standings/skills")!) {
                                         Image(systemName: "link")
-                                    }.foregroundColor(settings.navTextColor())
+                                    }.foregroundColor(settings.topBarContentColor())
                                 }
                             }
                             else if navigation_bar_manager.title.contains("TrueSkill") {
                                 ToolbarItem(placement: .navigationBarTrailing) {
                                     Link(destination: URL(string: "http://vrc-data-analysis.com/")!) {
                                         Image(systemName: "link")
-                                    }.foregroundColor(settings.navTextColor())
+                                    }.foregroundColor(settings.topBarContentColor())
                                 }
                             }
                         }
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbarBackground(settings.tabColor(), for: .navigationBar)
                         .toolbarBackground(.visible, for: .navigationBar)
-        }.tint(settings.navTextColor())
+        }.tint(settings.topBarContentColor())
     }
 }
 

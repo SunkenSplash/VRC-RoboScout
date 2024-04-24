@@ -15,7 +15,9 @@ struct Settings: View {
     @EnvironmentObject var dataController: RoboScoutDataController
     @EnvironmentObject var navigation_bar_manager: NavigationBarManager
     
-    @State var selected_color = UserSettings().accentColor()
+    @State var selected_button_color = UserSettings().buttonColor()
+    @State var selected_top_bar_color = UserSettings().topBarColor()
+    @State var selected_top_bar_content_color = UserSettings().topBarContentColor()
     @State var minimalistic = UserSettings.getMinimalistic()
     @State var adam_score = UserSettings.getAdamScore()
     @State var performance_ratings_calculation_option = UserSettings.getPerformanceRatingsCalculationOption() == "via"
@@ -23,6 +25,7 @@ struct Settings: View {
     @State var selected_season_id = UserSettings.getSelectedSeasonID()
     @State var apiKey = UserSettings.getRobotEventsAPIKey() ?? ""
     @State var team_info_default_page = UserSettings.getTeamInfoDefaultPage() == "statistics"
+    @State var match_team_default_page = UserSettings.getMatchTeamDefaultPage() == "statistics"
     @State var showLoading = false
     @State var showApply = false
     @State var clearedTeams = false
@@ -36,16 +39,16 @@ struct Settings: View {
     @State var confirmAPIKey = false
     
     var mode: String {
-        #if DEBUG
+#if DEBUG
         return " DEBUG"
-        #else
+#else
         return ""
-        #endif
+#endif
     }
     
     func format_season_option(raw: String) -> String {
         var season = raw
-        season = season.replacingOccurrences(of: "VRC ", with: "").replacingOccurrences(of: "VEXU ", with: "")
+        season = season.replacingOccurrences(of: "VRC ", with: "").replacingOccurrences(of: "V5RC ", with: "").replacingOccurrences(of: "VEXU ", with: "").replacingOccurrences(of: "VURC ", with: "")
         
         let season_split = season.split(separator: "-")
         
@@ -59,7 +62,7 @@ struct Settings: View {
     var body: some View {
         VStack {
             List {
-            Link(destination: URL(string: "https://www.paypal.com/donate/?business=FGDW39F77H6PW&no_recurring=0&item_name=Donations+allow+me+to+bring+new+features+and+functionality+to+VRC+RoboScout.+Thank+you+for+your+support%21&currency_code=USD")!, label: {
+                Link(destination: URL(string: "https://www.paypal.com/donate/?business=FGDW39F77H6PW&no_recurring=0&item_name=Donations+allow+me+to+bring+new+features+and+functionality+to+VRC+RoboScout.+Thank+you+for+your+support%21&currency_code=USD")!, label: {
                     HStack {
                         Image(systemName: "gift")
                             .resizable()
@@ -75,7 +78,7 @@ struct Settings: View {
                 }).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
-                    .background(settings.accentColor().opacity(0.3))
+                    .background(settings.buttonColor().opacity(0.3))
                     .cornerRadius(20)
                 Section("Competition") {
                     Picker("Competition", selection: $grade_level) {
@@ -132,16 +135,24 @@ struct Settings: View {
                         settings.updateUserDefaults()
                     }
                     /*Toggle("VEX via OPR, DPR, CCWM", isOn: $performance_ratings_calculation_option).onChange(of: performance_ratings_calculation_option) { _ in
-                        settings.setPerformanceRatingsCalculationOption(option: performance_ratings_calculation_option ? "via" : "real")
-                        settings.updateUserDefaults()
-                    }*/
+                     settings.setPerformanceRatingsCalculationOption(option: performance_ratings_calculation_option ? "via" : "real")
+                     settings.updateUserDefaults()
+                     }*/
                 }
                 Section("Appearance") {
                     NavigationLink(destination: ChangeAppIcon().environmentObject(settings)) {
                         Text("Change App Icon")
                     }
-                    ColorPicker("Color", selection: $selected_color, supportsOpacity: false).onChange(of: selected_color) { _ in
-                        settings.setColor(color: selected_color)
+                    ColorPicker("Top Bar Color", selection: $selected_top_bar_color, supportsOpacity: false).onChange(of: selected_top_bar_color) { _ in
+                        settings.setTopBarColor(color: selected_top_bar_color)
+                        showApply = true
+                    }
+                    ColorPicker("Top Bar Content Color", selection: $selected_top_bar_content_color, supportsOpacity: false).onChange(of: selected_top_bar_content_color) { _ in
+                        settings.setTopBarContentColor(color: selected_top_bar_content_color)
+                        showApply = true
+                    }
+                    ColorPicker("Button and Tab Color", selection: $selected_button_color, supportsOpacity: false).onChange(of: selected_button_color) { _ in
+                        settings.setButtonColor(color: selected_button_color)
                         showApply = true
                     }
                     Toggle("Minimalistic", isOn: $minimalistic).onChange(of: minimalistic) { _ in
@@ -163,6 +174,10 @@ struct Settings: View {
                 Section("Customization") {
                     Toggle("Show statistics by default on Team Info page", isOn: $team_info_default_page).onChange(of: team_info_default_page) { _ in
                         settings.setTeamInfoDefaultPage(page: team_info_default_page ? "statistics" : "events")
+                        settings.updateUserDefaults()
+                    }
+                    Toggle("Show statistics by default on Match Team page", isOn: $match_team_default_page).onChange(of: match_team_default_page) { _ in
+                        settings.setMatchTeamDefaultPage(page: match_team_default_page ? "statistics" : "matches")
                         settings.updateUserDefaults()
                     }
                 }

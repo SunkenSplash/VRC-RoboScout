@@ -92,7 +92,7 @@ struct EventTeams: View {
                 NavigationView {
                     List {
                         ForEach(searchResults, id: \.self) { teamNum in
-                            NavigationLink(destination: EventTeamMatches(teams_map: $teams_map, event: event, team: Team(number: teamNum, fetch: false), division: division).environmentObject(settings).environmentObject(dataController)) {
+                            NavigationLink(destination: EventTeamView(teams_map: $teams_map, event: event, teamNumber: teamNum, division: division).environmentObject(settings).environmentObject(dataController)) {
                                 HStack {
                                     Text((event_teams_map[teamNum] ?? Team()).number).font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 80, height: 30, alignment: .leading).bold()
                                     VStack {
@@ -106,7 +106,7 @@ struct EventTeams: View {
                     }
                 }.navigationViewStyle(StackNavigationViewStyle())
                     .searchable(text: $teamNumberQuery, prompt: "Enter a team number...")
-                    .tint(settings.navTextColor())
+                    .tint(settings.topBarContentColor())
             }
         }
         .onAppear{
@@ -123,11 +123,11 @@ struct EventTeams: View {
                     Text("Event Teams")
                         .fontWeight(.medium)
                         .font(.system(size: 19))
-                        .foregroundColor(settings.navTextColor())
+                        .foregroundColor(settings.topBarContentColor())
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: DataExporter(event: event, event_teams_list: event_teams_list).environmentObject(settings)) {
-                        Image(systemName: "doc.badge.plus").foregroundColor(settings.navTextColor())
+                        Image(systemName: "doc.badge.plus").foregroundColor(settings.topBarContentColor())
                     }
                 }
             }

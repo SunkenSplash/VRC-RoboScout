@@ -261,7 +261,7 @@ struct ChangeAppIcon: View {
                 Text("App Icon")
                     .fontWeight(.medium)
                     .font(.system(size: 19))
-                    .foregroundColor(settings.navTextColor())
+                    .foregroundColor(settings.topBarContentColor())
             }
         }
         .navigationBarTitleDisplayMode(.inline)

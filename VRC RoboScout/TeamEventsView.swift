@@ -119,13 +119,13 @@ struct TeamEventsView: View {
                     Text("\(self.team_number ?? "") Events")
                         .fontWeight(.medium)
                         .font(.system(size: 19))
-                        .foregroundColor(settings.navTextColor())
+                        .foregroundColor(settings.topBarContentColor())
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(settings.tabColor(), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
-            .tint(settings.accentColor())
+            .tint(settings.buttonColor())
         
     }
 }
