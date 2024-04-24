@@ -461,7 +461,7 @@ public class RoboScoutAPI {
     }
     
     public func active_season_id() -> Int {
-        return !self.season_id_map.isEmpty ? (UserSettings.getGradeLevel() != "College" ? self.season_id_map[0] : self.season_id_map[1]).keys.first ?? (UserSettings.getGradeLevel() != "College" ? 181 : 182) : (UserSettings.getGradeLevel() != "College" ? 181 : 182)
+        return !self.season_id_map.isEmpty ? (UserSettings.getGradeLevel() != "College" ? self.season_id_map[0] : self.season_id_map[1]).keys.first ?? (UserSettings.getGradeLevel() != "College" ? 190 : 191) : (UserSettings.getGradeLevel() != "College" ? 190 : 191)
     }
     
     public func update_world_skills_cache(season: Int? = nil) {
@@ -1600,10 +1600,12 @@ public class Team: Identifiable {
         var season_id: Int
         let grade = (self.grade == "High School" || self.grade == "Middle School") ? "High School" : "College"
         let selected_grade = (UserSettings.getGradeLevel() == "High School" || UserSettings.getGradeLevel() == "Middle School") ? "High School" : "College"
+        print(grade, selected_grade)
         if grade != selected_grade {
             season_id = API.season_id_map[grade == "High School" ? 0 : 1].keys[API.season_id_map[grade == "High School" ? 1 : 0].index(forKey: API.selected_season_id()) ?? 0]
         }
         else {
+            print("Using selected season id: \(API.selected_season_id())")
             season_id = API.selected_season_id()
         }
         

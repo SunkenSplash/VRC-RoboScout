@@ -18,6 +18,7 @@ struct Settings: View {
     @State var selected_button_color = UserSettings().buttonColor()
     @State var selected_top_bar_color = UserSettings().topBarColor()
     @State var selected_top_bar_content_color = UserSettings().topBarContentColor()
+    @State var top_bar_content_color_changed = false
     @State var minimalistic = UserSettings.getMinimalistic()
     @State var adam_score = UserSettings.getAdamScore()
     @State var performance_ratings_calculation_option = UserSettings.getPerformanceRatingsCalculationOption() == "via"
@@ -72,7 +73,7 @@ struct Settings: View {
                         VStack(alignment: .center) {
                             Text("Donate to VRC RoboScout").bold()
                             Text("Donations support development. Thank you <3").font(.system(size: 15)).foregroundColor(.secondary).multilineTextAlignment(.center)
-                        }.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+                        }.frame(maxWidth: .infinity).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
                         Spacer()
                     }.padding()
                 }).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
@@ -88,12 +89,12 @@ struct Settings: View {
                     }.pickerStyle(.segmented).padding([.top, .bottom], 5)
                         .onChange(of: grade_level) { grade in
                             settings.setGradeLevel(grade_level: grade)
-                            settings.updateUserDefaults()
+                            settings.updateUserDefaults(updateTopBarContentColor: false)
                             self.showLoading = true
                             DispatchQueue.global(qos: .userInteractive).async {
                                 API.generate_season_id_map()
                                 settings.setSelectedSeasonID(id: API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1].keys.sorted().reversed()[0])
-                                settings.updateUserDefaults()
+                                settings.updateUserDefaults(updateTopBarContentColor: false)
                                 API.update_world_skills_cache()
                                 API.update_vrc_data_analysis_cache()
                                 DispatchQueue.main.async {
@@ -116,7 +117,7 @@ struct Settings: View {
                             }.labelsHidden()
                                 .onChange(of: selected_season_id) { _ in
                                     settings.setSelectedSeasonID(id: selected_season_id)
-                                    settings.updateUserDefaults()
+                                    settings.updateUserDefaults(updateTopBarContentColor: false)
                                     self.showLoading = true
                                     DispatchQueue.global(qos: .userInteractive).async {
                                         API.update_world_skills_cache()
@@ -132,7 +133,7 @@ struct Settings: View {
                 Section("Data Analysis") {
                     Toggle("AdamScore™", isOn: $adam_score).onChange(of: adam_score) { _ in
                         settings.setAdamScore(state: adam_score)
-                        settings.updateUserDefaults()
+                        settings.updateUserDefaults(updateTopBarContentColor: false)
                     }
                     /*Toggle("VEX via OPR, DPR, CCWM", isOn: $performance_ratings_calculation_option).onChange(of: performance_ratings_calculation_option) { _ in
                      settings.setPerformanceRatingsCalculationOption(option: performance_ratings_calculation_option ? "via" : "real")
@@ -149,6 +150,7 @@ struct Settings: View {
                     }
                     ColorPicker("Top Bar Content Color", selection: $selected_top_bar_content_color, supportsOpacity: false).onChange(of: selected_top_bar_content_color) { _ in
                         settings.setTopBarContentColor(color: selected_top_bar_content_color)
+                        top_bar_content_color_changed = true
                         showApply = true
                     }
                     ColorPicker("Button and Tab Color", selection: $selected_button_color, supportsOpacity: false).onChange(of: selected_button_color) { _ in
@@ -164,7 +166,7 @@ struct Settings: View {
                             confirmAppearance = true
                         }.confirmationDialog("Are you sure?", isPresented: $confirmAppearance) {
                             Button("Apply and close app?", role: .destructive) {
-                                settings.updateUserDefaults()
+                                settings.updateUserDefaults(updateTopBarContentColor: top_bar_content_color_changed)
                                 print("App Closing")
                                 exit(0)
                             }
@@ -174,11 +176,11 @@ struct Settings: View {
                 Section("Customization") {
                     Toggle("Show statistics by default on Team Info page", isOn: $team_info_default_page).onChange(of: team_info_default_page) { _ in
                         settings.setTeamInfoDefaultPage(page: team_info_default_page ? "statistics" : "events")
-                        settings.updateUserDefaults()
+                        settings.updateUserDefaults(updateTopBarContentColor: false)
                     }
                     Toggle("Show statistics by default on Match Team page", isOn: $match_team_default_page).onChange(of: match_team_default_page) { _ in
                         settings.setMatchTeamDefaultPage(page: match_team_default_page ? "statistics" : "matches")
-                        settings.updateUserDefaults()
+                        settings.updateUserDefaults(updateTopBarContentColor: false)
                     }
                 }
                 Section("Danger") {

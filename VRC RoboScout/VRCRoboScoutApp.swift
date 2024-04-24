@@ -54,7 +54,10 @@ extension String {
 public extension UIColor {
     
     class func StringFromUIColor(color: UIColor) -> String {
-        let components = color.cgColor.components
+        var components = color.cgColor.components
+        while (components!.count < 4) {
+            components!.append(1.0)
+        }
         return "[\(components![0]), \(components![1]), \(components![2]), \(components![3])]"
     }
     
@@ -204,7 +207,7 @@ class UserSettings: ObservableObject {
         self.performance_ratings_calculation_option = defaults.object(forKey: "performance_ratings_calculation_option") as? String ?? "real"
         self.team_info_default_page = defaults.object(forKey: "team_info_default_page") as? String ?? "events"
         self.match_team_default_page = defaults.object(forKey: "match_team_default_page") as? String ?? "matches"
-        self.selected_season_id = defaults.object(forKey: "selected_season_id") as? Int ?? 181
+        self.selected_season_id = defaults.object(forKey: "selected_season_id") as? Int ?? API.active_season_id()
     }
     
     func readUserDefaults() {
@@ -220,10 +223,12 @@ class UserSettings: ObservableObject {
         self.selected_season_id = defaults.object(forKey: "selected_season_id") as? Int ?? API.selected_season_id()
     }
     
-    func updateUserDefaults() {
+    func updateUserDefaults(updateTopBarContentColor: Bool) {
         defaults.set(UIColor.StringFromUIColor(color: UIColor.UIColorFromString(string: self.buttonColorString)), forKey: "buttonColor")
         defaults.set(UIColor.StringFromUIColor(color: UIColor.UIColorFromString(string: self.topBarColorString)), forKey: "topBarColor")
-        defaults.set(UIColor.StringFromUIColor(color: UIColor.UIColorFromString(string: self.topBarContentColorString)), forKey: "topBarContentColor")
+        if updateTopBarContentColor {
+            defaults.set(UIColor.StringFromUIColor(color: UIColor.UIColorFromString(string: self.topBarContentColorString)), forKey: "topBarContentColor")
+        }
         defaults.set(self.minimalistic ? 1 : 0, forKey: "minimalistic")
         defaults.set(self.adam_score ? 1 : 0, forKey: "adam_score")
         defaults.set(self.grade_level, forKey: "grade_level")
@@ -351,7 +356,7 @@ class UserSettings: ObservableObject {
     }
     
     static func getSelectedSeasonID() -> Int {
-        return defaults.object(forKey: "selected_season_id") as? Int ?? 181
+        return defaults.object(forKey: "selected_season_id") as? Int ?? API.active_season_id()
     }
 }
 
