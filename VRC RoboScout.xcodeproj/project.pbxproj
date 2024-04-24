@@ -15,6 +15,7 @@
 		3D1E7F4A2AA8A3F1009BA258 /* ChangeAppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E7F492AA8A3F1009BA258 /* ChangeAppIcon.swift */; };
 		3D1E7F4C2AAA1643009BA258 /* MatchNotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E7F4B2AAA1643009BA258 /* MatchNotes.swift */; };
 		3D1E7F4F2AAA2B4F009BA258 /* RoboScoutData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E7F4D2AAA2B4F009BA258 /* RoboScoutData.xcdatamodeld */; };
+		3D22AAAA2BD9C16B001AD59E /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3D22AAA92BD9C16B001AD59E /* Config.plist */; };
 		3D2FDAF529A7A4A6009E9740 /* WorldSkillsRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */; };
 		3D3219C929D1CFF300EF5500 /* TeamEventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219C829D1CFF300EF5500 /* TeamEventsView.swift */; };
 		3D3219CB29D1EA0D00EF5500 /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219CA29D1EA0D00EF5500 /* EventView.swift */; };
@@ -101,6 +102,7 @@
 		3D1E7F492AA8A3F1009BA258 /* ChangeAppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeAppIcon.swift; sourceTree = "<group>"; };
 		3D1E7F4B2AAA1643009BA258 /* MatchNotes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchNotes.swift; sourceTree = "<group>"; };
 		3D1E7F4E2AAA2B4F009BA258 /* RoboScoutData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RoboScoutData.xcdatamodel; sourceTree = "<group>"; };
+		3D22AAA92BD9C16B001AD59E /* Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 		3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldSkillsRankings.swift; sourceTree = "<group>"; };
 		3D3219C829D1CFF300EF5500 /* TeamEventsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamEventsView.swift; sourceTree = "<group>"; };
 		3D3219CA29D1EA0D00EF5500 /* EventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
@@ -239,6 +241,7 @@
 				3DB11E53299543DC001DDB02 /* VRCRoboScout.entitlements */,
 				3D50E10729C8915C002FE201 /* Launch Screen.storyboard */,
 				3DB11E51299543DC001DDB02 /* Assets.xcassets */,
+				3D22AAA92BD9C16B001AD59E /* Config.plist */,
 				3DD419D72AF5A51200A4D3AB /* roboscouticon.png */,
 				3D386C3429F19DAB00035B3B /* RoboScoutAPI.swift */,
 				3D73E3AB2AB330CD005BE836 /* RoboScoutDataController.swift */,
@@ -436,6 +439,7 @@
 				3DD419D82AF5A51200A4D3AB /* roboscouticon.png in Resources */,
 				3DAFC80E2A2640EB00A0C41A /* CoreML in Resources */,
 				3D50E10829C8915C002FE201 /* Launch Screen.storyboard in Resources */,
+				3D22AAAA2BD9C16B001AD59E /* Config.plist in Resources */,
 				3DB11E52299543DC001DDB02 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -739,7 +743,7 @@
 				CODE_SIGN_ENTITLEMENTS = "VRC RoboScout/VRCRoboScout.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = LDYP2MX4AG;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -769,7 +773,7 @@
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 1.4.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sunkensplashstudios.VRCRoboScout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -793,7 +797,7 @@
 				CODE_SIGN_ENTITLEMENTS = "VRC RoboScout/VRCRoboScout.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = LDYP2MX4AG;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -824,7 +828,7 @@
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 1.4.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sunkensplashstudios.VRCRoboScout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
