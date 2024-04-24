@@ -274,7 +274,7 @@ struct EventTeamMatches: View {
                         .foregroundColor(settings.topBarContentColor())
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    if #available(iOS 16.2, *) {
+                    if #available(iOS 16.2, *), false {
                         Button(action: {
                             if ActivityAuthorizationInfo().areActivitiesEnabled {
                                 self.showAlert = false
