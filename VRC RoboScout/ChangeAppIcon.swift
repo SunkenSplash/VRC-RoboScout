@@ -21,19 +21,41 @@ enum AppIcon: String, CaseIterable, Identifiable {
     case cute = "AppIcon-Cute"
     case century = "AppIcon-Century"
     case pt = "AppIcon-PT"
+    case twenty11 = "AppIcon-2011"
+    case launch = "AppIcon-LAUNCH"
+    case leopard = "AppIcon-Leopard"
+    case tempest = "AppIcon-Tempest"
     case kauz = "AppIcon-Kauz"
+    case banga = "AppIcon-Banga"
+    case tv = "AppIcon-TV"
     case tigris = "AppIcon-Tigris"
+    case lum = "AppIcon-Lum"
+    case ki = "AppIcon-KI"
+    case rvv = "AppIcon-RVV"
     case cw = "AppIcon-CW"
     case saurus = "AppIcon-Saurus"
+    case rsnet = "AppIcon-RSnet"
+    case num = "AppIcon-Num"
+    case riptide = "AppIcon-Riptide"
+    case shore = "AppIcon-Shore"
     case canes = "AppIcon-Canes"
+    case straitis = "AppIcon-Straitis"
+    case mmtm = "AppIcon-Mmtm"
     case balls = "AppIcon-Balls"
+    case sketchy = "AppIcon-Sketchy"
+    case siege = "AppIcon-Siege"
     case chunger = "AppIcon-Chunger"
+    case bull = "AppIcon-Bull"
     case circuits = "AppIcon-Circuits"
     case gear = "AppIcon-Gear"
     case ss = "AppIcon-SS"
+    case cans = "AppIcon-CANs"
+    case ranch = "AppIcon-Ranch"
+    case bagel = "AppIcon-Bagel"
     case autumn = "AppIcon-Autumn"
     case canada = "AppIcon-Canada"
     case uk = "AppIcon-UK"
+    case india = "AppIcon-India"
     case ll = "AppIcon-LL"
     case ww = "AppIcon-WW"
     case gs = "AppIcon-GS"
@@ -76,32 +98,76 @@ enum AppIcon: String, CaseIterable, Identifiable {
             return "Century/Keily 8838B"
         case .pt:
             return "Pronounce This/Pronounce This 2654P"
+        case .twenty11:
+            return "2011"
+        case .launch:
+            return "LAUNCH/2011"
+        case .leopard:
+            return "Curious Leopard/Hank 26275A"
+        case .tempest:
+            return "Tempest/Patrick 6104G"
         case .kauz:
             return "ROBOKAUZ/ROBOKAUZ 21417A"
+        case .banga:
+            return "Bangarang/Ailey 5956F"
+        case .tv:
+            return "Terminal Velocity/Bryce 53171D"
         case .tigris:
             return "Tigris/Davis 98377G"
+        case .lum:
+            return "Luminous/VEXMEN: Luminous 91U"
+        case .ki:
+            return "Killer Instinct/Arnay 6842K"
+        case .rvv:
+            return "RVV/Emily 1082R"
         case .cw:
             return "Colorwave/Alex Y 877K"
         case .saurus:
             return "RoboSaurus/Selma 8079M"
+        case .rsnet:
+            return "RoboSource.net/Gencu 1051X"
+        case .num:
+            return "Numeric/Dennis 3110D"
+        case .riptide:
+            return "Riptide/Yuvi 7405R"
+        case .shore:
+            return "Shore/Nooz 2088S"
         case .canes:
             return "RoboCanes/Henry 1970Y"
+        case .straitis:
+            return "Straitis/Nooz 2088S"
+        case .mmtm:
+            return "Momentum/Ivan 1064M"
         case .balls:
             return "Balls/Nathaniel 643A"
+        case .sketchy:
+            return "Sketchy/Arnay 6842K"
+        case .siege:
+            return "Siege/Gencu 1051X"
         case .chunger:
             return "Chunger/Jason Chungus 8889A"
+        case .bull:
+            return "929HZR/Leah 929T"
         case .circuits:
             return "Circuits/Nathaniel 643A"
         case .gear:
             return "Knights/Ajaya R 8568A"
         case .ss:
             return "Sunset/Andrew 4610C"
+        case .cans:
+            return "CANs/Masaki 2158Z"
+        case .ranch:
+            return "RanchScout/Will BLRS"
+        case .bagel:
+            return "Bagel/Chase 99904B"
         case .autumn:
             return "Autumn/Nathaniel 643A"
         case .canada:
             return "Canada/Abdur-Rahman 540W"
         case .uk:
             return "UK/Abhi 3327H"
+        case .india:
+            return "India/Dharm 79267V"
         case .ll:
             return "LemLib/Lem 1010N"
         case .ww:
