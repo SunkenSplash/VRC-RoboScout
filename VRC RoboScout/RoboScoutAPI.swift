@@ -377,7 +377,7 @@ public class RoboScoutAPI {
                 print(String(format: "RobotEvents Scraper (page %d): %@", params["page"] as? Int ?? 0, components.url?.description ?? request_url))
                 let html = String(data: response_data!, encoding: .utf8)!
                 
-                let regex = try! NSRegularExpression(pattern: "https://www\\.robotevents\\.com/robot-competitions/\(UserSettings.getGradeLevel() == "College" ? "college-competition" : "vex-robotics-competition")/RE-\(UserSettings.getGradeLevel() != "College" ? "VRC" : "VEXU" )([+-]?(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*))(?:[Ee]([+-]?\\d+))?([+-]?(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*))(?:[Ee]([+-]?\\d+))?html", options: [.caseInsensitive])
+                let regex = try! NSRegularExpression(pattern: "https://www\\.robotevents\\.com/robot-competitions/\(UserSettings.getGradeLevel() == "College" ? "college-competition" : "vex-robotics-competition")/RE-[A-Z0-9]*([+-]?(?=\\.\\d|\\d)(?:\\d+)?\\.?\\d*)(?:[Ee]([+-]?\\d+))?([+-]?(?=\\.\\d|\\d)(?:\\d+)?\\.?\\d*)(?:[Ee]([+-]?\\d+))?\\.html", options: [.caseInsensitive])
                 let range = NSRange(location: 0, length: html.count)
                 let matches = regex.matches(in: html, options: [], range: range)
                 
