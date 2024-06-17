@@ -83,9 +83,9 @@ struct Settings: View {
                     .cornerRadius(20)
                 Section("Competition") {
                     Picker("Competition", selection: $grade_level) {
-                        Text("VRC MS").tag("Middle School")
-                        Text("VRC HS").tag("High School")
-                        Text("VEXU").tag("College")
+                        Text("V5RC MS").tag("Middle School")
+                        Text("V5RC HS").tag("High School")
+                        Text("VURC").tag("College")
                     }.pickerStyle(.segmented).padding([.top, .bottom], 5)
                         .onChange(of: grade_level) { grade in
                             settings.setGradeLevel(grade_level: grade)
