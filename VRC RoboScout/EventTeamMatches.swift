@@ -248,6 +248,9 @@ struct EventTeamMatches: View {
             }
         }.sheet(isPresented: $showingTeamNotes) {
             Text("\(team.number) Match Notes").font(.title).padding().foregroundStyle(Color.primary)
+            if (teamMatchNotes ?? [TeamMatchNote]()).filter({ ($0.note ?? "") != "" }).isEmpty {
+                Text("No notes.")
+            }
             ScrollView {
                 ForEach((teamMatchNotes ?? [TeamMatchNote]()).filter{ ($0.note ?? "") != "" }, id: \.self) { teamNote in
                     HStack {

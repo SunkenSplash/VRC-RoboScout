@@ -15,12 +15,12 @@ enum FetchNotesResult {
 class RoboScoutDataController: ObservableObject {
     
     // Create NSPersistentCloudKitContainer 
-    let persistentContainer: NSPersistentCloudKitContainer  = {
+    let persistentContainer: NSPersistentCloudKitContainer = {
         // creates the NSPersistentCloudKitContainer  object
-        let container = NSPersistentCloudKitContainer (name: "RoboScoutData")
+        let container = NSPersistentCloudKitContainer(name: "RoboScoutData")
 
         // load the saved database if it exists, creates it if it does not, and returns an error under failure conditions
-        container.loadPersistentStores { (description, error) in
+        container.loadPersistentStores{ (description, error) in
             if let error = error {
                 print("Error setting up Core Data (\(error)).")
             }
@@ -31,31 +31,32 @@ class RoboScoutDataController: ObservableObject {
     
     // Save Core Data Context
     func saveContext() {
+        print("Saving context")
         let viewContext = persistentContainer.viewContext
-        if viewContext.hasChanges {
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
+        do {
+            try viewContext.save()
+        } catch {
+            let nserror = error as NSError
+            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
         }
     }
     
     func createNewNote() -> TeamMatchNote {
+        print("Creating new note")
         let newNote = NSEntityDescription.insertNewObject(forEntityName: "TeamMatchNote", into: persistentContainer.viewContext) as! TeamMatchNote
+        saveContext()
         return newNote
     }
     
-    func fetchNotes(event: Event, team: Team, completion: @escaping (FetchNotesResult) -> Void) {
+    func fetchNotes(event: Event, team: Team? = nil, completion: @escaping (FetchNotesResult) -> Void) {
+        print("Fetching notes")
         let fetchRequest: NSFetchRequest<TeamMatchNote> = TeamMatchNote.fetchRequest()
-        
-        if team.id != 0 {
-            fetchRequest.predicate = NSPredicate(format: "event_id == %d AND team_id == %d", event.id, team.id)
+        if team == nil {
+            fetchRequest.predicate = NSPredicate(format: "event_id == %d", event.id)
+        } else if team!.id != 0 {
+            fetchRequest.predicate = NSPredicate(format: "event_id == %d AND team_id == %d", event.id, team!.id)
         } else {
-            fetchRequest.predicate = NSPredicate(format: "event_id == %d AND team_number == %@", event.id, team.number)
+            fetchRequest.predicate = NSPredicate(format: "event_id == %d AND team_number == %@", event.id, team!.number)
         }
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "time", ascending: true)]
         let viewContext = persistentContainer.viewContext
@@ -70,17 +71,34 @@ class RoboScoutDataController: ObservableObject {
     }
     
     func deleteNote(note: TeamMatchNote, save: Bool = true) {
-        // Delete the user-selected item from the context
-        let viewContext = persistentContainer.viewContext
-        viewContext.delete(note)
-        
+        print("Deleting note")
+        persistentContainer.viewContext.delete(note)
         if save {
-            // Save changes to the Managed Object Context
             saveContext()
         }
     }
     
+    func deleteEmptyNotes() {
+        print("Deleting empty notes")
+        let fetchRequest: NSFetchRequest<TeamMatchNote> = TeamMatchNote.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "time", ascending: true)]
+        let viewContext = persistentContainer.viewContext
+        var notes = [TeamMatchNote]()
+        do {
+            notes = try viewContext.fetch(fetchRequest)
+        } catch {
+            print("Failed to fetch notes")
+        }
+        for note in notes {
+            if (note.note ?? "").isEmpty {
+                deleteNote(note: note, save: false)
+            }
+        }
+        saveContext()
+    }
+    
     func deleteAllNotes() {
+        print("Deleting all notes")
         let viewContext = persistentContainer.viewContext
         
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "TeamMatchNote")
