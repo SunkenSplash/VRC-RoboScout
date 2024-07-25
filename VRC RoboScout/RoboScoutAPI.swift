@@ -70,16 +70,16 @@ public struct VRCDataAnalysisResponse: Decodable {
     var id: Int
     var loc_region: String
     var loc_country: String
-    var trueskill: Double
-    var ccwm: Double
-    var total_wins: Int
-    var total_losses: Int
-    var total_ties: Int
+    var trueskill: Double?
+    var ccwm: Double?
+    var total_wins: Int?
+    var total_losses: Int?
+    var total_ties: Int?
     var ap_per_match: Double
     var awp_per_match: Double
     var wp_per_match: Double
-    var opr: Double
-    var dpr: Double
+    var opr: Double?
+    var dpr: Double?
     var qualified_for_regionals: Int
     var qualified_for_worlds: Int
 }
@@ -637,16 +637,16 @@ public class VRCDataAnalysis: Identifiable {
         self.id = response.id
         self.loc_region = response.loc_region
         self.loc_country = response.loc_country
-        self.trueskill = response.trueskill
-        self.ccwm = response.ccwm
-        self.total_wins = response.total_wins
-        self.total_losses = response.total_losses
-        self.total_ties = response.total_ties
+        self.trueskill = response.trueskill ?? 0
+        self.ccwm = response.ccwm ?? 0
+        self.total_wins = response.total_wins ?? 0
+        self.total_losses = response.total_losses ?? 0
+        self.total_ties = response.total_ties ?? 0
         self.ap_per_match = response.ap_per_match
         self.awp_per_match = response.awp_per_match
         self.wp_per_match = response.wp_per_match
-        self.opr = response.opr
-        self.dpr = response.dpr
+        self.opr = response.opr ?? 0
+        self.dpr = response.dpr ?? 0
         self.qualified_for_regionals = response.qualified_for_regionals
         self.qualified_for_worlds = response.qualified_for_worlds
     }
