@@ -82,7 +82,7 @@ struct TeamNotes: View {
                                 ForEach(matchNotes.filter({ ($0.note ?? "") != "" && $0.team_id == Int32(team.id) }), id: \.self) { teamNote in
                                     HStack {
                                         VStack(alignment: .leading) {
-                                            Text(teamNote.match_name ?? "Unknown Match").font(.headline).foregroundStyle(teamNote.winning_alliance == 0 ? (teamNote.played ? Color.yellow : Color.primary) : (teamNote.winning_alliance == teamNote.team_alliance ? Color.green : Color.red))
+                                            Text(teamNote.match_name ?? "Unknown Match").font(.title2).foregroundStyle(teamNote.winning_alliance == 0 ? (teamNote.played ? Color.yellow : Color.primary) : (teamNote.winning_alliance == teamNote.team_alliance ? Color.green : Color.red))
                                             Text(teamNote.note ?? "No note.")
                                         }
                                         Spacer()

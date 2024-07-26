@@ -255,7 +255,7 @@ struct EventTeamMatches: View {
                 ForEach((teamMatchNotes ?? [TeamMatchNote]()).filter{ ($0.note ?? "") != "" }, id: \.self) { teamNote in
                     HStack {
                         VStack(alignment: .leading) {
-                            Text(teamNote.match_name ?? "Unknown Match").font(.headline).foregroundStyle(teamNote.winning_alliance == 0 ? (teamNote.played ? Color.yellow : Color.primary) : (teamNote.winning_alliance == teamNote.team_alliance ? Color.green : Color.red))
+                            Text(teamNote.match_name ?? "Unknown Match").font(.title2).foregroundStyle(teamNote.winning_alliance == 0 ? (teamNote.played ? Color.yellow : Color.primary) : (teamNote.winning_alliance == teamNote.team_alliance ? Color.green : Color.red))
                             Text(teamNote.note ?? "No note.").foregroundStyle(Color.primary)
                         }
                         Spacer()
