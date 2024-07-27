@@ -46,9 +46,14 @@ struct FavoritesViewW: View {
         VStack {
             Form {
                 Section("Favorite Teams") {
-                    List(wcSession.favorite_teams, id: \.self) { team in
-                        NavigationLink(destination: EmptyView()) {
-                            Text(team)
+                    if wcSession.favorite_teams.isEmpty {
+                        Text("Open iPhone app to add teams")
+                    }
+                    else {
+                        List(wcSession.favorite_teams, id: \.self) { team in
+                            NavigationLink(destination: EmptyView()) {
+                                Text(team)
+                            }
                         }
                     }
                 }
@@ -60,9 +65,14 @@ struct FavoritesViewW: View {
                             }
                     }
                     else {
-                        List(wcSession.favorite_events, id: \.self) { sku in
-                            NavigationLink(destination: EmptyView()) {
-                                Text(event_sku_map[sku]?.name ?? "").lineLimit(2)
+                        if wcSession.favorite_events.isEmpty {
+                            Text("Open iPhone app to add events")
+                        }
+                        else {
+                            List(wcSession.favorite_events, id: \.self) { sku in
+                                NavigationLink(destination: EmptyView()) {
+                                    Text(event_sku_map[sku]?.name ?? "").lineLimit(2)
+                                }
                             }
                         }
                     }
