@@ -53,78 +53,6 @@ struct EventTeamMatches: View {
         self._division = State(initialValue: division)
     }
     
-    func conditionalUnderline(match: String, index: Int) -> Bool {
-        let split = match.split(separator: "&&")
-        if Int(split[index]) == team.id {
-            return true
-        }
-        
-        let match = matches[Int(split[0]) ?? 0]
-        let alliance = match.alliance_for(team: self.team)
-        
-        if alliance == nil {
-            return false
-        }
-        
-        if (alliance! == Alliance.red && index == 6) || (alliance! == Alliance.blue && index == 7) {
-            return true
-        }
-        
-        return false
-    }
-    
-    @ViewBuilder
-    func centerDisplay(matchString: String) -> some View {
-        let split = matchString.split(separator: "&&")
-        let match = matches[Int(split[0]) ?? 0]
-        
-        if match.completed() || (match.predicted && predictions) {
-            HStack {
-                Text(String(describing: (match.predicted && predictions) ? match.predicted_red_score : match.red_score)).foregroundColor(.red).font(.system(size: 18)).frame(alignment: .leading).underline(conditionalUnderline(match: matchString, index: 6)).opacity((match.predicted && predictions) ? 0.6 : 1).bold()
-                Spacer()
-                Text(String(describing: (match.predicted && predictions) ? match.predicted_blue_score : match.blue_score)).foregroundColor(.blue).font(.system(size: 18)).frame(alignment: .trailing).underline(conditionalUnderline(match: matchString, index: 7)).opacity((match.predicted && predictions) ? 0.6 : 1).bold()
-            }
-        }
-        else {
-            Spacer()
-            Text(match.field).font(.system(size: 15)).foregroundColor(.secondary)
-            Spacer()
-        }
-    }
-    
-    func isPredicted(match: String) -> Bool {
-        let split = match.split(separator: "&&")
-        let match = matches[Int(split[0]) ?? 0]
-        
-        return match.predicted && predictions
-    }
-    
-    func conditionalColor(match: String) -> Color {
-        let split = match.split(separator: "&&")
-        let match = matches[Int(split[0]) ?? 0]
-        
-        guard match.completed() || (match.predicted && predictions) else {
-            return .primary
-        }
-        
-        do {
-            let victor = match.completed() ? match.winning_alliance() : try match.predicted_winning_alliance()
-            
-            if victor == nil {
-                return .yellow
-            }
-            else if victor! == match.alliance_for(team: self.team) {
-                return .green
-            }
-            else {
-                return .red
-            }
-        }
-        catch {
-            return .primary
-        }
-    }
-    
     func fetch_info(predict: Bool = false) {
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             
@@ -215,35 +143,8 @@ struct EventTeamMatches: View {
                 NoData()
             }
             else {
-                List($matches_list) { name in
-                    NavigationLink(destination: MatchNotes(event: event, match: matches[Int(name.wrappedValue.split(separator: "&&")[0])!]).environmentObject(settings).environmentObject(dataController)) {
-                        HStack {
-                            VStack {
-                                Text(name.wrappedValue.split(separator: "&&")[1]).font(.system(size: 15)).frame(width: 60, alignment: .leading).foregroundColor(conditionalColor(match: name.wrappedValue)).opacity(isPredicted(match: name.wrappedValue) ? 0.6 : 1).bold()
-                                Spacer().frame(maxHeight: 4)
-                                Text(name.wrappedValue.split(separator: "&&")[8]).font(.system(size: 12)).frame(width: 60, alignment: .leading)
-                            }.frame(width: 40)
-                            VStack {
-                                if String(teams_map[String(name.wrappedValue.split(separator: "&&")[3])] ?? "") != "" {
-                                    Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 2))
-                                    Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[3])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 3))
-                                }
-                                else {
-                                    Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 2))
-                                }
-                            }.frame(width: 70)
-                            centerDisplay(matchString: name.wrappedValue)
-                            VStack {
-                                if String(teams_map[String(name.wrappedValue.split(separator: "&&")[5])] ?? "") != "" {
-                                    Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 4))
-                                    Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[5])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 5))
-                                }
-                                else {
-                                    Text(String(teams_map[String(name.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(match: name.wrappedValue, index: 4))
-                                }
-                            }.frame(width: 70)
-                        }.frame(maxHeight: 30)
-                    }
+                List($matches_list) { matchString in
+                    MatchRowView(event: $event, matches: $matches, teams_map: $teams_map, predictions: $predictions, matchString: matchString, team: $team)
                 }
             }
         }.sheet(isPresented: $showingTeamNotes) {

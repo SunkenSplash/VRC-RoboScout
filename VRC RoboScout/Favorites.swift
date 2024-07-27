@@ -9,6 +9,8 @@ import SwiftUI
 
 struct FavoriteTeamsRow: View {
     
+    @EnvironmentObject var wcSession: WatchSession
+    
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
     @EnvironmentObject var dataController: RoboScoutDataController
@@ -16,13 +18,15 @@ struct FavoriteTeamsRow: View {
     var team: String
 
     var body: some View {
-        NavigationLink(destination: TeamInfoView(teamNumber: team).environmentObject(settings).environmentObject(dataController)) {
+        NavigationLink(destination: TeamInfoView(teamNumber: team).environmentObject(wcSession).environmentObject(settings).environmentObject(dataController)) {
             Text(team)
         }
     }
 }
 
 struct FavoriteEventsRow: View {
+    
+    @EnvironmentObject var wcSession: WatchSession
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
@@ -38,7 +42,7 @@ struct FavoriteEventsRow: View {
     }
 
     var body: some View {
-        NavigationLink(destination: EventView(event: (data[sku] ?? Event(sku: sku, fetch: false))).environmentObject(settings).environmentObject(dataController)) {
+        NavigationLink(destination: EventView(event: (data[sku] ?? Event(sku: sku, fetch: false))).environmentObject(wcSession).environmentObject(settings).environmentObject(dataController)) {
             VStack {
                 Text((data[sku] ?? Event(sku: sku, fetch: false)).name).frame(maxWidth: .infinity, alignment: .leading).frame(height: 20)
                 Spacer().frame(height: 5)
@@ -85,6 +89,8 @@ class FavoriteStorage: ObservableObject {
 
 struct Favorites: View {
     
+    @EnvironmentObject var wcSession: WatchSession
+    
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
     @EnvironmentObject var dataController: RoboScoutDataController
@@ -129,11 +135,13 @@ struct Favorites: View {
         favorites.favorite_teams.remove(atOffsets: offsets)
         favorites.sort_teams()
         defaults.set(favorites.favorite_teams, forKey: "favorite_teams")
+        wcSession.updateFavorites()
     }
     
     func deleteEvent(at offsets: IndexSet) {
         favorites.favorite_events.remove(atOffsets: offsets)
         defaults.set(favorites.favorite_events, forKey: "favorite_events")
+        wcSession.updateFavorites()
     }
         
     var body: some View {
@@ -144,6 +152,7 @@ struct Favorites: View {
                         List {
                             ForEach($favorites.favorite_teams, id: \.self) { team in
                                 FavoriteTeamsRow(team: team.wrappedValue)
+                                    .environmentObject(wcSession)
                                     .environmentObject(favorites)
                                     .environmentObject(dataController)
                             }.onDelete(perform: deleteTeam)
@@ -163,6 +172,7 @@ struct Favorites: View {
                         List {
                             ForEach($favorites.favorite_events, id: \.self) { sku in
                                 FavoriteEventsRow(sku: sku.wrappedValue, data: event_sku_map)
+                                    .environmentObject(wcSession)
                                     .environmentObject(favorites)
                                     .environmentObject(dataController)
                             }.onDelete(perform: deleteEvent)

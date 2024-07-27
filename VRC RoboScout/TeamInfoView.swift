@@ -10,6 +10,8 @@ import CoreData
 
 struct TeamInfoView: View {
     
+    @EnvironmentObject var wcSession: WatchSession
+    
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var dataController: RoboScoutDataController
     
@@ -25,11 +27,13 @@ struct TeamInfoView: View {
             Spacer()
             if selectedView == (UserSettings.getTeamInfoDefaultPage() == "events" ? 0 : 1) {
                 TeamEventsView(team_number: teamNumber)
+                    .environmentObject(wcSession)
                     .environmentObject(settings)
                     .environmentObject(dataController)
             }
             else if selectedView == (UserSettings.getTeamInfoDefaultPage() == "statistics" ? 0 : 1) {
                 TeamLookup(team_number: teamNumber, editable: false, fetch: true)
+                    .environmentObject(wcSession)
                     .environmentObject(settings)
                     .environmentObject(dataController)
             }

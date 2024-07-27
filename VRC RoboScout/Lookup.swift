@@ -31,6 +31,8 @@ struct Lookup: View {
     
     @Binding var lookup_type: Int
     
+    @EnvironmentObject var wcSession: WatchSession
+    
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
     @EnvironmentObject var dataController: RoboScoutDataController
@@ -45,6 +47,7 @@ struct Lookup: View {
             Spacer()
             if lookup_type == 0 {
                 TeamLookup()
+                    .environmentObject(wcSession)
                     .environmentObject(favorites)
                     .environmentObject(settings)
                     .environmentObject(dataController)
@@ -117,6 +120,8 @@ class EventSearch: ObservableObject {
 }
 
 struct EventLookup: View {
+    
+    @EnvironmentObject var wcSession: WatchSession
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
@@ -261,6 +266,8 @@ struct EventLookup: View {
 }
 
 struct TeamLookup: View {
+    
+    @EnvironmentObject var wcSession: WatchSession
     
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
@@ -413,6 +420,7 @@ struct TeamLookup: View {
                             })
                             favorites.sort_teams()
                             defaults.set(favorites.favorite_teams, forKey: "favorite_teams")
+                            wcSession.updateFavorites()
                             favorited = false
                             showLoading = false
                             return
@@ -422,6 +430,7 @@ struct TeamLookup: View {
                         favorites.favorite_teams.append(team_number)
                         favorites.sort_teams()
                         defaults.set(favorites.favorite_teams, forKey: "favorite_teams")
+                        wcSession.updateFavorites()
                         favorited = true
                         showLoading = false
                     }
@@ -543,7 +552,7 @@ struct TeamLookup: View {
                 }
                 if editable {
                     HStack {
-                        NavigationLink(destination: TeamEventsView(team_number: team.number).environmentObject(settings).environmentObject(dataController)) {
+                        NavigationLink(destination: TeamEventsView(team_number: team.number).environmentObject(wcSession).environmentObject(settings).environmentObject(dataController)) {
                             Text("Events")
                         }
                     }

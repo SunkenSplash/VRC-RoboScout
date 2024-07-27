@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1540"
-   version = "1.3">
+   wasCreatedForAppExtension = "YES"
+   version = "2.0">
    <BuildAction
       parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES">
+      buildImplicitDependencies = "YES"
+      buildArchitectures = "Automatic">
       <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3D943E602AFBD247009EF365"
+               BuildableName = "MatchUpdatesExtension.appex"
+               BlueprintName = "MatchUpdatesExtension"
+               ReferencedContainer = "container:VRC RoboScout.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
@@ -26,30 +42,21 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
-      <Testables>
-         <TestableReference
-            skipped = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3DB11E5A299543DC001DDB02"
-               BuildableName = "VRC RoboScoutTests.xctest"
-               BlueprintName = "VRC RoboScoutTests"
-               ReferencedContainer = "container:VRC RoboScout.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      shouldAutocreateTestPlan = "YES">
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      selectedDebuggerIdentifier = ""
+      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
       launchStyle = "0"
+      askForAppToLaunch = "Yes"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
-      allowLocationSimulation = "YES">
+      allowLocationSimulation = "YES"
+      launchAutomaticallySubstyle = "2">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
@@ -60,17 +67,21 @@
             ReferencedContainer = "container:VRC RoboScout.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "-com.apple.CoreData.Logging.stderr 0"
-            isEnabled = "YES">
-         </CommandLineArgument>
-      </CommandLineArguments>
       <EnvironmentVariables>
          <EnvironmentVariable
-            key = "ROBOTEVENTS_API_KEY"
-            value = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiNGViMzY1YzI1N2RhMWRiYWZkZGRkMzRmZDdiMzgzNGJhOWYxNDdmNmFjZTc3NmFkMzIwM2I3MjNmYjQ0M2YyYjdmOWNmOWY0ODdiY2E2MWMiLCJpYXQiOjE2ODU0NTU0ODQuNjQ2OTkyLCJuYmYiOjE2ODU0NTU0ODQuNjQ2OTk2LCJleHAiOjI2MzIyMzAyODQuNjM3ODY2LCJzdWIiOiI5NzI1NyIsInNjb3BlcyI6W119.bmWqYEXdmUV5RgkavYmwVVUL2ilTr-HGbcQTyVe3OU2cJW5R2WsAq-rP89U6dXUbFLRrT6wG7vl-FaT4oT_FXHoqkTOKqfczIC5WGstdWpdNadTGHb52atHU4gewNK69u02d736XM8LmhA1caGCPbCr2gFsb0r_f4F6H0qxzdyiEYIpbgSLgwS91bzPzxc472Xr6wY6gYGBlY212tqHFifoAlxNGDzII8LjUZKpFQWVgFWZsPeuZR6LIgiC5rP6og2iEq1aLLK9lEzN4x1MjY6tEd8wU4Fuqhn5CS9ZeAxDv7ZULCwHRP3oNdC0nhOe5a9EREOTVOjltBYpNRBclbRclER_wHyjRMlf_5QcOpMwwTkk9mF7LturERxWJm8_jjl0YpkEA-p9FJ6glqPH_6uI11iRmiYTacN5XFRs093FvdIIHAd3nePt-5Hsbai8hK8cOb0jUmvoSIKwIyafWRVwR9MvlM8UWge_nrISSEBxBJw-KFjKZgAfxMOoHTBmRNL9nnDLJOPwGOk8c3OoEogypI3KOluXTIEZY7fuWFeulh7qkmCaXR-20X7Xz0IslXtdcSbpVhlf9sTr15pVVGUhnuBMV00xnNHVyFBL6Znp3tNNHD7uLl-q30L5TkfWs5-xzByurd44wGgy0P6AvRfIh9qjASRA-TqAEmx3XpBM"
-            isEnabled = "NO">
+            key = "_XCWidgetKind"
+            value = ""
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "_XCWidgetDefaultView"
+            value = "timeline"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "_XCWidgetFamily"
+            value = "systemMedium"
+            isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>
@@ -79,7 +90,9 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      debugDocumentVersioning = "YES">
+      debugDocumentVersioning = "YES"
+      askForAppToLaunch = "Yes"
+      launchAutomaticallySubstyle = "2">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference

@@ -9,6 +9,8 @@ import SwiftUI
 
 struct EventRow: View {
     
+    @EnvironmentObject var wcSession: WatchSession
+    
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
     @EnvironmentObject var dataController: RoboScoutDataController
@@ -28,7 +30,7 @@ struct EventRow: View {
     }
 
     var body: some View {
-        NavigationLink(destination: EventView(event: self.event, team: self.team).environmentObject(favorites).environmentObject(settings).environmentObject(dataController)) {
+        NavigationLink(destination: EventView(event: self.event, team: self.team).environmentObject(wcSession).environmentObject(favorites).environmentObject(settings).environmentObject(dataController)) {
             VStack {
                 Text(self.event.name).frame(maxWidth: .infinity, alignment: .leading).frame(height: 20)
                 Spacer().frame(height: 5)
@@ -66,7 +68,10 @@ class TeamEvents: ObservableObject {
 
 struct TeamEventsView: View {
     
+    @EnvironmentObject var wcSession: WatchSession
+    
     @EnvironmentObject var settings: UserSettings
+    
     @State private var events: TeamEvents
     @State private var team: Team?
     @State private var team_number: String?

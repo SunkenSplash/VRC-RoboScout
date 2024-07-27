@@ -44,6 +44,8 @@ class EventDivisions: ObservableObject {
 
 struct EventView: View {
     
+    @EnvironmentObject var wcSession: WatchSession
+    
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
     @EnvironmentObject var dataController: RoboScoutDataController
@@ -149,6 +151,7 @@ struct EventView: View {
                                         $0 == event.sku
                                     })
                                     defaults.set(favorites.favorite_events, forKey: "favorite_events")
+                                    wcSession.updateFavorites()
                                     favorited = false
                                     return
                                 }
@@ -156,6 +159,7 @@ struct EventView: View {
                             Task {
                                 favorites.favorite_events.append(self.event.sku)
                                 defaults.set(favorites.favorite_events, forKey: "favorite_events")
+                                wcSession.updateFavorites()
                                 favorited = true
                             }
                         }, label: {

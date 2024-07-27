@@ -1,4 +1,5 @@
 {
+  "originHash" : "bcd2ec34ef6f457351389f01e0c8e5f86cf4b8954c1c41a20827eb48563eafbb",
   "pins" : [
     {
       "identity" : "matft",
@@ -6,7 +7,7 @@
       "location" : "https://github.com/SunkenSplash/Matft",
       "state" : {
         "branch" : "master",
-        "revision" : "04106317bc1b309e19afff4f95927d15a1a1de0c"
+        "revision" : "420688416431ad16ef935db2b638737f77e2cae3"
       }
     },
     {
@@ -14,10 +15,10 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections",
       "state" : {
-        "revision" : "937e904258d22af6e447a0b72c0bc67583ef64a2",
-        "version" : "1.0.4"
+        "revision" : "3d2dc41a01f9e49d84f0a3925fb858bed64f702d",
+        "version" : "1.1.2"
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

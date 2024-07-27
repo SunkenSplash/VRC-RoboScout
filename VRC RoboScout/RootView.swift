@@ -16,6 +16,8 @@ class NavigationBarManager: ObservableObject {
 
 struct RootView: View {
     
+    @ObservedObject var wcSession = WatchSession()
+    
     @EnvironmentObject var settings: UserSettings
     @EnvironmentObject var favorites: FavoriteStorage
     @EnvironmentObject var dataController: RoboScoutDataController
@@ -37,6 +39,7 @@ struct RootView: View {
                             Label("Favorites", systemImage: "star")
                         }
                     }
+                    .environmentObject(wcSession)
                     .environmentObject(favorites)
                     .environmentObject(settings)
                     .environmentObject(dataController)
@@ -82,6 +85,7 @@ struct RootView: View {
                             Label("Lookup", systemImage: "magnifyingglass")
                         }
                     }
+                    .environmentObject(wcSession)
                     .environmentObject(favorites)
                     .environmentObject(settings)
                     .environmentObject(dataController)

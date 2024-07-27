@@ -788,10 +788,10 @@ public class Match: Identifiable {
         }
         
         /*if self.matchnum > 90 {
-         self.red_score = 0
-         self.blue_score = 0
-         self.started = nil
-         }*/
+            self.red_score = 0
+            self.blue_score = 0
+            self.started = nil
+        }*/
     }
     
     func fetch_full_info() {
@@ -1347,6 +1347,7 @@ public class Event: Identifiable {
         return self.livestream_link
     }
     
+    #if os(iOS)
     func add_to_calendar() {
         let eventStore = EKEventStore()
         
@@ -1400,6 +1401,7 @@ public class Event: Identifiable {
             }
         }
     }
+    #endif
     
     public func toString() -> String {
         return String(format: "(%@) %@", self.sku, self.name)
