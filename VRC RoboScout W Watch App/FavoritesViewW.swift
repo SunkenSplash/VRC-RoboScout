@@ -5,19 +5,21 @@
 //  Created by William Castro on 7/26/24.
 //
 
-import Foundation
 import SwiftUI
 
 struct FavoritesViewW: View {
     
     @EnvironmentObject var wcSession: WatchSessionW
     
+    @Binding var teams: [String]
+    @Binding var events: [String]
+    
     @State var event_sku_map = [String: Event]()
     
     func generate_event_sku_map() {
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             
-            let data = RoboScoutAPI.robotevents_request(request_url: "/events", params: ["sku": wcSession.favorite_events])
+            let data = RoboScoutAPI.robotevents_request(request_url: "/events", params: ["sku": events])
             var map = [String: Event]()
 
             for event_data in data {
@@ -35,7 +37,7 @@ struct FavoritesViewW: View {
     
     func sort_events_by_date() {
         // The start of a date can be determined with event_sku_map[sku].start
-        wcSession.favorite_events.sort{ (sku1, sku2) -> Bool in
+        teams.sort{ (sku1, sku2) -> Bool in
             let event1 = event_sku_map[sku1] ?? Event(sku: sku1, fetch: false)
             let event2 = event_sku_map[sku2] ?? Event(sku: sku2, fetch: false)
             return event1.start ?? Date() > event2.start ?? Date()
@@ -46,11 +48,11 @@ struct FavoritesViewW: View {
         VStack {
             Form {
                 Section("Favorite Teams") {
-                    if wcSession.favorite_teams.isEmpty {
+                    if teams.isEmpty {
                         Text("Open iPhone app to add teams")
                     }
                     else {
-                        List(wcSession.favorite_teams, id: \.self) { team in
+                        List(teams, id: \.self) { team in
                             NavigationLink(destination: EmptyView()) {
                                 Text(team)
                             }
@@ -58,18 +60,18 @@ struct FavoritesViewW: View {
                     }
                 }
                 Section("Favorite Events") {
-                    if wcSession.favorite_events.sorted() != Array(event_sku_map.keys).sorted() {
+                    if events.sorted() != Array(event_sku_map.keys).sorted() {
                         ProgressView()
                             .onAppear{
                                 generate_event_sku_map()
                             }
                     }
                     else {
-                        if wcSession.favorite_events.isEmpty {
+                        if events.isEmpty {
                             Text("Open iPhone app to add events")
                         }
                         else {
-                            List(wcSession.favorite_events, id: \.self) { sku in
+                            List(events, id: \.self) { sku in
                                 NavigationLink(destination: EmptyView()) {
                                     Text(event_sku_map[sku]?.name ?? "").lineLimit(2)
                                 }
@@ -80,4 +82,8 @@ struct FavoritesViewW: View {
             }
         }
     }
+}
+
+#Preview {
+    FavoritesViewW(teams: .constant([String]()), events: .constant([String]()))
 }

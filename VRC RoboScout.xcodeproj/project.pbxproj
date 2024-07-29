@@ -57,6 +57,7 @@
 		3DB21DD52B054D6400B12803 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB21DD42B054D6400B12803 /* RootView.swift */; };
 		3DC3F47529ACFF6000C5EA86 /* TrueSkillRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC3F47429ACFF6000C5EA86 /* TrueSkillRankings.swift */; };
 		3DD419D82AF5A51200A4D3AB /* roboscouticon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3DD419D72AF5A51200A4D3AB /* roboscouticon.png */; };
+		3DE63F9A2C5587D10049939C /* WorldSkillsRankingsViewW.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE63F992C5587D10049939C /* WorldSkillsRankingsViewW.swift */; };
 		3DFB598F2C535D110061CE6C /* VRCRoboScoutWApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFB598E2C535D110061CE6C /* VRCRoboScoutWApp.swift */; };
 		3DFB59912C535D110061CE6C /* RootViewW.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFB59902C535D110061CE6C /* RootViewW.swift */; };
 		3DFB59932C535D120061CE6C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DFB59922C535D120061CE6C /* Assets.xcassets */; };
@@ -196,6 +197,7 @@
 		3DB21DD42B054D6400B12803 /* RootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		3DC3F47429ACFF6000C5EA86 /* TrueSkillRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrueSkillRankings.swift; sourceTree = "<group>"; };
 		3DD419D72AF5A51200A4D3AB /* roboscouticon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = roboscouticon.png; sourceTree = "<group>"; };
+		3DE63F992C5587D10049939C /* WorldSkillsRankingsViewW.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldSkillsRankingsViewW.swift; sourceTree = "<group>"; };
 		3DFB598C2C535D110061CE6C /* VRC RoboScout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VRC RoboScout.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DFB598E2C535D110061CE6C /* VRCRoboScoutWApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRCRoboScoutWApp.swift; sourceTree = "<group>"; };
 		3DFB59902C535D110061CE6C /* RootViewW.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewW.swift; sourceTree = "<group>"; };
@@ -396,6 +398,7 @@
 				3D9826E32C53EE8100C2963B /* WatchSessionW.swift */,
 				3DFB59902C535D110061CE6C /* RootViewW.swift */,
 				3DFB59BB2C5367B80061CE6C /* FavoritesViewW.swift */,
+				3DE63F992C5587D10049939C /* WorldSkillsRankingsViewW.swift */,
 				3DFB59922C535D120061CE6C /* Assets.xcassets */,
 				3DFB59942C535D120061CE6C /* Preview Content */,
 			);
@@ -764,6 +767,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DE63F9A2C5587D10049939C /* WorldSkillsRankingsViewW.swift in Sources */,
 				3DFB59BC2C5367B80061CE6C /* FavoritesViewW.swift in Sources */,
 				3DFB59912C535D110061CE6C /* RootViewW.swift in Sources */,
 				3D9826E42C53EE8100C2963B /* WatchSessionW.swift in Sources */,

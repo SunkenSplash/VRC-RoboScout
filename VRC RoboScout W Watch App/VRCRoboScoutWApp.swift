@@ -9,6 +9,20 @@ import SwiftUI
 
 let API = RoboScoutAPI()
 
+struct NoData: View {
+    var body: some View {
+        VStack {
+            Image(systemName: "xmark.bin.fill").foregroundColor(.secondary)
+        }
+    }
+}
+
+struct ImportingData: View {
+    var body: some View {
+        ProgressView().tint(.secondary)
+    }
+}
+
 @main
 struct VRCRoboScoutW: App {
     
@@ -18,18 +32,19 @@ struct VRCRoboScoutW: App {
     
     var body: some Scene {
         WindowGroup {
-            RootView()
+            RootViewW()
                 .environmentObject(wcSession)
                 //.environmentObject(favorites)
                 .environmentObject(settings)
                 //.environmentObject(dataController)
-                .tint(settings.buttonColor())
                 .onAppear{
                     #if DEBUG
                     print("Debug configuration")
                     #else
                     print("Release configuration")
                     #endif
+                    settings.setSelectedSeasonID(id: 181)
+                    settings.updateUserDefaults(updateTopBarContentColor: false)
                     DispatchQueue.global(qos: .userInteractive).async {
                         API.generate_season_id_map()
                         API.update_world_skills_cache()
