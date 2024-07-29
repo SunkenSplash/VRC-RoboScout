@@ -53,7 +53,7 @@ struct FavoritesViewW: View {
                     }
                     else {
                         List(teams, id: \.self) { team in
-                            NavigationLink(destination: EmptyView()) {
+                            NavigationLink(destination: TeamEventsViewW(team_number: team)) {
                                 Text(team)
                             }
                         }
