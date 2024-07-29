@@ -97,7 +97,7 @@ struct EventViewW: View {
             else {
                 Form {
                     Section("Event") {
-                        NavigationLink(destination: EmptyView()/*EventInformation(event: event).environmentObject(settings)*/) {
+                        NavigationLink(destination: EventInfoViewW(event: event).environmentObject(settings)) {
                             Text("Information")
                         }
                         NavigationLink(destination: EmptyView()/*EventTeams(event: event, teams_map: $teams_map, event_teams: $event_teams, event_teams_list: event_teams_list).environmentObject(settings).environmentObject(dataController)*/) {
@@ -115,15 +115,14 @@ struct EventViewW: View {
                         }
                     }
                     Section("Divisions") {
-                        List($event_divisions.event_divisions, id: \.self) { division in
+                        List($event_divisions.event_divisions) { division in
                             EventDivisionRow(teams_map: $teams_map, event_teams: $event_teams, division: division.wrappedValue, event: event)
                                 .environmentObject(settings)
                         }
                     }
                 }
             }
-        }.tint(settings.buttonColor())
-            .task{
+        }.task{
                 fetch_event_data()
             }
             .background(.clear)

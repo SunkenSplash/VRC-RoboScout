@@ -102,7 +102,7 @@ struct TeamEventsViewW: View {
                 Spacer()
             }
             else {
-                List(events.event_indexes, id: \.self) { event_index in
+                List(events.event_indexes) { event_index in
                     EventRow(event: events.events[Int(event_index)!], team: team)
                 }
             }

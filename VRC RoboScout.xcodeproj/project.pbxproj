@@ -60,6 +60,9 @@
 		3DE63F9A2C5587D10049939C /* WorldSkillsRankingsViewW.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE63F992C5587D10049939C /* WorldSkillsRankingsViewW.swift */; };
 		3DE63F9C2C5803710049939C /* TeamEventsViewW.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE63F9B2C5803710049939C /* TeamEventsViewW.swift */; };
 		3DE63F9E2C5805490049939C /* EventViewW.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE63F9D2C5805490049939C /* EventViewW.swift */; };
+		3DE63FA02C5808050049939C /* EventInfoViewW.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE63F9F2C5808050049939C /* EventInfoViewW.swift */; };
+		3DE63FA22C5808BA0049939C /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE63FA12C5808BA0049939C /* Shared.swift */; };
+		3DE63FA32C5808DD0049939C /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE63FA12C5808BA0049939C /* Shared.swift */; };
 		3DFB598F2C535D110061CE6C /* VRCRoboScoutWApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFB598E2C535D110061CE6C /* VRCRoboScoutWApp.swift */; };
 		3DFB59912C535D110061CE6C /* RootViewW.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFB59902C535D110061CE6C /* RootViewW.swift */; };
 		3DFB59932C535D120061CE6C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DFB59922C535D120061CE6C /* Assets.xcassets */; };
@@ -202,6 +205,8 @@
 		3DE63F992C5587D10049939C /* WorldSkillsRankingsViewW.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldSkillsRankingsViewW.swift; sourceTree = "<group>"; };
 		3DE63F9B2C5803710049939C /* TeamEventsViewW.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamEventsViewW.swift; sourceTree = "<group>"; };
 		3DE63F9D2C5805490049939C /* EventViewW.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewW.swift; sourceTree = "<group>"; };
+		3DE63F9F2C5808050049939C /* EventInfoViewW.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventInfoViewW.swift; sourceTree = "<group>"; };
+		3DE63FA12C5808BA0049939C /* Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
 		3DFB598C2C535D110061CE6C /* VRC RoboScout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VRC RoboScout.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DFB598E2C535D110061CE6C /* VRCRoboScoutWApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRCRoboScoutWApp.swift; sourceTree = "<group>"; };
 		3DFB59902C535D110061CE6C /* RootViewW.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewW.swift; sourceTree = "<group>"; };
@@ -348,6 +353,7 @@
 				3D943E7B2AFBFA22009EF365 /* RoboScoutActivityController.swift */,
 				3D5FA4942AFEAA4F00149E88 /* AppDelegate.swift */,
 				3DB11E4D299543D9001DDB02 /* VRCRoboScoutApp.swift */,
+				3DE63FA12C5808BA0049939C /* Shared.swift */,
 				3D9826E52C53F02800C2963B /* WatchSession.swift */,
 				3DFB59C32C536BCC0061CE6C /* UserSettings.swift */,
 				3D9826E82C5553CD00C2963B /* MatchRowView.swift */,
@@ -404,6 +410,7 @@
 				3DFB59BB2C5367B80061CE6C /* FavoritesViewW.swift */,
 				3DE63F9B2C5803710049939C /* TeamEventsViewW.swift */,
 				3DE63F9D2C5805490049939C /* EventViewW.swift */,
+				3DE63F9F2C5808050049939C /* EventInfoViewW.swift */,
 				3DE63F992C5587D10049939C /* WorldSkillsRankingsViewW.swift */,
 				3DFB59922C535D120061CE6C /* Assets.xcassets */,
 				3DFB59942C535D120061CE6C /* Preview Content */,
@@ -725,6 +732,7 @@
 				01EF2B072BB7356D00A88DCE /* EventTeamView.swift in Sources */,
 				3DC3F47529ACFF6000C5EA86 /* TrueSkillRankings.swift in Sources */,
 				3D672BDF2A46544A000211A7 /* EventDivisionAwards.swift in Sources */,
+				3DE63FA22C5808BA0049939C /* Shared.swift in Sources */,
 				3D9826E62C53F02800C2963B /* WatchSession.swift in Sources */,
 				3D01A8C329DF3D55000BBDEB /* EventDivisionRankings.swift in Sources */,
 				3D84D77A2A40A6320043F8ED /* EventDivisionMatches.swift in Sources */,
@@ -782,6 +790,8 @@
 				3DFB59C52C536BCC0061CE6C /* UserSettings.swift in Sources */,
 				3DE63F9C2C5803710049939C /* TeamEventsViewW.swift in Sources */,
 				3DFB59BD2C5367F40061CE6C /* RoboScoutAPI.swift in Sources */,
+				3DE63FA32C5808DD0049939C /* Shared.swift in Sources */,
+				3DE63FA02C5808050049939C /* EventInfoViewW.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
