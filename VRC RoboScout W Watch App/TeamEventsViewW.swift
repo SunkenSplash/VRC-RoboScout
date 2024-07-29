@@ -28,7 +28,7 @@ struct EventRow: View {
     }
 
     var body: some View {
-        NavigationLink(destination: EmptyView()) {
+        NavigationLink(destination: EventViewW(event: self.event, team: self.team).environmentObject(settings)) {
             Text(self.event.name).lineLimit(2)
         }
     }
@@ -116,10 +116,8 @@ struct TeamEventsViewW: View {
     }
 }
 
-struct TeamEventsView_Previews: PreviewProvider {
-    static var previews: some View {
-        TeamEventsViewW(team_number: "229V")
-    }
+#Preview {
+    TeamEventsViewW(team_number: "229V")
 }
 
 
