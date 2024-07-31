@@ -1602,7 +1602,6 @@ public class Team: Identifiable {
         var season_id: Int
         let grade = (self.grade == "High School" || self.grade == "Middle School") ? "High School" : "College"
         let selected_grade = (UserSettings.getGradeLevel() == "High School" || UserSettings.getGradeLevel() == "Middle School") ? "High School" : "College"
-        print(grade, selected_grade)
         if grade != selected_grade {
             season_id = API.season_id_map[grade == "High School" ? 0 : 1].keys[API.season_id_map[grade == "High School" ? 1 : 0].index(forKey: API.selected_season_id()) ?? 0]
         }

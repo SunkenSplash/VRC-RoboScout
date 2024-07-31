@@ -15,7 +15,6 @@
 		3D1E7F4A2AA8A3F1009BA258 /* ChangeAppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E7F492AA8A3F1009BA258 /* ChangeAppIcon.swift */; };
 		3D1E7F4C2AAA1643009BA258 /* MatchNotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E7F4B2AAA1643009BA258 /* MatchNotes.swift */; };
 		3D1E7F4F2AAA2B4F009BA258 /* RoboScoutData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3D1E7F4D2AAA2B4F009BA258 /* RoboScoutData.xcdatamodeld */; };
-		3D22AAAA2BD9C16B001AD59E /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3D22AAA92BD9C16B001AD59E /* Config.plist */; };
 		3D2FDAF529A7A4A6009E9740 /* WorldSkillsRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D2FDAF429A7A4A6009E9740 /* WorldSkillsRankings.swift */; };
 		3D3219C929D1CFF300EF5500 /* TeamEventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219C829D1CFF300EF5500 /* TeamEventsView.swift */; };
 		3D3219CB29D1EA0D00EF5500 /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3219CA29D1EA0D00EF5500 /* EventView.swift */; };
@@ -38,7 +37,6 @@
 		3D943E662AFBD248009EF365 /* MatchUpdatesBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D943E652AFBD248009EF365 /* MatchUpdatesBundle.swift */; };
 		3D943E682AFBD248009EF365 /* MatchUpdatesLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D943E672AFBD248009EF365 /* MatchUpdatesLiveActivity.swift */; };
 		3D943E6E2AFBD24B009EF365 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D943E6D2AFBD24B009EF365 /* Assets.xcassets */; };
-		3D943E722AFBD24B009EF365 /* MatchUpdatesExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3D943E612AFBD247009EF365 /* MatchUpdatesExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3D943E7A2AFBD881009EF365 /* MatchUpdatesLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D943E672AFBD248009EF365 /* MatchUpdatesLiveActivity.swift */; };
 		3D943E7C2AFBFA22009EF365 /* RoboScoutActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D943E7B2AFBFA22009EF365 /* RoboScoutActivityController.swift */; };
 		3D9826E42C53EE8100C2963B /* WatchSessionW.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9826E32C53EE8100C2963B /* WatchSessionW.swift */; };
@@ -63,6 +61,7 @@
 		3DE63FA02C5808050049939C /* EventInfoViewW.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE63F9F2C5808050049939C /* EventInfoViewW.swift */; };
 		3DE63FA22C5808BA0049939C /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE63FA12C5808BA0049939C /* Shared.swift */; };
 		3DE63FA32C5808DD0049939C /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE63FA12C5808BA0049939C /* Shared.swift */; };
+		3DE63FAF2C59A59C0049939C /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3D22AAA92BD9C16B001AD59E /* Config.plist */; };
 		3DFB598F2C535D110061CE6C /* VRCRoboScoutWApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFB598E2C535D110061CE6C /* VRCRoboScoutWApp.swift */; };
 		3DFB59912C535D110061CE6C /* RootViewW.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFB59902C535D110061CE6C /* RootViewW.swift */; };
 		3DFB59932C535D120061CE6C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DFB59922C535D120061CE6C /* Assets.xcassets */; };
@@ -70,7 +69,6 @@
 		3DFB59A02C535D120061CE6C /* VRC_RoboScout_W_Watch_AppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFB599F2C535D120061CE6C /* VRC_RoboScout_W_Watch_AppTests.swift */; };
 		3DFB59AA2C535D120061CE6C /* VRC_RoboScout_W_Watch_AppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFB59A92C535D120061CE6C /* VRC_RoboScout_W_Watch_AppUITests.swift */; };
 		3DFB59AC2C535D120061CE6C /* VRC_RoboScout_W_Watch_AppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFB59AB2C535D120061CE6C /* VRC_RoboScout_W_Watch_AppUITestsLaunchTests.swift */; };
-		3DFB59AF2C535D120061CE6C /* VRC RoboScout.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 3DFB598C2C535D110061CE6C /* VRC RoboScout.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3DFB59BC2C5367B80061CE6C /* FavoritesViewW.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFB59BB2C5367B80061CE6C /* FavoritesViewW.swift */; };
 		3DFB59BD2C5367F40061CE6C /* RoboScoutAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D386C3429F19DAB00035B3B /* RoboScoutAPI.swift */; };
 		3DFB59BF2C5368A30061CE6C /* Matft in Frameworks */ = {isa = PBXBuildFile; productRef = 3DFB59BE2C5368A30061CE6C /* Matft */; };
@@ -80,13 +78,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		3D943E702AFBD24B009EF365 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3DB11E42299543D9001DDB02 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 3D943E602AFBD247009EF365;
-			remoteInfo = MatchUpdatesExtension;
-		};
 		3DB11E5C299543DC001DDB02 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3DB11E42299543D9001DDB02 /* Project object */;
@@ -115,13 +106,6 @@
 			remoteGlobalIDString = 3DFB598B2C535D110061CE6C;
 			remoteInfo = "VRC RoboScout W Watch App";
 		};
-		3DFB59AD2C535D120061CE6C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3DB11E42299543D9001DDB02 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 3DFB598B2C535D110061CE6C;
-			remoteInfo = "VRC RoboScout W Watch App";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -131,7 +115,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				3D943E722AFBD24B009EF365 /* MatchUpdatesExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -142,7 +125,6 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				3DFB59AF2C535D120061CE6C /* VRC RoboScout.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -479,8 +461,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				3D943E712AFBD24B009EF365 /* PBXTargetDependency */,
-				3DFB59AE2C535D120061CE6C /* PBXTargetDependency */,
 			);
 			name = "VRC RoboScout";
 			packageProductDependencies = (
@@ -664,7 +644,7 @@
 				3DD419D82AF5A51200A4D3AB /* roboscouticon.png in Resources */,
 				3DAFC80E2A2640EB00A0C41A /* CoreML in Resources */,
 				3D50E10829C8915C002FE201 /* Launch Screen.storyboard in Resources */,
-				3D22AAAA2BD9C16B001AD59E /* Config.plist in Resources */,
+				3DE63FAF2C59A59C0049939C /* Config.plist in Resources */,
 				3DB11E52299543DC001DDB02 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -815,11 +795,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		3D943E712AFBD24B009EF365 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 3D943E602AFBD247009EF365 /* MatchUpdatesExtension */;
-			targetProxy = 3D943E702AFBD24B009EF365 /* PBXContainerItemProxy */;
-		};
 		3DB11E5D299543DC001DDB02 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3DB11E49299543D9001DDB02 /* VRC RoboScout */;
@@ -840,11 +815,6 @@
 			target = 3DFB598B2C535D110061CE6C /* VRC RoboScout W Watch App */;
 			targetProxy = 3DFB59A62C535D120061CE6C /* PBXContainerItemProxy */;
 		};
-		3DFB59AE2C535D120061CE6C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 3DFB598B2C535D110061CE6C /* VRC RoboScout W Watch App */;
-			targetProxy = 3DFB59AD2C535D120061CE6C /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -855,7 +825,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = LDYP2MX4AG;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -890,7 +860,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = LDYP2MX4AG;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1048,7 +1018,7 @@
 				CODE_SIGN_ENTITLEMENTS = "VRC RoboScout/VRCRoboScout.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = LDYP2MX4AG;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1103,7 +1073,7 @@
 				CODE_SIGN_ENTITLEMENTS = "VRC RoboScout/VRCRoboScout.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = LDYP2MX4AG;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1251,7 +1221,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"VRC RoboScout W Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = LDYP2MX4AG;
 				ENABLE_PREVIEWS = YES;
@@ -1286,7 +1256,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"VRC RoboScout W Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = LDYP2MX4AG;
 				ENABLE_PREVIEWS = YES;
