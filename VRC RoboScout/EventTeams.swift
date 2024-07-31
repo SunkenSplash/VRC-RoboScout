@@ -44,15 +44,15 @@ struct EventTeams: View {
                 self.event.fetch_rankings(division: self.division!)
             }
             
-            if self.division != nil && self.event.rankings[self.division!]!.isEmpty && !self.event.matches.keys.contains(self.division!) {
+            if self.division != nil && self.event.rankings[self.division!]!.isEmpty && !self.event.matches.keys.contains(self.division!) { // 5, 6
                 self.event.fetch_matches(division: self.division!)
             }
             
             DispatchQueue.main.async {
                 self.event_teams_list = [String]()
                 
-                if self.division != nil && !self.event.rankings[self.division!]!.isEmpty {
-                    for ranking in self.event.rankings[self.division!]! {
+                if self.division != nil && !self.event.rankings[self.division!]!.isEmpty { // 8
+                    for ranking in self.event.rankings[self.division!]! { // 9
                         self.event_teams_list.append(self.teams_map[String(ranking.team.id)] ?? "")
                     }
                 }
@@ -126,7 +126,7 @@ struct EventTeams: View {
                         .foregroundColor(settings.topBarContentColor())
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: DataExporter(event: event, event_teams_list: event_teams_list).environmentObject(settings)) {
+                    NavigationLink(destination: DataExporter(event: event).environmentObject(settings)) {
                         Image(systemName: "doc.badge.plus").foregroundColor(settings.topBarContentColor())
                     }
                 }

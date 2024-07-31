@@ -39,6 +39,7 @@ struct EventTeamView: View {
                 EventTeamMatches(teams_map: $teams_map, event: event, team: Team(number: teamNumber, fetch: false), division: division)
                     .environmentObject(settings)
                     .environmentObject(dataController)
+                Spacer()
             }
             else if selectedView == (UserSettings.getMatchTeamDefaultPage() == "statistics" ? 0 : 1) {
                 TeamLookup(team_number: teamNumber, editable: false, fetch: true)

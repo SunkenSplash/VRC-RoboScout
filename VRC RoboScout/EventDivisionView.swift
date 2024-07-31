@@ -66,44 +66,6 @@ struct EventDivisionView: View {
         return name
     }
     
-    func fetch_division_teams_list() {
-        DispatchQueue.global(qos: .userInteractive).async { [self] in
-            
-            if !self.event.rankings.keys.contains(self.division) {
-                self.event.fetch_rankings(division: self.division)
-            }
-            
-            if self.event.rankings[self.division]!.isEmpty && !self.event.matches.keys.contains(self.division) {
-                self.event.fetch_matches(division: self.division)
-            }
-            
-            DispatchQueue.main.async {
-                self.division_teams_list = [String]()
-                
-                if !self.event.rankings[self.division]!.isEmpty {
-                    for ranking in self.event.rankings[self.division]! {
-                        self.division_teams_list.append(self.teams_map[String(ranking.team.id)] ?? "")
-                    }
-                }
-                else {
-                    for match in self.event.matches[self.division]! {
-                        var match_teams = match.red_alliance
-                        match_teams.append(contentsOf: match.blue_alliance)
-                        for team in match_teams {
-                            if !self.division_teams_list.contains(self.teams_map[String(team.id)] ?? "") {
-                                self.division_teams_list.append(self.teams_map[String(team.id)] ?? "")
-                            }
-                        }
-                    }
-                }
-                self.division_teams_list.sort()
-                self.division_teams_list.sort(by: {
-                    (Int($0.filter("0123456789".contains)) ?? 0) < (Int($1.filter("0123456789".contains)) ?? 0)
-                })
-            }
-        }
-    }
-    
     init(event: Event, event_teams: [Team], division: Division, teams_map: [String: String]) {
         self.event = event
         self.event_teams = event_teams
@@ -216,7 +178,6 @@ struct EventDivisionView: View {
             let tabBarAppearance = UITabBarAppearance()
             tabBarAppearance.configureWithDefaultBackground()
             UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
-            fetch_division_teams_list()
         }.tint(settings.buttonColor())
             .background(.clear)
                     .toolbar {
@@ -229,7 +190,7 @@ struct EventDivisionView: View {
                         }
                         if navigation_bar_manager.title.contains("Teams") {
                             ToolbarItem(placement: .navigationBarTrailing) {
-                                NavigationLink(destination: DataExporter(event: event, event_teams_list: division_teams_list).environmentObject(settings)) {
+                                NavigationLink(destination: DataExporter(event: event, division: division).environmentObject(settings)) {
                                     Image(systemName: "doc.badge.plus").foregroundColor(settings.topBarContentColor())
                                 }
                             }

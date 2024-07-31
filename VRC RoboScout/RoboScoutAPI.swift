@@ -1102,11 +1102,11 @@ public class Event: Identifiable {
     
     public func fetch_rankings(division: Division) {
         let data = RoboScoutAPI.robotevents_request(request_url: "/events/\(self.id)/divisions/\(division.id)/rankings")
-        self.rankings[division] = [TeamRanking]()
+        self.rankings[division] = [TeamRanking]() // 2
         for ranking in data {
             var division_rankings = self.rankings[division] ?? [TeamRanking]()
             division_rankings.append(TeamRanking(data: ranking))
-            self.rankings[division] = division_rankings
+            self.rankings[division] = division_rankings // 13
         }
     }
     
