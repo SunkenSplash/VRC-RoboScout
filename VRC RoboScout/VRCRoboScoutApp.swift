@@ -5,6 +5,7 @@
 //  Created by William Castro on 2/9/23.
 //
 
+import os
 import SwiftUI
 
 let API = RoboScoutAPI()
@@ -153,6 +154,13 @@ struct VRCRoboScout: App {
                     #else
                     print("Release configuration")
                     #endif
+                    if Bundle.main.path(forResource: "Config", ofType: "plist") == nil {
+                        let logger = Logger(
+                            subsystem: Bundle.main.bundleIdentifier!,
+                            category: "Production"
+                        )
+                        logger.warning("Production API keys inaccessible!")
+                    }
                     wcSession.updateFavorites()
                     DispatchQueue.global(qos: .userInteractive).async {
                         API.generate_season_id_map()
