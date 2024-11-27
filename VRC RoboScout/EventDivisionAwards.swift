@@ -23,6 +23,10 @@ struct ExcellenceEligibleTeams: View {
     }
     
     func levelFilter(rankings: [Any]) -> [Any] {
+        if !middleSchoolExcellenceOffered {
+            return rankings
+        }
+        
         var output = [Any]()
         for ranking in rankings {
             if let ranking = ranking as? TeamRanking, middleSchool ? event.get_team(id: ranking.team.id)!.grade == "Middle School" : event.get_team(id: ranking.team.id)!.grade != "Middle School" {
@@ -41,12 +45,10 @@ struct ExcellenceEligibleTeams: View {
             
             var total_teams = 0
             
-            if event.divisions.count > 1 {
-                for div in event.divisions {
-                    event.fetch_rankings(division: div)
-                    total_teams += levelFilter(rankings: event.rankings[div] ?? [TeamRanking]()).count
-                    sleep(1)
-                }
+            for div in event.divisions {
+                event.fetch_rankings(division: div)
+                total_teams += levelFilter(rankings: event.rankings[div] ?? [TeamRanking]()).count
+                sleep(1)
             }
             
             let THRESHOLD = 0.4
