@@ -9,11 +9,10 @@ import SwiftUI
 
 struct ExcellenceEligibleTeams: View {
     
-    @State var event: Event
-    @State var division: Division
-    @State var middleSchool: Bool
-    @Binding var excellenceOffered: Bool
-    @Binding var middleSchoolExcellenceOffered: Bool
+    var event: Event
+    let middleSchool: Bool
+    let excellenceOffered: Bool
+    let middleSchoolExcellenceOffered: Bool
     @State var eligible_teams = [Team]()
     @State var showLoading = true
     
@@ -26,10 +25,10 @@ struct ExcellenceEligibleTeams: View {
     func levelFilter(rankings: [Any]) -> [Any] {
         var output = [Any]()
         for ranking in rankings {
-            if let ranking = ranking as? TeamRanking, middleSchool ? event.get_team(id: ranking.team.id)!.grade == "Middle School" : ($excellenceOffered.wrappedValue && $middleSchoolExcellenceOffered.wrappedValue ? event.get_team(id: ranking.team.id)!.grade != "Middle School" : true) {
+            if let ranking = ranking as? TeamRanking, middleSchool ? event.get_team(id: ranking.team.id)!.grade == "Middle School" : event.get_team(id: ranking.team.id)!.grade != "Middle School" {
                 output.append(ranking)
             }
-            if let ranking = ranking as? TeamSkillsRanking, middleSchool ? event.get_team(id: ranking.team.id)!.grade == "Middle School" : ($excellenceOffered.wrappedValue && $middleSchoolExcellenceOffered.wrappedValue ? event.get_team(id: ranking.team.id)!.grade != "Middle School" : true) {
+            if let ranking = ranking as? TeamSkillsRanking, middleSchool ? event.get_team(id: ranking.team.id)!.grade == "Middle School" : event.get_team(id: ranking.team.id)!.grade != "Middle School" {
                 output.append(ranking)
             }
         }
@@ -37,34 +36,70 @@ struct ExcellenceEligibleTeams: View {
     }
     
     func fetch_info() {
+        
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             
-            if (event.rankings[division] ?? [TeamRanking]()).isEmpty || event.skills_rankings.isEmpty {
-                return
+            var total_teams = 0
+            
+            if event.divisions.count > 1 {
+                for div in event.divisions {
+                    event.fetch_rankings(division: div)
+                    total_teams += levelFilter(rankings: event.rankings[div] ?? [TeamRanking]()).count
+                    sleep(1)
+                }
             }
             
-            // Top 30% in qualifier rankings
-            let ranking_cutoff = Int(Double(levelFilter(rankings: event.rankings[division] ?? [TeamRanking]()).count) * 0.3)
-            let rankings = levelFilter(rankings: event.rankings[division] ?? [TeamRanking]()) as! [TeamRanking]
-            let rankings_teams = rankings.reversed().dropLast(rankings.count - ranking_cutoff).map{
-                $0.team
-            }
+            let THRESHOLD = 0.4
             
-            // Top 30% in skills rankings
             let skills_rankings = levelFilter(rankings: event.skills_rankings) as! [TeamSkillsRanking]
-            let skills_rankings_teams = skills_rankings.dropLast(skills_rankings.count - ranking_cutoff).map{
-                $0.team
-            }
             
-            // Top 30% in auton skills
-            let auton_skills_rankings = skills_rankings.sorted{
+            let auton_skills_rankings = skills_rankings.filter {
+                $0.programming_score != 0
+            }.sorted {
                 $0.programming_score > $1.programming_score
             }
-            let auton_skills_rankings_teams = auton_skills_rankings.dropLast(skills_rankings.count - ranking_cutoff).map{
+            
+            let skills_ranking_cutoff = Double(total_teams) * THRESHOLD
+            
+            let auton_skills_ranking_cutoff = Double(total_teams) * THRESHOLD
+            
+            print("\nEXCELLENCE ELIGIBILITY CALCULATOR")
+            print("\(middleSchool ? "MIDDLE SCHOOL" : "NOT MIDDLE SCHOOL")\n")
+            
+            // Top 40% in skills rankings
+            print("SKILLS THRESHOLD: " + String(skills_ranking_cutoff) + "\n")
+            let skills_rankings_teams = skills_rankings.dropLast(max(skills_rankings.count - Int(round(skills_ranking_cutoff)), 0)).map {
                 $0.team
+            }
+            
+            // Top 40% in auton skills
+            print("AUTON SKILLS THRESHOLD: " + String(auton_skills_ranking_cutoff) + "\n")
+            let auton_skills_rankings_teams = auton_skills_rankings.dropLast(max(auton_skills_rankings.count - Int(round(auton_skills_ranking_cutoff)), 0)).map {
+                $0.team
+            }
+            
+            var rankings_teams = [Team]()
+            
+            for div in event.divisions {
+                
+                if (event.rankings[div] ?? [TeamRanking]()).isEmpty {
+                    break
+                }
+                                
+                // Top 40% in qualifier rankings
+                let ranking_cutoff = Double(levelFilter(rankings: event.rankings[div] ?? [TeamRanking]()).count) * THRESHOLD
+                print("\(div.name.uppercased()) RANKINGS: " + String(ranking_cutoff))
+                let rankings = levelFilter(rankings: event.rankings[div] ?? [TeamRanking]()) as! [TeamRanking]
+                rankings_teams += rankings.reversed().dropLast(rankings.count - Int(round(ranking_cutoff))).map{
+                    $0.team
+                }
             }
             
             var eligible_teams = [Team]()
+            
+            print("RANKINGS ELIGIBLE: \(rankings_teams.map { event.get_team(id: $0.id)?.number ?? "" } )")
+            print("SKILLS RANKINGS ELIGIBLE: \(skills_rankings_teams.map { event.get_team(id: $0.id)?.number ?? "" } )")
+            print("AUTON SKILLS RANKINGS ELIGIBLE: \(auton_skills_rankings_teams.map { event.get_team(id: $0.id)?.number ?? "" } )")
             
             for team in event.teams {
                 if rankings_teams.contains(where: { $0.id == team.id }) && skills_rankings_teams.contains(where: { $0.id == team.id }) && auton_skills_rankings_teams.contains(where: { $0.id == team.id }) {
@@ -82,38 +117,39 @@ struct ExcellenceEligibleTeams: View {
     
     var body: some View {
         VStack {
-            if showLoading {
-                ProgressView().padding().onAppear{
-                    fetch_info()
-                }
-                Spacer()
+            Text("Excellence Eligibility").font(.title).padding()
+            VStack(alignment: .leading) {
+                Text("Requirements:").padding()
+                BulletList(listItems: ["Top 40% in qualifier rankings", "Top 40% in skills rankings", "Top 40% in autonomous skills rankings"], listItemSpacing: 10).padding()
+                Text("The following teams are eligible:").padding()
             }
-            else {
-                VStack(alignment: .leading) {
-                    Text("Requirements:").padding()
-                    BulletList(listItems: ["Top 30% in qualifier rankings", "Top 30% in skills rankings", "Top 30% in autonomous skills rankings"], listItemSpacing: 10).padding()
-                    Text("The following teams are eligible:").padding()
-                }
-                if eligible_teams.isEmpty {
-                    List {
-                        Text("No eligible teams")
+            if showLoading {
+                List {
+                    HStack {
+                        Spacer()
+                        ProgressView().onAppear { fetch_info() }
+                        Spacer()
                     }
-                    Spacer()
                 }
-                else {
-                    List($eligible_teams) { team in
-                        HStack {
-                            Text(team.wrappedValue.number).font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 80, height: 30, alignment: .leading).bold()
-                            VStack {
-                                Text(team.wrappedValue.name).frame(maxWidth: .infinity, alignment: .leading).frame(height: 20)
-                                Spacer().frame(height: 5)
-                                Text(generate_location(team: team.wrappedValue)).font(.system(size: 11)).frame(maxWidth: .infinity, alignment: .leading).frame(height: 15)
-                            }
+            }
+            else if !eligible_teams.isEmpty {
+                List($eligible_teams) { team in
+                    HStack {
+                        Text(team.wrappedValue.number).font(.system(size: 20)).minimumScaleFactor(0.01).frame(width: 80, height: 30, alignment: .leading).bold()
+                        VStack {
+                            Text(team.wrappedValue.name).frame(maxWidth: .infinity, alignment: .leading).frame(height: 20)
+                            Spacer().frame(height: 5)
+                            Text(generate_location(team: team.wrappedValue)).font(.system(size: 11)).frame(maxWidth: .infinity, alignment: .leading).frame(height: 15)
                         }
                     }
-                    Spacer()
                 }
             }
+            else {
+                List {
+                    Text("No eligible teams")
+                }
+            }
+            Spacer()
         }
     }
 }
@@ -158,59 +194,56 @@ struct EventDivisionAwards: View {
                 NoData()
             }
             else {
-                List {
-                    ForEach(0..<event.awards[division]!.count, id: \.self) { i in
-                        VStack(alignment: .leading) {
-                            HStack {
-                                Text(event.awards[division]![i].title)
-                                Spacer()
-                                if !event.awards[division]![i].qualifications.isEmpty {
-                                    Menu {
-                                        Text("Qualifies for:")
-                                        ForEach(event.awards[division]![i].qualifications, id: \.self) { qual in
-                                            Text(qual)
-                                        }
-                                    } label: {
-                                        Image(systemName: "globe.americas")
+                List(event.awards[division]!, id: \.self) { award in
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text(award.title)
+                            Spacer()
+                            if !award.qualifications.isEmpty {
+                                Menu {
+                                    Text("Qualifies for:")
+                                    ForEach(award.qualifications, id: \.self) { qual in
+                                        Text(qual)
                                     }
+                                } label: {
+                                    Image(systemName: "globe.americas")
                                 }
                             }
-                            if event.awards[division]![i].teams.isEmpty && event.awards[division]![i].title.contains("Excellence") && !(event.rankings[division] ?? [TeamRanking]()).isEmpty && !event.skills_rankings.isEmpty {
-                                Spacer().frame(height: 5)
-                                Button("Show eligible teams") {
-                                    if event.awards[division]![i].title.contains("Middle") {
-                                        showingMiddleSchoolExcellenceEligibility = true
-                                    }
-                                    else {
-                                        showingExcellenceEligibility = true
-                                    }
-                                }.font(.system(size: 14))
-                                    .onAppear{
-                                        if event.awards[division]![i].title.contains("Middle") {
-                                            middleSchoolExcellenceOffered = true
-                                        }
-                                        else {
-                                            excellenceOffered = true
-                                        }
-                                    }
-                                    .sheet(isPresented: event.awards[division]![i].title.contains("Middle") ? $showingMiddleSchoolExcellenceEligibility : $showingExcellenceEligibility) {
-                                        Text("Excellence Eligibility").font(.title).padding()
-                                        ExcellenceEligibleTeams(event: event, division: division, middleSchool: event.awards[division]![i].title.contains("Middle"), excellenceOffered: $excellenceOffered, middleSchoolExcellenceOffered: $middleSchoolExcellenceOffered)
+                        }
+                        if award.teams.isEmpty && award.title.contains("Excellence") && !(event.rankings[division] ?? [TeamRanking]()).isEmpty && !event.skills_rankings.isEmpty {
+                            Spacer().frame(height: 5)
+                            Button("Show eligible teams") {
+                                if award.title.contains("Middle") {
+                                    showingMiddleSchoolExcellenceEligibility = true
+                                    showingExcellenceEligibility = true
+                                }
+                                else {
+                                    showingMiddleSchoolExcellenceEligibility = false
+                                    showingExcellenceEligibility = true
+                                }
+                            }.font(.system(size: 14)).onAppear {
+                                if award.title.contains("Middle") {
+                                    middleSchoolExcellenceOffered = true
+                                }
+                                else {
+                                    excellenceOffered = true
                                 }
                             }
-                            else if !event.awards[division]![i].teams.isEmpty {
-                                Spacer().frame(height: 5)
-                                ForEach(0..<event.awards[division]![i].teams.count, id: \.self) { j in
-                                    if !event.awards[division]![i].teams.isEmpty {
-                                        HStack {
-                                            Text(event.awards[division]![i].teams[j].number).frame(maxWidth: .infinity, alignment: .leading).frame(width: 60).font(.system(size: 14)).foregroundColor(.secondary).bold()
-                                            Text(event.awards[division]![i].teams[j].name).frame(maxWidth: .infinity, alignment: .leading).font(.system(size: 14)).foregroundColor(.secondary)
-                                        }
+                        }
+                        else if !award.teams.isEmpty {
+                            Spacer().frame(height: 5)
+                            ForEach(award.teams, id: \.self) { team in
+                                if !award.teams.isEmpty {
+                                    HStack {
+                                        Text(team.number).frame(maxWidth: .infinity, alignment: .leading).frame(width: 60).font(.system(size: 14)).foregroundColor(.secondary).bold()
+                                        Text(team.name).frame(maxWidth: .infinity, alignment: .leading).font(.system(size: 14)).foregroundColor(.secondary)
                                     }
                                 }
                             }
                         }
                     }
+                }.sheet(isPresented: $showingExcellenceEligibility) {
+                    ExcellenceEligibleTeams(event: event, middleSchool: showingMiddleSchoolExcellenceEligibility, excellenceOffered: excellenceOffered, middleSchoolExcellenceOffered: middleSchoolExcellenceOffered)
                 }
             }
         }.task{
