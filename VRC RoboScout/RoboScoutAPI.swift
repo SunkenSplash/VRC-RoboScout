@@ -788,11 +788,11 @@ public class Match: Identifiable {
         }
         
         // Use this to test predictions
-        if self.matchnum > 0 {
+        /*if self.matchnum > 0 {
             self.red_score = 0
             self.blue_score = 0
             self.started = nil
-        }
+        }*/
     }
     
     func fetch_full_info() {
