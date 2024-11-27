@@ -125,7 +125,7 @@ struct EventDivisionView: View {
                 .sheet(isPresented: $showingNotes) {
                     Text("\(division.name) Match Notes").font(.title).multilineTextAlignment(.center).padding()
                     if self.matchNotesByTeam.isEmpty {
-                        Text("No notes.")
+                        Text("No notes")
                     }
                     ScrollView {
                         ForEach(Array(matchNotesByTeam.keys.sorted().sorted(by: { (Int($0.filter("0123456789".contains)) ?? 0) < (Int($1.filter("0123456789".contains)) ?? 0) })), id: \.self) { team_number in

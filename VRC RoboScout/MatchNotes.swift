@@ -76,7 +76,7 @@ struct TeamNotes: View {
                         }.sheet(isPresented: $showingNotes) {
                             Text("\(team.number) Match Notes").font(.title).padding()
                             if matchNotes.filter({ ($0.note ?? "") != "" && $0.team_id == Int32(team.id) }).isEmpty {
-                                Text("No notes.")
+                                Text("No notes")
                             }
                             ScrollView {
                                 ForEach(matchNotes.filter({ ($0.note ?? "") != "" && $0.team_id == Int32(team.id) }), id: \.self) { teamNote in

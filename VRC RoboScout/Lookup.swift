@@ -497,7 +497,7 @@ struct TeamLookup: View {
                 HStack {
                     Menu("Match Statistics") {
                         Text("Average Qualifiers Ranking: \(displayRoundedTenths(number: avg_rank))")
-                        Text("CCWM: \(displayRoundedTenths(number: vrc_data_analysis.ccwm))")
+                        Text("CCWM: \(displayRoundedTenths(number: vrc_data_analysis.ccwm ?? 0))")
                         Text("Winrate: " + ((vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties > 0) ? ((displayRoundedTenths(number: Double(vrc_data_analysis.total_wins) / Double(vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties) * 100.0)) + "%") : ""))
                         Text("Total Matches: \(vrc_data_analysis.total_wins + vrc_data_analysis.total_losses + vrc_data_analysis.total_ties)")
                         Text("Total Wins: \(vrc_data_analysis.total_wins)")

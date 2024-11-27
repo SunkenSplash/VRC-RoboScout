@@ -72,17 +72,13 @@ struct EventTeamMatches: View {
             if division != nil {
                 do {
                     self.event.fetch_matches(division: division!)
-                    try self.event.calculate_team_performance_ratings(division: division!)
-                    matches = self.event.matches[division!]!.filter{
-                        $0.alliance_for(team: self.team) != nil
-                    }
+                    try self.event.calculate_team_performance_ratings(division: division!, forceRealCalculation: true)
                 }
                 catch {
-                    matches = self.team.matches_at(event: event)
-                    DispatchQueue.main.async {
-                        self.predictions = false
-                        self.calculating = false
-                    }
+                    print("Failed to calculate team performance ratings")
+                }
+                matches = self.event.matches[division!]!.filter{
+                    $0.alliance_for(team: self.team) != nil
                 }
             }
             
@@ -90,7 +86,9 @@ struct EventTeamMatches: View {
                 do {
                     try self.event.predict_matches(division: division)
                 }
-                catch {}
+                catch {
+                    print("Failed to predict matches")
+                }
             }
 
             // Time should be in the format of "HH:mm" AM/PM
@@ -150,7 +148,7 @@ struct EventTeamMatches: View {
         }.sheet(isPresented: $showingTeamNotes) {
             Text("\(team.number) Match Notes").font(.title).padding().foregroundStyle(Color.primary)
             if (teamMatchNotes ?? [TeamMatchNote]()).filter({ ($0.note ?? "") != "" }).isEmpty {
-                Text("No notes.")
+                Text("No notes")
             }
             ScrollView {
                 ForEach((teamMatchNotes ?? [TeamMatchNote]()).filter{ ($0.note ?? "") != "" }, id: \.self) { teamNote in

@@ -618,15 +618,15 @@ public class VRCDataAnalysis: Identifiable {
     public var loc_region: String
     public var loc_country: String
     public var trueskill: Double
-    public var ccwm: Double
+    public var ccwm: Double?
     public var total_wins: Int
     public var total_losses: Int
     public var total_ties: Int
     public var ap_per_match: Double
     public var awp_per_match: Double
     public var wp_per_match: Double
-    public var opr: Double
-    public var dpr: Double
+    public var opr: Double?
+    public var dpr: Double?
     public var qualified_for_regionals: Int
     public var qualified_for_worlds: Int
     
@@ -638,15 +638,15 @@ public class VRCDataAnalysis: Identifiable {
         self.loc_region = response.loc_region
         self.loc_country = response.loc_country
         self.trueskill = response.trueskill ?? 0
-        self.ccwm = response.ccwm ?? 0
+        self.ccwm = response.ccwm
         self.total_wins = response.total_wins ?? 0
         self.total_losses = response.total_losses ?? 0
         self.total_ties = response.total_ties ?? 0
         self.ap_per_match = response.ap_per_match
         self.awp_per_match = response.awp_per_match
         self.wp_per_match = response.wp_per_match
-        self.opr = response.opr ?? 0
-        self.dpr = response.dpr ?? 0
+        self.opr = response.opr
+        self.dpr = response.dpr
         self.qualified_for_regionals = response.qualified_for_regionals
         self.qualified_for_worlds = response.qualified_for_worlds
     }
@@ -787,11 +787,12 @@ public class Match: Identifiable {
             self.blue_alliance.append(Team())
         }
         
-        /*if self.matchnum > 90 {
+        // Use this to test predictions
+        if self.matchnum > 0 {
             self.red_score = 0
             self.blue_score = 0
             self.started = nil
-        }*/
+        }
     }
     
     func fetch_full_info() {
@@ -870,7 +871,7 @@ public class Match: Identifiable {
     }
     
     func toString() -> String {
-        return "\(self.name) - \(self.red_score) to \(self.blue_score)"
+        return "\(self.name) - \(self.red_score) to \(self.blue_score) (Prediction: \(self.predicted_red_score) to \(self.predicted_blue_score))"
     }
 }
 
@@ -908,7 +909,8 @@ public class Award: Identifiable {
     }
 }
 
-public class DivisionalAward: Award {
+public class DivisionalAward: Award, Hashable {
+    
     public var teams: [Team]
     public var division: Division
     
@@ -919,10 +921,18 @@ public class DivisionalAward: Award {
         super.init(event: event, data: data)
         
         for team_award_winner in super.team_winners {
-            if team_award_winner.division.id == division.id {
+            if team_award_winner.division.id == division.id || ((super.title.contains("Excellence") || super.title.contains("Champions") || super.title.contains("Robot Skills")) && !super.title.contains("Division")) {
                 self.teams.append(team_award_winner.team)
             }
         }
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(0)
+    }
+    
+    public static func == (lhs: DivisionalAward, rhs: DivisionalAward) -> Bool {
+        return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
     }
 }
 
@@ -1162,7 +1172,7 @@ public class Event: Identifiable {
         self.matches[division] = matches
     }
     
-    public func calculate_team_performance_ratings(division: Division) throws {
+    public func calculate_team_performance_ratings(division: Division, forceRealCalculation: Bool = false) throws {
         self.team_performance_ratings[division] = [Int: TeamPerformanceRatings]()
         
         if self.teams.isEmpty {
@@ -1205,7 +1215,7 @@ public class Event: Identifiable {
             guard match.round == Round.qualification else {
                 continue
             }
-            if false && (UserSettings.getPerformanceRatingsCalculationOption() != "via" && !match.completed()) {
+            if forceRealCalculation && (UserSettings.getPerformanceRatingsCalculationOption() != "via" && !match.completed()) {
                 continue
             }
             
@@ -1271,7 +1281,12 @@ public class Event: Identifiable {
     public func predict_matches(division: Division, only_predict: [Round]? = nil, predict_completed: Bool = false, opr_weight: Double = 0.5, dpr_weight: Double = 0.5) throws {
         
         if self.team_performance_ratings[division] == nil || self.team_performance_ratings[division]!.isEmpty {
-            try self.calculate_team_performance_ratings(division: division)
+            do {
+                try self.calculate_team_performance_ratings(division: division, forceRealCalculation: true)
+            }
+            catch {
+                print("Unable to calculate team performance ratings, continuing with historical OPR and DPR for predictions")
+            }
         }
         
         guard let matches = self.matches[division] else {
@@ -1279,6 +1294,20 @@ public class Event: Identifiable {
         }
         
         var new_matches = [Match]()
+        
+        var total_quals = 0.0
+        var current_qual = 0.0
+        
+        for match in matches {
+            if match.round == Round.qualification {
+                total_quals += 1
+                if match.completed() {
+                    current_qual += 1
+                }
+            }
+        }
+        
+        let qual_completion = current_qual / total_quals
         
         for match in matches {
             if (match.completed() && !predict_completed) {
@@ -1297,12 +1326,36 @@ public class Event: Identifiable {
             
             match.predicted = true
             for match_team in match.red_alliance {
-                red_opr += (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).opr
-                red_dpr += (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).dpr
+                let vrcda = API.vrc_data_analysis_for(team: match_team)
+                if match.round == Round.qualification && vrcda.opr != nil && vrcda.dpr != nil {
+                    let event_opr = (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).opr
+                    let historical_opr = vrcda.opr!
+                    red_opr += event_opr * qual_completion + historical_opr * (1 - qual_completion)
+                    
+                    let event_dpr = (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).dpr
+                    let historical_dpr = vrcda.dpr!
+                    red_dpr += event_dpr * qual_completion + historical_dpr * (1 - qual_completion)
+                }
+                else {
+                    red_opr += (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).opr
+                    red_dpr += (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).dpr
+                }
             }
             for match_team in match.blue_alliance {
-                blue_opr += (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).opr
-                blue_dpr += (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).dpr
+                let vrcda = API.vrc_data_analysis_for(team: match_team)
+                if match.round == Round.qualification && vrcda.opr != nil && vrcda.dpr != nil {
+                    let event_opr = (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).opr
+                    let historical_opr = vrcda.opr!
+                    blue_opr += event_opr * qual_completion + historical_opr * (1 - qual_completion)
+                    
+                    let event_dpr = (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).dpr
+                    let historical_dpr = vrcda.dpr!
+                    blue_dpr += event_dpr * qual_completion + historical_dpr * (1 - qual_completion)
+                }
+                else {
+                    blue_opr += (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).opr
+                    blue_dpr += (self.team_performance_ratings[division]![match_team.id] ?? TeamPerformanceRatings(team: match_team, event: self, opr: 0, dpr: 0, ccwm: 0)).dpr
+                }
             }
             
             match.predicted_red_score = Int(round(opr_weight * red_opr + dpr_weight * blue_dpr))
@@ -1499,7 +1552,7 @@ public class WorldSkills {
     }
 }
 
-public class Team: Identifiable {
+public class Team: Identifiable, Hashable {
     
     public var id: Int
     public var events: [Event]
@@ -1656,6 +1709,14 @@ public class Team: Identifiable {
         }
         self.event_count = data.count
         return Double(total) / Double(data.count)
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(0)
+    }
+    
+    public static func == (lhs: Team, rhs: Team) -> Bool {
+        return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
     }
     
     public func toString() -> String {

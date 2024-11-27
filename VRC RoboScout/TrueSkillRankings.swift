@@ -66,7 +66,7 @@ class TrueSkillTeams: ObservableObject {
                 if !filter_array.contains(team.team_number) {
                     continue
                 }
-                self.trueskill_teams.append(TrueSkillTeam(number: team.team_number, trueskill: team.trueskill, abs_ranking: rank, ranking: team.ts_ranking, ranking_change: team.ranking_change, ccwm: team.ccwm, total_wins: team.total_wins, total_losses: team.total_losses, total_ties: team.total_ties, favorite_view: true))
+                self.trueskill_teams.append(TrueSkillTeam(number: team.team_number, trueskill: team.trueskill, abs_ranking: rank, ranking: team.ts_ranking, ranking_change: team.ranking_change, ccwm: team.ccwm ?? 0, total_wins: team.total_wins, total_losses: team.total_losses, total_ties: team.total_ties, favorite_view: true))
                 rank += 1
             }
         }
@@ -77,7 +77,7 @@ class TrueSkillTeams: ObservableObject {
                 if region != "" && region != team.loc_region {
                     continue
                 }
-                self.trueskill_teams.append(TrueSkillTeam(number: team.team_number, trueskill: team.trueskill, abs_ranking: rank, ranking: team.ts_ranking, ranking_change: team.ranking_change, ccwm: team.ccwm, total_wins: team.total_wins, total_losses: team.total_losses, total_ties: team.total_ties, favorite_view: false))
+                self.trueskill_teams.append(TrueSkillTeam(number: team.team_number, trueskill: team.trueskill, abs_ranking: rank, ranking: team.ts_ranking, ranking_change: team.ranking_change, ccwm: team.ccwm ?? 0, total_wins: team.total_wins, total_losses: team.total_losses, total_ties: team.total_ties, favorite_view: false))
                 rank += 1
             }
         }
@@ -88,7 +88,7 @@ class TrueSkillTeams: ObservableObject {
                 if letter != team.team_number.last {
                     continue
                 }
-                self.trueskill_teams.append(TrueSkillTeam(number: team.team_number, trueskill: team.trueskill, abs_ranking: rank, ranking: team.ts_ranking, ranking_change: team.ranking_change, ccwm: team.ccwm, total_wins: team.total_wins, total_losses: team.total_losses, total_ties: team.total_ties, favorite_view: false))
+                self.trueskill_teams.append(TrueSkillTeam(number: team.team_number, trueskill: team.trueskill, abs_ranking: rank, ranking: team.ts_ranking, ranking_change: team.ranking_change, ccwm: team.ccwm ?? 0, total_wins: team.total_wins, total_losses: team.total_losses, total_ties: team.total_ties, favorite_view: false))
                 rank += 1
             }
         }
@@ -99,7 +99,7 @@ class TrueSkillTeams: ObservableObject {
             }
             for i in 0..<API.vrc_data_analysis_cache.teams.count {
                 let team = API.vrc_data_analysis_cache.teams[i]
-                self.trueskill_teams.append(TrueSkillTeam(number: team.team_number, trueskill: team.trueskill, abs_ranking: i + 1, ranking: team.ts_ranking, ranking_change: team.ranking_change, ccwm: team.ccwm, total_wins: team.total_wins, total_losses: team.total_losses, total_ties: team.total_ties, favorite_view: false))
+                self.trueskill_teams.append(TrueSkillTeam(number: team.team_number, trueskill: team.trueskill, abs_ranking: i + 1, ranking: team.ts_ranking, ranking_change: team.ranking_change, ccwm: team.ccwm ?? 0, total_wins: team.total_wins, total_losses: team.total_losses, total_ties: team.total_ties, favorite_view: false))
             }
         }
     }

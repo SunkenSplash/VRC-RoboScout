@@ -30,7 +30,7 @@ struct EventDivisionMatches: View {
 
             do {
                 self.event.fetch_matches(division: division)
-                try self.event.calculate_team_performance_ratings(division: division)
+                try self.event.calculate_team_performance_ratings(division: division, forceRealCalculation: true)
                 matches = self.event.matches[division] ?? [Match]()
             }
             catch {
@@ -55,7 +55,9 @@ struct EventDivisionMatches: View {
                         self.prediction_manager.state = PredictionState.on
                     }
                 }
-                catch {}
+                catch {
+                    print("Failed to predict matches")
+                }
             }
             
             // Time should be in the format of "HH:mm" AM/PM
