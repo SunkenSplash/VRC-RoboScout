@@ -164,76 +164,88 @@ struct EventLookup: View {
     
     var body: some View {
         VStack {
-            TextField(
-                "Event Name",
-                text: $name_query,
-                onCommit: {
-                    showLoading = true
-                    page = 1
-                    event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
-                }
-            ).frame(alignment: .center).multilineTextAlignment(.center).font(.system(size: 36))
-            
-            Menu("Filter") {
-                Menu("Season") {
-                    ForEach(API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1].keys.sorted().reversed(), id: \.self) { season_id in
-                        Button(format_season_option(raw: API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1][season_id] ?? "Unknown")) {
+            ZStack {
+                TextField(
+                    "Event Name",
+                    text: $name_query,
+                    onCommit: {
+                        showLoading = true
+                        page = 1
+                        event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
+                    }
+                ).frame(maxWidth: .infinity, alignment: .center)
+                 .padding(.horizontal, 50)
+                 .multilineTextAlignment(.center)
+                 .font(.system(size: 36))
+                
+                HStack {
+                    Spacer()
+                    Menu {
+                        Menu("Season") {
+                            ForEach(API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1].keys.sorted().reversed(), id: \.self) { season_id in
+                                Button(format_season_option(raw: API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1][season_id] ?? "Unknown")) {
+                                    showLoading = true
+                                    season_query = season_id
+                                    event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
+                                }
+                            }
+                        }
+                        Menu("Level") {
+                            ForEach(0..<8) { lesson_id in
+                                Button(API.level_map[UserSettings.getGradeLevel() != "College" ? 0 : 1][lesson_id] ?? "Unknown") {
+                                    showLoading = true
+                                    level_query = lesson_id
+                                    event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
+                                }
+                            }
+                        }
+                        Menu("Grade") {
+                            ForEach(0..<3) { grade_id in
+                                Button(API.grade_map[UserSettings.getGradeLevel() != "College" ? 0 : 1][grade_id] ?? "Unknown") {
+                                    showLoading = true
+                                    grade_query = grade_id
+                                    event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
+                                }
+                            }
+                        }
+                        Menu("Region") {
+                            ForEach(API.regions_map.sorted(by: <), id: \.key) { region, id in
+                                Button(region) {
+                                    showLoading = true
+                                    region_query = id
+                                    event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
+                                    
+                                }
+                            }
+                        }
+                        
+                        Button("Clear Filters") {
                             showLoading = true
-                            season_query = season_id
+                            season_query = API.selected_season_id()
+                            grade_query = 0
+                            level_query = 0
+                            region_query = 0
                             event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
                         }
-                    }
-                }
-                Menu("Level") {
-                    ForEach(0..<8) { lesson_id in
-                        Button(API.level_map[UserSettings.getGradeLevel() != "College" ? 0 : 1][lesson_id] ?? "Unknown") {
-                            showLoading = true
-                            level_query = lesson_id
-                            event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
-                        }
-                    }
-                }
-                Menu("Grade") {
-                    ForEach(0..<3) { grade_id in
-                        Button(API.grade_map[UserSettings.getGradeLevel() != "College" ? 0 : 1][grade_id] ?? "Unknown") {
-                            showLoading = true
-                            grade_query = grade_id
-                            event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
-                        }
-                    }
-                }
-                Menu("Region") {
-                    ForEach(API.regions_map.sorted(by: <), id: \.key) { region, id in
-                        Button(region) {
-                            showLoading = true
-                            region_query = id
-                            event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
-                            
-                        }
-                    }
+                    } label: {
+                        Image(systemName: "line.3.horizontal.decrease.circle")
+                    }.fontWeight(.medium)
+                        .font(.system(size: 19))
+                        .padding(20)
                 }
                 
-                Button("Clear Filters") {
-                    showLoading = true
-                    season_query = API.selected_season_id()
-                    grade_query = 0
-                    level_query = 0
-                    region_query = 0
-                    event_query(name_query: name_query, season_query: season_query, level_query: level_query, grade_query: grade_query, region_query: region_query)
-                }
-            }.fontWeight(.medium)
-                .font(.system(size: 19))
-                .padding(20)
-            
+            }
             VStack {
                 if showLoading {
                     ProgressView()
                 }
-            }.frame(height: 12)
+                Spacer()
+            }.frame(height: 10)
             
             List(events.event_indexes) { event_index in
                 EventRow(event: events.events[Int(event_index)!]).environmentObject(dataController)
             }
+            
             HStack {
                 Spacer()
                 Button(action: {
