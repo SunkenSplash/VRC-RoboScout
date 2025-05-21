@@ -23,6 +23,23 @@ struct ImportingData: View {
     }
 }
 
+struct ExpandableView<Output: View>: View {
+    
+    let title: String
+    let outputView: () -> Output
+    
+    init(_ title: String, @ViewBuilder outputView: @escaping () -> Output) {
+        self.title = title
+        self.outputView = outputView
+    }
+    
+    var body: some View {
+        NavigationLink(destination: outputView) {
+            Text(title)
+        }
+    }
+}
+
 @main
 struct VRCRoboScout: App {
     
@@ -43,8 +60,6 @@ struct VRCRoboScout: App {
                     #else
                     print("Release configuration")
                     #endif
-                    settings.setSelectedSeasonID(id: 181)
-                    settings.updateUserDefaults(updateTopBarContentColor: false)
                     DispatchQueue.global(qos: .userInteractive).async {
                         API.generate_season_id_map()
                         API.update_world_skills_cache()

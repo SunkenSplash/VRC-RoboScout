@@ -1,5 +1,5 @@
 //
-//  TeamLookup.swift
+//  Lookup.swift
 //  VRC RoboScout
 //
 //  Created by William Castro on 2/20/23.

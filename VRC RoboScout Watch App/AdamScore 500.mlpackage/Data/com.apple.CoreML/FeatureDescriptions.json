@@ -1,0 +1,27 @@
+{
+  "Outputs" : {
+    "adamscoreProbability" : {
+      "MLFeatureShortDescription" : "--"
+    },
+    "adamscore" : {
+      "MLFeatureShortDescription" : "--"
+    }
+  },
+  "Inputs" : {
+    "world_skills_ranking" : {
+      "MLFeatureShortDescription" : "--"
+    },
+    "average_qualification_ranking" : {
+      "MLFeatureShortDescription" : "--"
+    },
+    "winrate" : {
+      "MLFeatureShortDescription" : "--"
+    },
+    "trueskill_ranking" : {
+      "MLFeatureShortDescription" : "--"
+    }
+  },
+  "TrainingInputs" : {
+
+  }
+}

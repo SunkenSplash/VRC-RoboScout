@@ -1,0 +1,12 @@
+{
+  "MLModelVersionStringKey" : "--",
+  "MLModelDescriptionKey" : "Predict a VRC team’s overall performance based on certain performance metrics and human scouting data.",
+  "MLModelCreatorDefinedKey" : {
+    "com.apple.createml.app.tag" : "99.2",
+    "com.apple.createml.version" : "13.2.0",
+    "com.apple.coreml.model.preview.type" : "tabularClassifier",
+    "com.apple.createml.app.version" : "4.0"
+  },
+  "MLModelAuthorKey" : "William Castro",
+  "MLModelLicenseKey" : "--"
+}

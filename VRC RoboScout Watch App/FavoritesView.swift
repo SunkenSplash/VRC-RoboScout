@@ -16,6 +16,8 @@ struct FavoritesView: View {
     
     @State var event_sku_map = [String: Event]()
     
+    @State var selectedTab = UserSettings.getTeamInfoDefaultPage() == "events" ? 0 : 1
+    
     func generate_event_sku_map() {
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             
@@ -53,7 +55,12 @@ struct FavoritesView: View {
                     }
                     else {
                         List(teams, id: \.self) { team in
-                            NavigationLink(destination: TeamEventsView(team_number: team)) {
+                            NavigationLink(destination: {
+                                TabView(selection: $selectedTab) {
+                                    TeamEventsView(team_number: team).tag(0)
+                                    TeamLookupView(team_number: team, fetch: true).tag(1)
+                                }
+                            }) {
                                 Text(team)
                             }
                         }
@@ -80,6 +87,8 @@ struct FavoritesView: View {
                     }
                 }
             }
+        }.onAppear {
+            selectedTab = UserSettings.getTeamInfoDefaultPage() == "events" ? 0 : 1
         }
     }
 }

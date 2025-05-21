@@ -19,6 +19,8 @@ struct EventTeamsView: View {
     @State var event_teams_map = [String: Team]()
     @State var event_teams_list: [String]
     
+    @State var selectedTab = UserSettings.getMatchTeamDefaultPage() == "matches" ? 0 : 1
+    
     func generate_location(team: Team) -> String {
         var location_array = [team.city, team.region, team.country]
         location_array = location_array.filter{ $0 != "" }
@@ -79,7 +81,12 @@ struct EventTeamsView: View {
             else {
                 List {
                     ForEach(event_teams_list, id: \.self) { teamNum in
-                        NavigationLink(destination: EventTeamMatchesView(teams_map: $teams_map, event: event, team: Team(number: teamNum, fetch: false), division: division)) {
+                        NavigationLink(destination: {
+                            TabView(selection: $selectedTab) {
+                                EventTeamMatchesView(teams_map: $teams_map, event: event, team: Team(number: teamNum, fetch: false), division: division).tag(0)
+                                TeamLookupView(team_number: teamNum, fetch: true).tag(1)
+                            }
+                        }) {
                             VStack {
                                 Text((event_teams_map[teamNum] ?? Team()).number).font(.system(size: 20)).minimumScaleFactor(0.01).frame(maxWidth: .infinity, alignment: .leading).bold()
                                 Text((event_teams_map[teamNum] ?? Team()).name).frame(maxWidth: .infinity, alignment: .leading).lineLimit(1)
@@ -94,6 +101,7 @@ struct EventTeamsView: View {
             for team in event_teams {
                 event_teams_map[team.number] = team
             }
+            selectedTab = UserSettings.getMatchTeamDefaultPage() == "matches" ? 0 : 1
         }.background(.clear)
             .navigationTitle(division != nil ? division!.name : "Event Teams")
             .navigationBarTitleDisplayMode(.inline)

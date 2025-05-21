@@ -110,7 +110,7 @@ struct TeamEventsView: View {
             fetch_team_events()
         }.background(.clear)
             .navigationTitle("\(self.team_number ?? "") Events")
-            .navigationBarTitleDisplayMode(.automatic)
+            .navigationBarTitleDisplayMode(.inline)
         
     }
 }
