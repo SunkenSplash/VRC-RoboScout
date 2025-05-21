@@ -2,7 +2,7 @@
 <Scheme
    LastUpgradeVersion = "1540"
    wasCreatedForAppExtension = "YES"
-   version = "2.0">
+   version = "2.2">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES"
@@ -16,9 +16,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3D943E602AFBD247009EF365"
-               BuildableName = "MatchUpdatesExtension.appex"
-               BlueprintName = "MatchUpdatesExtension"
+               BlueprintIdentifier = "3D9BBDBD2DD6E1C40064111F"
+               BuildableName = "Match Updates Extension.appex"
+               BlueprintName = "Match Updates Extension"
                ReferencedContainer = "container:VRC RoboScout.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -36,6 +36,15 @@
                ReferencedContainer = "container:VRC RoboScout.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <AutocreatedTestPlanReference>
+            </AutocreatedTestPlanReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -44,6 +53,19 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
+      <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3DB11E64299543DC001DDB02"
+               BuildableName = "VRC RoboScoutUITests.xctest"
+               BlueprintName = "VRC RoboScoutUITests"
+               ReferencedContainer = "container:VRC RoboScout.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -57,8 +79,18 @@
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES"
       launchAutomaticallySubstyle = "2">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <RemoteRunnable
+         runnableDebuggingMode = "2"
+         BundleIdentifier = "com.apple.springboard">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "3D9BBDBD2DD6E1C40064111F"
+            BuildableName = "Match Updates Extension.appex"
+            BlueprintName = "Match Updates Extension"
+            ReferencedContainer = "container:VRC RoboScout.xcodeproj">
+         </BuildableReference>
+      </RemoteRunnable>
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3DB11E49299543D9001DDB02"
@@ -66,7 +98,7 @@
             BlueprintName = "VRC RoboScout"
             ReferencedContainer = "container:VRC RoboScout.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "_XCWidgetKind"

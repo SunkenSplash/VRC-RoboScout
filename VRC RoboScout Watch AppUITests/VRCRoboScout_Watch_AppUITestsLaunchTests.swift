@@ -1,13 +1,13 @@
 //
-//  VRC_RoboScout_W_Watch_AppUITestsLaunchTests.swift
-//  VRC RoboScout W Watch AppUITests
+//  VRCRoboScout_Watch_AppUITestsLaunchTests.swift
+//  VRCRoboScout Watch AppUITests
 //
-//  Created by William Castro on 7/26/24.
+//  Created by William Castro on 5/19/25.
 //
 
 import XCTest
 
-final class VRC_RoboScout_W_Watch_AppUITestsLaunchTests: XCTestCase {
+final class VRCRoboScout_Watch_AppUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
@@ -17,6 +17,7 @@ final class VRC_RoboScout_W_Watch_AppUITestsLaunchTests: XCTestCase {
         continueAfterFailure = false
     }
 
+    @MainActor
     func testLaunch() throws {
         let app = XCUIApplication()
         app.launch()

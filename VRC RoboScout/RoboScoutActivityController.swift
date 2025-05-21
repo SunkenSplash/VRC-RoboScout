@@ -22,6 +22,8 @@ class RoboScoutActivityController {
     
     private var activities = [String: String]() // ["eventID-teamID": "activityID"]
     
+    private var pushTokens = [String]()
+    
     func registerForNotifications() async throws {
         let notificationCenter = UNUserNotificationCenter.current()
         let authorizationOptions: UNAuthorizationOptions = [.alert, .sound, .badge]
@@ -95,8 +97,9 @@ class RoboScoutActivityController {
         let initialContentState = MatchUpdatesAttributes.ContentState(
             matches: matchesToStrings(matches: Array(matches[0...upcomingMatchIndex]), event: event)
         )
+        
         do {
-            try! await self.registerForNotifications()
+            try await self.registerForNotifications()
             let activity = try Activity.request(attributes: attributes, content: .init(state: initialContentState, staleDate: nil), pushType: .token)
             let id = activity.id
             self.activities["\(event.id)-\(team.id)"] = id
@@ -104,7 +107,10 @@ class RoboScoutActivityController {
                 let pushTokenString = pushToken.reduce("") {
                       $0 + String(format: "%02x", $1)
                 }
-                print("New push token: \(pushTokenString)")
+                if !self.pushTokens.contains(pushTokenString) {
+                    print("New push token: \(pushTokenString)")
+                    self.pushTokens.append(pushTokenString)
+                }
                 // try await self.sendPushToken(event: event, team: team, pushTokenString: pushTokenString)
             }
         } catch {

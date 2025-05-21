@@ -176,7 +176,7 @@ struct EventTeamMatches: View {
                         .foregroundColor(settings.topBarContentColor())
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    if #available(iOS 16.2, *), false {
+                    if #available(iOS 16.2, *) {
                         Button(action: {
                             if ActivityAuthorizationInfo().areActivitiesEnabled {
                                 self.showAlert = false
@@ -187,7 +187,8 @@ struct EventTeamMatches: View {
                                                 self.alertText = AlertText.enabled
                                                 self.showAlert = true
                                             }
-                                            await activities.notificationTest()
+                                            //await activities.notificationTest()
+                                            print("Starting match updates activity...")
                                             try await activities.startMatchUpdatesActivity(event: self.event, team: self.team, matches: self.matches)
                                         }
                                         else {
@@ -195,6 +196,7 @@ struct EventTeamMatches: View {
                                                 self.alertText = AlertText.disabled
                                                 self.showAlert = false
                                             }
+                                            print("Ending match updates activity...")
                                             await activities.endMatchUpdatesActivity(event: self.event, team: self.team)
                                         }
                                     } catch {

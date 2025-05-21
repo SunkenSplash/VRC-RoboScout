@@ -15,7 +15,7 @@ func displayRounded(number: Double) -> String {
     return String(format: "%.0f", round(number))
 }
 
-extension String: Identifiable {
+extension String: @retroactive Identifiable {
     public typealias ID = Int
     public var id: Int {
         return hash
