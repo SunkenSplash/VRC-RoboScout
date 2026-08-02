@@ -154,7 +154,7 @@ public class RoboScoutAPI {
         self.current_skills_season_id = 0
     }
     
-    public static func robotevents_date(date: String, localize: Bool) -> Date? {
+    public static func vexevents_date(date: String, localize: Bool) -> Date? {
         let formatter = DateFormatter()
         // Example date: "2023-04-26T11:54:40-04:00"
         if localize {
@@ -175,16 +175,16 @@ public class RoboScoutAPI {
         return "http://192.0.0.2:8080/api"
     }
     
-    public static func robotevents_url() -> String {
-        return "https://www.robotevents.com/api/v2"
+    public static func vexevents_url() -> String {
+        return "https://events.vex.com/api/v2"
     }
     
     public static func vrc_data_analysis_url() -> String {
         return "https://vrc-data-analysis.com/v1"
     }
     
-    public static func robotevents_access_key() -> String {
-        return UserSettings.getRobotEventsAPIKey() ?? ""
+    public static func vexevents_access_key() -> String {
+        return UserSettings.getVexEventsAPIKey() ?? ""
     }
     
     public static func roboserver_request(request_url: String, params: [String: Any] = [:]) -> [[String: Any]] {
@@ -208,7 +208,7 @@ public class RoboScoutAPI {
             }
         }
         
-        // Create URL Request using the request_url string, which is the URL we are going to use to get data from Robotevents
+        // Create URL Request using the request_url string, which is the URL we are going to use to get data from VEX Events
         let request = NSMutableURLRequest(url: URL(string: request_url)!)
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -243,9 +243,9 @@ public class RoboScoutAPI {
         return data
     }
     
-    public static func robotevents_request(request_url: String, params: [String: Any] = [:]) -> [[String: Any]] {
+    public static func vexevents_request(request_url: String, params: [String: Any] = [:]) -> [[String: Any]] {
         var data = [[String: Any]]()
-        var request_url = self.robotevents_url() + request_url
+        var request_url = self.vexevents_url() + request_url
         var page = 1
         var cont = true
         var params = params
@@ -275,16 +275,16 @@ public class RoboScoutAPI {
                 }
             }
             
-            // Create URL Request using the request_url string, which is the URL we are going to use to get data from Robotevents
+            // Create URL Request using the request_url string, which is the URL we are going to use to get data from VEX Events
             let request = NSMutableURLRequest(url: URL(string: request_url)!)
-            request.setValue(String(format: "Bearer %@", self.robotevents_access_key()), forHTTPHeaderField: "Authorization")
+            request.setValue(String(format: "Bearer %@", self.vexevents_access_key()), forHTTPHeaderField: "Authorization")
             request.httpMethod = "GET"
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             
             let task = URLSession.shared.dataTask(with: request as URLRequest) { (response_data, response, error) in
                 if response_data != nil {
                     do {
-                        print(String(format: "RobotEvents API request (page %d): %@", page, components.url?.description ?? request_url))
+                        print(String(format: "VEX Events API request (page %d): %@", page, components.url?.description ?? request_url))
                         // Convert the data to JSON
                         let json = try JSONSerialization.jsonObject(with: response_data!) as? [String: Any]
                         
@@ -319,9 +319,9 @@ public class RoboScoutAPI {
         return data
     }
     
-    public static func robotevents_competition_scraper(params: [String: Any] = [:]) -> [String] {
+    public static func vexevents_competition_scraper(params: [String: Any] = [:]) -> [String] {
         
-        var request_url = "https://www.robotevents.com/robot-competitions/\(UserSettings.getGradeLevel() == "College" ? "college-competition" : "vex-robotics-competition")"
+        var request_url = "https://events.vex.com/robot-competitions/\(UserSettings.getGradeLevel() == "College" ? "college-competition" : "vex-robotics-competition")"
         var params = params
         
         if params["page"] == nil {
@@ -368,21 +368,21 @@ public class RoboScoutAPI {
         var sku_array = [String]()
         
         let request = NSMutableURLRequest(url: URL(string: request_url)!)
-        request.setValue(String(format: "Bearer %@", self.robotevents_access_key()), forHTTPHeaderField: "Authorization")
+        request.setValue(String(format: "Bearer %@", self.vexevents_access_key()), forHTTPHeaderField: "Authorization")
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         let task = URLSession.shared.dataTask(with: request as URLRequest) { (response_data, response, error) in
             if response_data != nil {
-                print(String(format: "RobotEvents Scraper (page %d): %@", params["page"] as? Int ?? 0, components.url?.description ?? request_url))
+                print(String(format: "VEX Events Scraper (page %d): %@", params["page"] as? Int ?? 0, components.url?.description ?? request_url))
                 let html = String(data: response_data!, encoding: .utf8)!
                 
-                let regex = try! NSRegularExpression(pattern: "https://www\\.robotevents\\.com/robot-competitions/\(UserSettings.getGradeLevel() == "College" ? "college-competition" : "vex-robotics-competition")/RE-[A-Z0-9]*([+-]?(?=\\.\\d|\\d)(?:\\d+)?\\.?\\d*)(?:[Ee]([+-]?\\d+))?([+-]?(?=\\.\\d|\\d)(?:\\d+)?\\.?\\d*)(?:[Ee]([+-]?\\d+))?\\.html", options: [.caseInsensitive])
+                let regex = try! NSRegularExpression(pattern: "https://events\\.vex\\.com/robot-competitions/\(UserSettings.getGradeLevel() == "College" ? "college-competition" : "vex-robotics-competition")/RE-[A-Z0-9]*([+-]?(?=\\.\\d|\\d)(?:\\d+)?\\.?\\d*)(?:[Ee]([+-]?\\d+))?([+-]?(?=\\.\\d|\\d)(?:\\d+)?\\.?\\d*)(?:[Ee]([+-]?\\d+))?\\.html", options: [.caseInsensitive])
                 let range = NSRange(location: 0, length: html.count)
                 let matches = regex.matches(in: html, options: [], range: range)
                 
                 for match in matches {
-                    sku_array.append(String(html[Range(match.range, in: html)!]).replacingOccurrences(of: "https://www.robotevents.com/robot-competitions/\(UserSettings.getGradeLevel() == "College" ? "college-competition" : "vex-robotics-competition")/", with: "").replacingOccurrences(of: ".html", with: ""))
+                    sku_array.append(String(html[Range(match.range, in: html)!]).replacingOccurrences(of: "https://events.vex.com/robot-competitions/\(UserSettings.getGradeLevel() == "College" ? "college-competition" : "vex-robotics-competition")/", with: "").replacingOccurrences(of: ".html", with: ""))
                 }
                 
                 semaphore.signal()
@@ -438,7 +438,7 @@ public class RoboScoutAPI {
     
     public func generate_season_id_map() {
         self.season_id_map = [[:], [:]]
-        let seasons_data = RoboScoutAPI.robotevents_request(request_url: "/seasons/")
+        let seasons_data = RoboScoutAPI.vexevents_request(request_url: "/seasons/")
         
         for season_data in seasons_data {
             let program_id = (season_data["program"] as! [String: Any])["id"] as! Int
@@ -461,7 +461,11 @@ public class RoboScoutAPI {
     }
     
     public func active_season_id() -> Int {
-        return !self.season_id_map.isEmpty ? (UserSettings.getGradeLevel() != "College" ? self.season_id_map[0] : self.season_id_map[1]).keys.first ?? (UserSettings.getGradeLevel() != "College" ? 190 : 191) : (UserSettings.getGradeLevel() != "College" ? 190 : 191)
+        
+        let activeV5SeasonID = 197
+        let activeVUSeasonID = 198
+        
+        return !self.season_id_map.isEmpty ? (UserSettings.getGradeLevel() != "College" ? self.season_id_map[0] : self.season_id_map[1]).keys.first ?? (UserSettings.getGradeLevel() != "College" ? activeV5SeasonID : activeVUSeasonID) : (UserSettings.getGradeLevel() != "College" ? activeV5SeasonID : activeVUSeasonID)
     }
     
     public func update_world_skills_cache(season: Int? = nil) {
@@ -470,7 +474,7 @@ public class RoboScoutAPI {
         
         let semaphore = DispatchSemaphore(value: 0)
         
-        var components = URLComponents(string: String(format: "https://www.robotevents.com/api/seasons/%d/skills", season ?? self.selected_season_id()))!
+        var components = URLComponents(string: String(format: "https://events.vex.com/api/seasons/%d/skills", season ?? self.selected_season_id()))!
         components.queryItems = [URLQueryItem(name: "grade_level", value: UserSettings.getGradeLevel())]
         
         let request = NSMutableURLRequest(url: components.url! as URL)
@@ -573,7 +577,7 @@ public class RoboScoutAPI {
             var total_ap = 0.0
             var total_wp = 0.0
             
-            let re_rankings_data = RoboScoutAPI.robotevents_request(request_url: "/teams/\(team.id)/rankings", params: [
+            let re_rankings_data = RoboScoutAPI.vexevents_request(request_url: "/teams/\(team.id)/rankings", params: [
                 "season": self.selected_season_id()
             ])
             for comp in re_rankings_data {
@@ -747,8 +751,8 @@ public class Match: Identifiable {
         self.event = (data["event"] != nil) ? Event(id: ((data["event"] as! [String: Any])["id"] as! Int), fetch: fetch) : Event()
         self.division = (data["division"] != nil) ? Division(data: data["division"] as! [String : Any]) : Division()
         self.field = (data["field"] != nil) ? data["field"] as? String ?? "" : ""
-        self.scheduled = (data["scheduled"] != nil) ? RoboScoutAPI.robotevents_date(date: data["scheduled"] as? String ?? "", localize: true) : nil
-        self.started = (data["started"] != nil) ? RoboScoutAPI.robotevents_date(date: data["started"] as? String ?? "", localize: true) : nil
+        self.scheduled = (data["scheduled"] != nil) ? RoboScoutAPI.vexevents_date(date: data["scheduled"] as? String ?? "", localize: true) : nil
+        self.started = (data["started"] != nil) ? RoboScoutAPI.vexevents_date(date: data["started"] as? String ?? "", localize: true) : nil
         
         let round = (data["round"] != nil) ? data["round"] as? Int ?? 0 : 0
         self.round = round_map[round] ?? Round.none
@@ -1039,8 +1043,8 @@ public class Event: Identifiable {
         self.id = (data["id"] != nil) ? data["id"] as! Int : id
         self.sku = (data["sku"] != nil) ? data["sku"] as! String : sku
         self.name = (data["name"] != nil) ? data["name"] as! String : ""
-        self.start = (data["start"] != nil) ? RoboScoutAPI.robotevents_date(date: data["start"] as! String, localize: false) : nil
-        self.end = (data["end"] != nil) ? RoboScoutAPI.robotevents_date(date: data["end"] as! String, localize: false) : nil
+        self.start = (data["start"] != nil) ? RoboScoutAPI.vexevents_date(date: data["start"] as! String, localize: false) : nil
+        self.end = (data["end"] != nil) ? RoboScoutAPI.vexevents_date(date: data["end"] as! String, localize: false) : nil
         self.season = (data["season"] != nil) ? (data["season"] as! [String: Any])["id"] as! Int : 0
         self.venue = (data["location"] != nil) ? ((data["location"] as! [String: Any])["venue"] as? String ?? "") : ""
         self.address = (data["location"] != nil) ? ((data["location"] as! [String: Any])["address_1"] as? String ?? "") : ""
@@ -1075,7 +1079,7 @@ public class Event: Identifiable {
             return
         }
         
-        let data = RoboScoutAPI.robotevents_request(request_url: "/events", params: self.id != 0 ? ["id": self.id] : ["sku": self.sku])
+        let data = RoboScoutAPI.vexevents_request(request_url: "/events", params: self.id != 0 ? ["id": self.id] : ["sku": self.sku])
         
         if data.isEmpty {
             return
@@ -1084,8 +1088,8 @@ public class Event: Identifiable {
         self.id = data[0]["id"] as? Int ?? 0
         self.sku = data[0]["sku"] as? String ?? ""
         self.name = data[0]["name"] as? String ?? ""
-        self.start = RoboScoutAPI.robotevents_date(date: data[0]["start"] as? String ?? "", localize: false)
-        self.end = RoboScoutAPI.robotevents_date(date: data[0]["end"] as? String ?? "", localize: false)
+        self.start = RoboScoutAPI.vexevents_date(date: data[0]["start"] as? String ?? "", localize: false)
+        self.end = RoboScoutAPI.vexevents_date(date: data[0]["end"] as? String ?? "", localize: false)
         self.season = (data[0]["season"] as! [String: Any])["id"] as? Int ?? 0
         self.city = (data[0]["location"] as! [String: Any])["city"] as? String ?? ""
         self.region = (data[0]["location"] as! [String: Any])["region"] as? String ?? ""
@@ -1098,7 +1102,7 @@ public class Event: Identifiable {
     
     public func fetch_teams() {
         self.teams = [Team]()
-        let data = RoboScoutAPI.robotevents_request(request_url: String(format: "/events/%d/teams", self.id))
+        let data = RoboScoutAPI.vexevents_request(request_url: String(format: "/events/%d/teams", self.id))
         for team in data {
             let cached_team = Team(id: team["id"] as! Int, fetch: false, data: team)
             self.teams.append(cached_team)
@@ -1111,7 +1115,7 @@ public class Event: Identifiable {
     }
     
     public func fetch_rankings(division: Division) {
-        let data = RoboScoutAPI.robotevents_request(request_url: "/events/\(self.id)/divisions/\(division.id)/rankings")
+        let data = RoboScoutAPI.vexevents_request(request_url: "/events/\(self.id)/divisions/\(division.id)/rankings")
         self.rankings[division] = [TeamRanking]() // 2
         for ranking in data {
             var division_rankings = self.rankings[division] ?? [TeamRanking]()
@@ -1121,7 +1125,7 @@ public class Event: Identifiable {
     }
     
     public func fetch_skills_rankings() {
-        let data = RoboScoutAPI.robotevents_request(request_url: "/events/\(self.id)/skills")
+        let data = RoboScoutAPI.vexevents_request(request_url: "/events/\(self.id)/skills")
         self.skills_rankings = [TeamSkillsRanking]()
         var index = 0
         while index < data.count {
@@ -1139,7 +1143,7 @@ public class Event: Identifiable {
     }
     
     public func fetch_awards(division: Division) {
-        let data = RoboScoutAPI.robotevents_request(request_url: "/events/\(self.id)/awards")
+        let data = RoboScoutAPI.vexevents_request(request_url: "/events/\(self.id)/awards")
         
         if self.teams.isEmpty {
             self.fetch_teams()
@@ -1155,7 +1159,7 @@ public class Event: Identifiable {
     }
     
     public func fetch_matches(division: Division) {
-        let data = RoboScoutAPI.robotevents_request(request_url: "/events/\(self.id)/divisions/\(division.id)/matches")
+        let data = RoboScoutAPI.vexevents_request(request_url: "/events/\(self.id)/divisions/\(division.id)/matches")
         
         var matches = [Match]()
         for match_data in data {
@@ -1373,7 +1377,7 @@ public class Event: Identifiable {
             return livestream_link
         }
         
-        let request_url = "https://www.robotevents.com/robot-competitions/\(UserSettings.getGradeLevel() == "College" ? "college-competition" : "vex-robotics-competition")/\(self.sku).html"
+        let request_url = "https://events.vex.com/robot-competitions/\(UserSettings.getGradeLevel() == "College" ? "college-competition" : "vex-robotics-competition")/\(self.sku).html"
         
         let semaphore = DispatchSemaphore(value: 0)
         
@@ -1595,7 +1599,7 @@ public class Team: Identifiable, Hashable {
             return
         }
         
-        let data = RoboScoutAPI.robotevents_request(request_url: "/teams", params: self.id != 0 ? ["id": self.id, "program": RoboScoutAPI.selected_program_id()] : ["number": self.number, "program": [1, 4]])
+        let data = RoboScoutAPI.vexevents_request(request_url: "/teams", params: self.id != 0 ? ["id": self.id, "program": RoboScoutAPI.selected_program_id()] : ["number": self.number, "program": [1, 4]])
         
         if data.isEmpty {
             return
@@ -1615,7 +1619,7 @@ public class Team: Identifiable, Hashable {
     }
     
     public func matches_at(event: Event) -> [Match] {
-        let matches_data = RoboScoutAPI.robotevents_request(request_url: "/teams/\(self.id)/matches", params: ["event": event.id])
+        let matches_data = RoboScoutAPI.vexevents_request(request_url: "/teams/\(self.id)/matches", params: ["event": event.id])
         var matches = [Match]()
         
         for match_data in matches_data {
@@ -1633,7 +1637,7 @@ public class Team: Identifiable, Hashable {
     }
     
     public func matches_for_season(season: Int) -> [Match] {
-        let matches_data = RoboScoutAPI.robotevents_request(request_url: "/teams/\(self.id)/matches", params: ["season": season])
+        let matches_data = RoboScoutAPI.vexevents_request(request_url: "/teams/\(self.id)/matches", params: ["season": season])
         var matches = [Match]()
         
         for match_data in matches_data {
@@ -1663,7 +1667,7 @@ public class Team: Identifiable, Hashable {
             season_id = API.selected_season_id()
         }
         
-        let data = RoboScoutAPI.robotevents_request(request_url: "/events", params: ["team": self.id, "season": season ?? season_id])
+        let data = RoboScoutAPI.vexevents_request(request_url: "/events", params: ["team": self.id, "season": season ?? season_id])
         for event in data {
             self.events.append(Event(id: event["id"] as! Int, fetch: false, data: event))
         }
@@ -1671,7 +1675,7 @@ public class Team: Identifiable, Hashable {
     }
     
     public func fetch_awards(season: Int? = nil) {
-        let data = RoboScoutAPI.robotevents_request(request_url: "/teams/\(self.id)/awards", params: ["season": season ?? API.selected_season_id()])
+        let data = RoboScoutAPI.vexevents_request(request_url: "/teams/\(self.id)/awards", params: ["season": season ?? API.selected_season_id()])
         for award in data {
             self.awards.append(Award(data: award))
         }
@@ -1681,7 +1685,7 @@ public class Team: Identifiable, Hashable {
     }
     
     public func skills_at(event: Event) -> EventSkills {
-        let data = RoboScoutAPI.robotevents_request(request_url: "/events/\(event.id)/skills", params: ["team": self.id])
+        let data = RoboScoutAPI.vexevents_request(request_url: "/events/\(event.id)/skills", params: ["team": self.id])
         
         var driver = 0
         var programming = 0
@@ -1699,7 +1703,7 @@ public class Team: Identifiable, Hashable {
     }
     
     public func average_ranking(season: Int? = nil) -> Double {
-        let data = RoboScoutAPI.robotevents_request(request_url: String(format: "/teams/%d/rankings/", self.id), params: ["season": season ?? API.selected_season_id()])
+        let data = RoboScoutAPI.vexevents_request(request_url: String(format: "/teams/%d/rankings/", self.id), params: ["season": season ?? API.selected_season_id()])
         var total = 0
         for comp in data {
             total += comp["rank"] as! Int

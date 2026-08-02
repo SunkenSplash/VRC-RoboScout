@@ -111,7 +111,7 @@ struct MatchRowView: View {
                         Text(String(teams_map[String($matchString.wrappedValue.split(separator: "&&")[3])] ?? "")).foregroundColor(.red).font(.system(size: 13)).underline(conditionalUnderline(matchString: $matchString.wrappedValue, index: 3))
                     }
                     else {
-                        Text(String(teams_map[String($matchString.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 13)).underline(conditionalUnderline(matchString: $matchString.wrappedValue, index: 2))
+                        Text(String(teams_map[String($matchString.wrappedValue.split(separator: "&&")[2])] ?? "")).foregroundColor(.red).font(.system(size: 15)).underline(conditionalUnderline(matchString: $matchString.wrappedValue, index: 2))
                     }
                 }.frame(width: 50)
                 centerDisplay(matchString: $matchString.wrappedValue)
@@ -121,7 +121,7 @@ struct MatchRowView: View {
                         Text(String(teams_map[String($matchString.wrappedValue.split(separator: "&&")[5])] ?? "")).foregroundColor(.blue).font(.system(size: 13)).underline(conditionalUnderline(matchString: $matchString.wrappedValue, index: 5))
                     }
                     else {
-                        Text(String(teams_map[String($matchString.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 13)).underline(conditionalUnderline(matchString: $matchString.wrappedValue, index: 4))
+                        Text(String(teams_map[String($matchString.wrappedValue.split(separator: "&&")[4])] ?? "")).foregroundColor(.blue).font(.system(size: 15)).underline(conditionalUnderline(matchString: $matchString.wrappedValue, index: 4))
                     }
                 }.frame(width: 50)
             }

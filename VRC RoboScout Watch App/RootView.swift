@@ -42,7 +42,7 @@ struct RootView: View {
                     .navigationTitle(wsTitle)
                     .navigationBarTitleDisplayMode(.inline)
                     .tag(1)
-                Text("TrueSkill")
+                InDevelopment()
                     .navigationTitle("TrueSkill")
                     .navigationBarTitleDisplayMode(.inline)
                     .tag(2)

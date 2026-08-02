@@ -29,7 +29,7 @@ class RoboScoutActivityController {
         let authorizationOptions: UNAuthorizationOptions = [.alert, .sound, .badge]
         do {
             // 4. Request authorization to the user
-            let authorizationGranted = try await notificationCenter.requestAuthorization(options: authorizationOptions)
+            let _ = try await notificationCenter.requestAuthorization(options: authorizationOptions)
         } catch {
             throw error
         }

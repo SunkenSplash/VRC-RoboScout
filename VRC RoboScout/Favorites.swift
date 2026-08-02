@@ -105,7 +105,7 @@ struct Favorites: View {
     func generate_event_sku_map() {
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             
-            let data = RoboScoutAPI.robotevents_request(request_url: "/events", params: ["sku": favorites.favorite_events])
+            let data = RoboScoutAPI.vexevents_request(request_url: "/events", params: ["sku": favorites.favorite_events])
             var map = [String: Event]()
 
             for event_data in data {

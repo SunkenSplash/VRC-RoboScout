@@ -123,6 +123,8 @@ struct WorldSkillsRankings: View {
     @EnvironmentObject var favorites: FavoriteStorage
     @EnvironmentObject var navigation_bar_manager: NavigationBarManager
     
+    @Binding var showFilters: Bool
+    
     @State private var display_skills = "World Skills"
     @State private var region_id = 0
     @State private var letter: Character = "0"
@@ -149,58 +151,67 @@ struct WorldSkillsRankings: View {
                 NoData()
             }
             else {
-                Menu("Filter") {
-                    if !favorites.teams_as_array().isEmpty {
-                        Button("Favorites") {
-                            display_skills = "Favorites Skills"
-                            navigation_bar_manager.title = display_skills
-                            region_id = 0
-                            letter = "0"
-                            world_skills_rankings = WorldSkillsTeams(filter_array: favorites.teams_as_array(), fetch: false)
-                        }
-                    }
-                    Menu("Region") {
-                        Button("World") {
-                            display_skills = "World Skills"
-                            navigation_bar_manager.title = display_skills
-                            region_id = 0
-                            letter = "0"
-                            world_skills_rankings = WorldSkillsTeams(fetch: false)
-                        }
-                        ForEach(API.regions_map.sorted(by: <), id: \.key) { region, id in
-                            Button(region) {
-                                display_skills = "\(region) Skills"
-                                navigation_bar_manager.title = display_skills
-                                region_id = id
-                                letter = "0"
-                                world_skills_rankings = WorldSkillsTeams(region: id, fetch: false)
-                            }
-                        }
-                    }
-                    Menu("Letter") {
-                        ForEach(["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"], id: \.self) { char in
-                            Button(char) {
-                                display_skills = "\(char) Skills"
-                                navigation_bar_manager.title = display_skills
-                                letter = char.first!
-                                world_skills_rankings = WorldSkillsTeams(letter: char.first!, fetch: false)
-                            }
-                        }
-                    }
-                    Button("Clear Filters") {
-                        display_skills = "World Skills"
-                        navigation_bar_manager.title = display_skills
-
-                        region_id = 0
-                        letter = "0"
-                        world_skills_rankings = WorldSkillsTeams(fetch: false)
-                    }
-                }.fontWeight(.medium)
-                    .font(.system(size: 19))
-                    .padding(20)
                 if (show_leaderboard) {
-                    List($world_skills_rankings.world_skills_teams) { team in
-                        WorldSkillsRow(team_world_skills: team.wrappedValue).id(team.wrappedValue.ranking)
+                    ZStack {
+                        List($world_skills_rankings.world_skills_teams) { team in
+                            WorldSkillsRow(team_world_skills: team.wrappedValue).id(team.wrappedValue.ranking)
+                        }
+                        if showFilters {
+                            List {
+                                if !favorites.teams_as_array().isEmpty {
+                                    Button("Favorites") {
+                                        display_skills = "Favorites Skills"
+                                        navigation_bar_manager.title = display_skills
+                                        region_id = 0
+                                        letter = "0"
+                                        showFilters = false
+                                        world_skills_rankings = WorldSkillsTeams(filter_array: favorites.teams_as_array(), fetch: false)
+                                    }
+                                }
+                                Menu("Region") {
+                                    Button("World") {
+                                        display_skills = "World Skills"
+                                        navigation_bar_manager.title = display_skills
+                                        region_id = 0
+                                        letter = "0"
+                                        showFilters = false
+                                        world_skills_rankings = WorldSkillsTeams(fetch: false)
+                                    }
+                                    ForEach(API.regions_map.sorted(by: <), id: \.key) { region, id in
+                                        Button(region) {
+                                            display_skills = "\(region) Skills"
+                                            navigation_bar_manager.title = display_skills
+                                            region_id = id
+                                            letter = "0"
+                                            showFilters = false
+                                            world_skills_rankings = WorldSkillsTeams(region: id, fetch: false)
+                                        }
+                                    }
+                                }
+                                Menu("Letter") {
+                                    ForEach(["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"], id: \.self) { char in
+                                        Button(char) {
+                                            display_skills = "\(char) Skills"
+                                            navigation_bar_manager.title = display_skills
+                                            letter = char.first!
+                                            showFilters = false
+                                            world_skills_rankings = WorldSkillsTeams(letter: char.first!, fetch: false)
+                                        }
+                                    }
+                                }
+                                Button("Clear Filters") {
+                                    display_skills = "World Skills"
+                                    navigation_bar_manager.title = display_skills
+                                    region_id = 0
+                                    letter = "0"
+                                    showFilters = false
+                                    world_skills_rankings = WorldSkillsTeams(fetch: false)
+                                }
+                            }.scrollContentBackground(.hidden)
+                                .background(Color.black.opacity(0.5))
+                                .scrollDisabled(true)
+                                .listStyle(.insetGrouped)
+                        }
                     }
                 }
             }
@@ -226,6 +237,6 @@ struct WorldSkillsRankings: View {
 
 struct WorldSkillsRankings_Previews: PreviewProvider {
     static var previews: some View {
-        WorldSkillsRankings()
+        WorldSkillsRankings(showFilters: .constant(false))
     }
 }

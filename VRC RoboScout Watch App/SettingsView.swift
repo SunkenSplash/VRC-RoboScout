@@ -16,7 +16,7 @@ struct SettingsView: View {
     @State var performance_ratings_calculation_option = UserSettings.getPerformanceRatingsCalculationOption() == "via"
     @State var grade_level = UserSettings.getGradeLevel()
     @State var selected_season_id = UserSettings.getSelectedSeasonID()
-    @State var apiKey = UserSettings.getRobotEventsAPIKey() ?? ""
+    @State var apiKey = UserSettings.getVexEventsAPIKey() ?? ""
     @State var team_info_default_page = UserSettings.getTeamInfoDefaultPage() == "statistics"
     @State var match_team_default_page = UserSettings.getMatchTeamDefaultPage() == "statistics"
     @State var showLoading = false
@@ -115,7 +115,7 @@ struct SettingsView: View {
                 }
                 Section("Developer") {
                     HStack {
-                        Text("RobotEvents API Key").frame(maxWidth: .infinity, alignment: .leading).onTapGesture {
+                        Text("VEX Events API Key").frame(maxWidth: .infinity, alignment: .leading).onTapGesture {
                             showAPIKeyInput = true
                         }.fullScreenCover(isPresented: $showAPIKeyInput) {
                             VStack {
@@ -124,8 +124,8 @@ struct SettingsView: View {
                                     confirmAPIKey = true
                                 }).confirmationDialog("Are you sure?", isPresented: $confirmAPIKey) {
                                     Button("Set API Key and close app?", role: .destructive) {
-                                        defaults.set(apiKey, forKey: "robotevents_api_key")
-                                        print("Set RobotEvents API Key")
+                                        defaults.set(apiKey, forKey: "vexevents_api_key")
+                                        print("Set VEX Events API Key")
                                         exit(0)
                                     }
                                 }

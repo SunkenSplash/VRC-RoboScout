@@ -24,7 +24,7 @@ struct Settings: View {
     @State var performance_ratings_calculation_option = UserSettings.getPerformanceRatingsCalculationOption() == "via"
     @State var grade_level = UserSettings.getGradeLevel()
     @State var selected_season_id = UserSettings.getSelectedSeasonID()
-    @State var apiKey = UserSettings.getRobotEventsAPIKey() ?? ""
+    @State var apiKey = UserSettings.getVexEventsAPIKey() ?? ""
     @State var team_info_default_page = UserSettings.getTeamInfoDefaultPage() == "statistics"
     @State var match_team_default_page = UserSettings.getMatchTeamDefaultPage() == "statistics"
     @State var showLoading = false
@@ -61,187 +61,202 @@ struct Settings: View {
     }
     
     var body: some View {
-        VStack {
-            List {
-                Link(destination: URL(string: "https://www.paypal.com/donate/?business=FGDW39F77H6PW&no_recurring=0&item_name=Donations+allow+me+to+bring+new+features+and+functionality+to+VRC+RoboScout.+Thank+you+for+your+support%21&currency_code=USD")!, label: {
-                    HStack {
-                        Image(systemName: "gift")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 40, height: 40)
-                            .cornerRadius(8)
-                        VStack(alignment: .center) {
-                            Text("Donate to VRC RoboScout").bold()
-                            Text("Donations support development. Thank you <3").font(.system(size: 15)).foregroundColor(.secondary).multilineTextAlignment(.center)
-                        }.frame(maxWidth: .infinity).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
-                        Spacer()
-                    }.padding()
-                }).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .background(settings.buttonColor().opacity(0.3))
-                    .cornerRadius(20)
-                Section("Competition") {
-                    Picker("Competition", selection: $grade_level) {
-                        Text("V5RC MS").tag("Middle School")
-                        Text("V5RC HS").tag("High School")
-                        Text("VURC").tag("College")
-                    }.pickerStyle(.segmented).padding([.top, .bottom], 5)
-                        .onChange(of: grade_level) { grade in
-                            settings.setGradeLevel(grade_level: grade)
-                            settings.updateUserDefaults(updateTopBarContentColor: false)
-                            self.showLoading = true
-                            DispatchQueue.global(qos: .userInteractive).async {
-                                API.generate_season_id_map()
-                                settings.setSelectedSeasonID(id: API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1].keys.sorted().reversed()[0])
+        ZStack {
+            VStack {
+                List {
+                    Link(destination: URL(string: "https://www.paypal.com/donate/?business=FGDW39F77H6PW&no_recurring=0&item_name=Donations+allow+me+to+bring+new+features+and+functionality+to+VRC+RoboScout.+Thank+you+for+your+support%21&currency_code=USD")!, label: {
+                        HStack {
+                            Image(systemName: "gift")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 40, height: 40)
+                                .cornerRadius(8)
+                            VStack(alignment: .center) {
+                                Text("Donate to VRC RoboScout").bold()
+                                Text("Donations support development. Thank you <3").font(.system(size: 15)).foregroundColor(.secondary).multilineTextAlignment(.center)
+                            }.frame(maxWidth: .infinity).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+                            Spacer()
+                        }.padding()
+                    }).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
+                        .background(settings.buttonColor().opacity(0.3))
+                        .cornerRadius(20)
+                    Section("Competition") {
+                        Picker("Competition", selection: $grade_level) {
+                            Text("V5RC MS").tag("Middle School")
+                            Text("V5RC HS").tag("High School")
+                            Text("VURC").tag("College")
+                        }.pickerStyle(.segmented).padding([.top, .bottom], 5)
+                            .onChange(of: grade_level) { grade in
+                                settings.setGradeLevel(grade_level: grade)
                                 settings.updateUserDefaults(updateTopBarContentColor: false)
-                                API.update_world_skills_cache()
-                                API.update_vrc_data_analysis_cache()
-                                DispatchQueue.main.async {
-                                    self.selected_season_id = UserSettings.getSelectedSeasonID()
-                                    self.showLoading = false
-                                }
-                            }
-                            
-                        }
-                    HStack {
-                        Spacer()
-                        if showLoading || API.season_id_map.isEmpty {
-                            ProgressView()
-                        }
-                        else {
-                            Picker("Season", selection: $selected_season_id) {
-                                ForEach(API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1].keys.sorted().reversed(), id: \.self) { season_id in
-                                    Text(format_season_option(raw: API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1][season_id] ?? "Unknown")).tag(season_id)
-                                }
-                            }.labelsHidden()
-                                .onChange(of: selected_season_id) { _ in
-                                    settings.setSelectedSeasonID(id: selected_season_id)
+                                self.showLoading = true
+                                DispatchQueue.global(qos: .userInteractive).async {
+                                    API.generate_season_id_map()
+                                    settings.setSelectedSeasonID(id: API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1].keys.sorted().reversed()[0])
                                     settings.updateUserDefaults(updateTopBarContentColor: false)
-                                    self.showLoading = true
-                                    DispatchQueue.global(qos: .userInteractive).async {
-                                        API.update_world_skills_cache()
-                                        DispatchQueue.main.async {
-                                            self.showLoading = false
-                                        }
+                                    API.update_world_skills_cache()
+                                    API.update_vrc_data_analysis_cache()
+                                    DispatchQueue.main.async {
+                                        self.selected_season_id = UserSettings.getSelectedSeasonID()
+                                        self.showLoading = false
                                     }
                                 }
+                                
+                            }
+                        HStack {
+                            Spacer()
+                            if showLoading || API.season_id_map.isEmpty {
+                                ProgressView()
+                            }
+                            else {
+                                Picker("Season", selection: $selected_season_id) {
+                                    ForEach(API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1].keys.sorted().reversed(), id: \.self) { season_id in
+                                        Text(format_season_option(raw: API.season_id_map[UserSettings.getGradeLevel() != "College" ? 0 : 1][season_id] ?? "Unknown")).tag(season_id)
+                                    }
+                                }.labelsHidden()
+                                    .onChange(of: selected_season_id) { _ in
+                                        settings.setSelectedSeasonID(id: selected_season_id)
+                                        settings.updateUserDefaults(updateTopBarContentColor: false)
+                                        self.showLoading = true
+                                        DispatchQueue.global(qos: .userInteractive).async {
+                                            API.update_world_skills_cache()
+                                            DispatchQueue.main.async {
+                                                self.showLoading = false
+                                            }
+                                        }
+                                    }
+                            }
+                            Spacer()
                         }
-                        Spacer()
                     }
-                }
-                Section("Data Analysis") {
-                    Toggle("AdamScore™", isOn: $adam_score).onChange(of: adam_score) { _ in
-                        settings.setAdamScore(state: adam_score)
-                        settings.updateUserDefaults(updateTopBarContentColor: false)
+                    Section("Data Analysis") {
+                        Toggle("AdamScore™", isOn: $adam_score).onChange(of: adam_score) { _ in
+                            settings.setAdamScore(state: adam_score)
+                            settings.updateUserDefaults(updateTopBarContentColor: false)
+                        }
+                        /*Toggle("VEX via OPR, DPR, CCWM", isOn: $performance_ratings_calculation_option).onChange(of: performance_ratings_calculation_option) { _ in
+                         settings.setPerformanceRatingsCalculationOption(option: performance_ratings_calculation_option ? "via" : "real")
+                         settings.updateUserDefaults()
+                         }*/
                     }
-                    /*Toggle("VEX via OPR, DPR, CCWM", isOn: $performance_ratings_calculation_option).onChange(of: performance_ratings_calculation_option) { _ in
-                     settings.setPerformanceRatingsCalculationOption(option: performance_ratings_calculation_option ? "via" : "real")
-                     settings.updateUserDefaults()
-                     }*/
-                }
-                Section("Appearance") {
-                    NavigationLink(destination: ChangeAppIcon().environmentObject(settings)) {
-                        Text("Change App Icon")
-                    }
-                    ColorPicker("Top Bar Color", selection: $selected_top_bar_color, supportsOpacity: false).onChange(of: selected_top_bar_color) { _ in
-                        settings.setTopBarColor(color: selected_top_bar_color)
-                        showApply = true
-                    }
-                    ColorPicker("Top Bar Content Color", selection: $selected_top_bar_content_color, supportsOpacity: false).onChange(of: selected_top_bar_content_color) { _ in
-                        settings.setTopBarContentColor(color: selected_top_bar_content_color)
-                        top_bar_content_color_changed = true
-                        showApply = true
-                    }
-                    ColorPicker("Button and Tab Color", selection: $selected_button_color, supportsOpacity: false).onChange(of: selected_button_color) { _ in
-                        settings.setButtonColor(color: selected_button_color)
-                        showApply = true
-                    }
-                    Toggle("Minimalistic", isOn: $minimalistic).onChange(of: minimalistic) { _ in
-                        settings.setMinimalistic(state: minimalistic)
-                        showApply = true
-                    }
-                    if showApply {
-                        Button("Apply changes") {
-                            confirmAppearance = true
-                        }.confirmationDialog("Are you sure?", isPresented: $confirmAppearance) {
-                            Button("Apply and close app?", role: .destructive) {
-                                settings.updateUserDefaults(updateTopBarContentColor: top_bar_content_color_changed)
-                                print("App Closing")
-                                exit(0)
+                    Section("Appearance") {
+                        NavigationLink(destination: ChangeAppIcon().environmentObject(settings)) {
+                            Text("Change App Icon")
+                        }
+                        ColorPicker("Top Bar Color", selection: $selected_top_bar_color, supportsOpacity: false).onChange(of: selected_top_bar_color) { _ in
+                            settings.setTopBarColor(color: selected_top_bar_color)
+                            showApply = true
+                        }
+                        ColorPicker("Top Bar Content Color", selection: $selected_top_bar_content_color, supportsOpacity: false).onChange(of: selected_top_bar_content_color) { _ in
+                            settings.setTopBarContentColor(color: selected_top_bar_content_color)
+                            top_bar_content_color_changed = true
+                            showApply = true
+                        }
+                        ColorPicker("Button and Tab Color", selection: $selected_button_color, supportsOpacity: false).onChange(of: selected_button_color) { _ in
+                            settings.setButtonColor(color: selected_button_color)
+                            showApply = true
+                        }
+                        Toggle("Minimalistic", isOn: $minimalistic).onChange(of: minimalistic) { _ in
+                            settings.setMinimalistic(state: minimalistic)
+                            showApply = true
+                        }
+                        if showApply {
+                            Button("Apply changes") {
+                                confirmAppearance = true
+                            }.confirmationDialog("Are you sure?", isPresented: $confirmAppearance) {
+                                Button("Apply and close app?", role: .destructive) {
+                                    settings.updateUserDefaults(updateTopBarContentColor: top_bar_content_color_changed)
+                                    print("App Closing")
+                                    exit(0)
+                                }
                             }
                         }
                     }
-                }
-                Section("Customization") {
-                    Toggle("Show statistics by default on Team Info page", isOn: $team_info_default_page).onChange(of: team_info_default_page) { _ in
-                        settings.setTeamInfoDefaultPage(page: team_info_default_page ? "statistics" : "events")
-                        settings.updateUserDefaults(updateTopBarContentColor: false)
-                    }
-                    Toggle("Show statistics by default on Match Team page", isOn: $match_team_default_page).onChange(of: match_team_default_page) { _ in
-                        settings.setMatchTeamDefaultPage(page: match_team_default_page ? "statistics" : "matches")
-                        settings.updateUserDefaults(updateTopBarContentColor: false)
-                    }
-                }
-                Section("Danger") {
-                    Button("Clear favorite teams") {
-                        confirmClearTeams = true
-                    }.alert(isPresented: $clearedTeams) {
-                        Alert(title: Text("Cleared favorite teams"), dismissButton: .default(Text("OK")))
-                    }.confirmationDialog("Are you sure?", isPresented: $confirmClearTeams) {
-                        Button("Clear ALL favorited teams?", role: .destructive) {
-                            defaults.set([String](), forKey: "favorite_teams")
-                            favorites.favorite_teams = [String]()
-                            clearedTeams = true
-                            print("Favorite teams cleared")
+                    Section("Customization") {
+                        Toggle("Show statistics by default on Team Info page", isOn: $team_info_default_page).onChange(of: team_info_default_page) { _ in
+                            settings.setTeamInfoDefaultPage(page: team_info_default_page ? "statistics" : "events")
+                            settings.updateUserDefaults(updateTopBarContentColor: false)
+                        }
+                        Toggle("Show statistics by default on Match Team page", isOn: $match_team_default_page).onChange(of: match_team_default_page) { _ in
+                            settings.setMatchTeamDefaultPage(page: match_team_default_page ? "statistics" : "matches")
+                            settings.updateUserDefaults(updateTopBarContentColor: false)
                         }
                     }
-                    Button("Clear favorite events") {
-                        confirmClearEvents = true
-                    }.alert(isPresented: $clearedEvents) {
-                        Alert(title: Text("Cleared favorite events"), dismissButton: .default(Text("OK")))
-                    }.confirmationDialog("Are you sure?", isPresented: $confirmClearEvents) {
-                        Button("Clear ALL favorited events?", role: .destructive) {
-                            defaults.set([String](), forKey: "favorite_events")
-                            favorites.favorite_events = [String]()
-                            clearedEvents = true
-                            print("Favorite events cleared")
+                    Section("Danger") {
+                        Button("Clear favorite teams") {
+                            confirmClearTeams = true
+                        }.alert(isPresented: $clearedTeams) {
+                            Alert(title: Text("Cleared favorite teams"), dismissButton: .default(Text("OK")))
+                        }.confirmationDialog("Are you sure?", isPresented: $confirmClearTeams) {
+                            Button("Clear ALL favorited teams?", role: .destructive) {
+                                defaults.set([String](), forKey: "favorite_teams")
+                                favorites.favorite_teams = [String]()
+                                clearedTeams = true
+                                print("Favorite teams cleared")
+                            }
                         }
-                    }
-                    Button("Clear all match notes") {
-                        confirmClearNotes = true
-                    }.alert(isPresented: $clearedNotes) {
-                        Alert(title: Text("Cleared match notes"), dismissButton: .default(Text("OK")))
-                    }.confirmationDialog("Are you sure?", isPresented: $confirmClearNotes) {
-                        Button("Clear ALL match notes?", role: .destructive) {
-                            dataController.deleteAllNotes()
-                            clearedNotes = true
+                        Button("Clear favorite events") {
+                            confirmClearEvents = true
+                        }.alert(isPresented: $clearedEvents) {
+                            Alert(title: Text("Cleared favorite events"), dismissButton: .default(Text("OK")))
+                        }.confirmationDialog("Are you sure?", isPresented: $confirmClearEvents) {
+                            Button("Clear ALL favorited events?", role: .destructive) {
+                                defaults.set([String](), forKey: "favorite_events")
+                                favorites.favorite_events = [String]()
+                                clearedEvents = true
+                                print("Favorite events cleared")
+                            }
                         }
-                    }
-                }
-                Section("Developer") {
-                    HStack {
-                        Text("RobotEvents API Key")
-                        Spacer()
-                        SecureField("Enter Key", text: $apiKey, onCommit: {
-                            confirmAPIKey = true
-                        }).confirmationDialog("Are you sure?", isPresented: $confirmAPIKey) {
-                            Button("Set API Key and close app?", role: .destructive) {
-                                defaults.set(apiKey, forKey: "robotevents_api_key")
-                                print("Set RobotEvents API Key")
-                                exit(0)
+                        Button("Clear all match notes") {
+                            confirmClearNotes = true
+                        }.alert(isPresented: $clearedNotes) {
+                            Alert(title: Text("Cleared match notes"), dismissButton: .default(Text("OK")))
+                        }.confirmationDialog("Are you sure?", isPresented: $confirmClearNotes) {
+                            Button("Clear ALL match notes?", role: .destructive) {
+                                dataController.deleteAllNotes()
+                                clearedNotes = true
                             }
                         }
                     }
-                    HStack {
-                        Text("Version")
-                        Spacer()
-                        Text("\(UIApplication.appVersion!) (\(UIApplication.appBuildNumber!))\(self.mode)")
+                    Section("Developer") {
+                        HStack {
+                            Text("VEX Events API Key")
+                            Spacer()
+                            SecureField("Enter Key", text: $apiKey, onCommit: {
+                                confirmAPIKey = true
+                            }).confirmationDialog("Are you sure?", isPresented: $confirmAPIKey) {
+                                Button("Set API Key and close app?", role: .destructive) {
+                                    defaults.set(apiKey, forKey: "vexevents_api_key")
+                                    print("Set VEX Events API Key")
+                                    exit(0)
+                                }
+                            }
+                        }
+                        HStack {
+                            Text("Version")
+                            Spacer()
+                            Text("\(UIApplication.appVersion!) (\(UIApplication.appBuildNumber!))\(self.mode)")
+                        }
                     }
+                    Section("Developed by Teams Ace 229V and Jelly 2733J") {}
+                    Section("") {} // Spacer to fit Discord link at bottom of scroll
                 }
-                Section("Developed by Teams Ace 229V and Jelly 2733J") {}
             }
-            Link("Join the Discord Server", destination: URL(string: "https://discord.gg/KczJZUfs5f")!).padding()
+            VStack {
+                Link("Join the Discord Server", destination: URL(string: "https://discord.gg/KczJZUfs5f")!)
+                    .padding()
+                    .modify{ view in
+                        if #available(iOS 26.0, *) {
+                            view.glassEffect()
+                        }
+                        else {
+                            view.background(Color(UIColor.systemBackground).opacity(0.5), in: RoundedRectangle(cornerRadius: 100))
+                        }
+                    }
+            }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                .padding()
         }.onAppear{
             navigation_bar_manager.title = "Settings"
             settings.readUserDefaults()

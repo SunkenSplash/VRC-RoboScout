@@ -12,14 +12,30 @@ let API = RoboScoutAPI()
 struct NoData: View {
     var body: some View {
         VStack {
-            Image(systemName: "xmark.bin.fill").foregroundColor(.secondary)
+            Image(systemName: "xmark.bin.fill").font(.system(size: 30)).foregroundColor(.secondary)
+            Spacer().frame(height: 5)
+            Text("No data").foregroundColor(.secondary).font(.system(size: 10))
         }
     }
 }
 
 struct ImportingData: View {
     var body: some View {
-        ProgressView().tint(.secondary)
+        VStack {
+            ProgressView().tint(.secondary).frame(height: 20)
+            Spacer().frame(height: 5)
+            Text("Importing data").foregroundColor(.secondary).font(.system(size: 10))
+        }
+    }
+}
+
+struct InDevelopment: View {
+    var body: some View {
+        VStack {
+            Image(systemName: "exclamationmark.triangle.fill").font(.system(size: 30)).foregroundColor(.secondary)
+            Spacer().frame(height: 5)
+            Text("In development").foregroundColor(.secondary).font(.system(size: 10))
+        }
     }
 }
 

@@ -24,6 +24,7 @@ struct RootView: View {
     
     @StateObject var navigation_bar_manager = NavigationBarManager(title: "Favorites")
     
+    @State private var wsShowFilters = false
     @State private var tab_selection = 0
     @State private var lookup_type = 0 // 0 is teams, 1 is events
         
@@ -46,7 +47,7 @@ struct RootView: View {
                     .environmentObject(navigation_bar_manager)
                     .tint(settings.buttonColor())
                     .tag(0)
-                WorldSkillsRankings()
+                WorldSkillsRankings(showFilters: $wsShowFilters)
                     .tabItem {
                         if UserSettings.getMinimalistic() {
                             Image(systemName: "globe")
@@ -128,10 +129,19 @@ struct RootView: View {
                                 }
                             }
                             if navigation_bar_manager.title.contains("Skills") {
+                                // URL to VEX Events
                                 ToolbarItem(placement: .navigationBarTrailing) {
-                                    Link(destination: URL(string: "https://www.robotevents.com/robot-competitions/vex-robotics-competition/standings/skills")!) {
+                                    Link(destination: URL(string: "https://events.vex.com/robot-competitions/vex-robotics-competition/standings/skills")!) {
                                         Image(systemName: "link")
                                     }.foregroundColor(settings.topBarContentColor())
+                                }
+                                // Filter button
+                                ToolbarItem(placement: .navigationBarTrailing) {
+                                    Button(action: {
+                                        wsShowFilters = !wsShowFilters
+                                    }, label: {
+                                        Image(systemName: "line.3.horizontal.decrease.circle")
+                                    })
                                 }
                             }
                             else if navigation_bar_manager.title.contains("TrueSkill") {

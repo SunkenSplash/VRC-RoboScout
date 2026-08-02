@@ -59,6 +59,10 @@ extension View {
             ShakableViewRepresentable(onShake: block).allowsHitTesting(false)
         )
     }
+    @ViewBuilder
+    func modify<Content: View>(@ViewBuilder _ transform: (Self) -> Content) -> some View {
+        transform(self)
+    }
 }
 
 extension UIApplication {
@@ -124,9 +128,11 @@ struct NoData: View {
 
 struct ImportingData: View {
     var body: some View {
-        ProgressView().font(.system(size: 30)).tint(.secondary)
-        Spacer().frame(height: 5)
-        Text("Importing Data").foregroundColor(.secondary)
+        VStack {
+            ProgressView().font(.system(size: 30)).tint(.secondary)
+            Spacer().frame(height: 5)
+            Text("Importing data").foregroundColor(.secondary)
+        }
     }
 }
 
@@ -134,6 +140,7 @@ struct ImportingData: View {
 struct VRCRoboScout: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @Environment(\.scenePhase) private var scenePhase
     
     @ObservedObject var wcSession = WatchSession()
     
@@ -166,6 +173,18 @@ struct VRCRoboScout: App {
                         API.generate_season_id_map()
                         API.update_world_skills_cache()
                         API.update_vrc_data_analysis_cache()
+                    }
+                }.onChange(of: scenePhase) { newPhase in
+                    switch newPhase {
+                    case .active:
+                        print("App moved to foreground")
+                        wcSession.updateFavorites()
+                    case .background:
+                        break
+                    case .inactive:
+                        break
+                    @unknown default:
+                        break
                     }
                 }
         }

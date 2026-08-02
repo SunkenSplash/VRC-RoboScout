@@ -104,8 +104,8 @@ class EventSearch: ObservableObject {
         
         scraper_params["from_date"] = API.active_season_id() == season_query && (name_query == nil || name_query!.isEmpty) ? formatter.string(from: Date()) : "01-Jan-1970"
         
-        let sku_array = RoboScoutAPI.robotevents_competition_scraper(params: scraper_params)
-        let data = RoboScoutAPI.robotevents_request(request_url: "/seasons/\(season_query ?? API.selected_season_id())/events", params: ["sku": sku_array])
+        let sku_array = RoboScoutAPI.vexevents_competition_scraper(params: scraper_params)
+        let data = RoboScoutAPI.vexevents_request(request_url: "/seasons/\(season_query ?? API.selected_season_id())/events", params: ["sku": sku_array])
         
         for event_data in data {
             events.append(Event(fetch: false, data: event_data))
@@ -380,7 +380,7 @@ struct TeamLookup: View {
     var body: some View {
         VStack {
             HStack {
-                Link(destination: URL(string: "https://www.robotevents.com/teams/VRC/\(team.number)")!) {
+                Link(destination: URL(string: "https://events.vex.com/teams/VRC/\(team.number)")!) {
                     Image(systemName: "link").font(.system(size: 25)).padding(20).opacity(fetched ? 1 : 0)
                 }
                 TextField(
