@@ -211,6 +211,7 @@ struct WorldSkillsRankings: View {
                                 .background(Color.black.opacity(0.5))
                                 .scrollDisabled(true)
                                 .listStyle(.insetGrouped)
+                                .transition(.opacity)
                         }
                     }
                 }

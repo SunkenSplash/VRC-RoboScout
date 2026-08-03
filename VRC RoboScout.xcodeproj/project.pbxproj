@@ -58,6 +58,8 @@
 		3DE63FA22C5808BA0049939C /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE63FA12C5808BA0049939C /* Shared.swift */; };
 		3DE63FAF2C59A59C0049939C /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3D22AAA92BD9C16B001AD59E /* Config.plist */; };
 		3DFB59C42C536BCC0061CE6C /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFB59C32C536BCC0061CE6C /* UserSettings.swift */; };
+		3DFCEDB63020EFC600CE3842 /* RoboScout Icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 3DFCEDB53020EFC600CE3842 /* RoboScout Icon.icon */; };
+		3DFCEDB73020EFC600CE3842 /* RoboScout Icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 3DFCEDB53020EFC600CE3842 /* RoboScout Icon.icon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -183,6 +185,7 @@
 		3DD419D72AF5A51200A4D3AB /* roboscouticon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = roboscouticon.png; sourceTree = "<group>"; };
 		3DE63FA12C5808BA0049939C /* Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
 		3DFB59C32C536BCC0061CE6C /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
+		3DFCEDB53020EFC600CE3842 /* RoboScout Icon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "RoboScout Icon.icon"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -297,6 +300,7 @@
 				3D8F9A6C2DDBB7FE008BF8DC /* VRC RoboScout Watch AppUITests */,
 				3D1E57ED29F18D0400DA6296 /* Frameworks */,
 				3DB11E4B299543D9001DDB02 /* Products */,
+				3DFCEDB53020EFC600CE3842 /* RoboScout Icon.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -601,6 +605,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DFCEDB63020EFC600CE3842 /* RoboScout Icon.icon in Resources */,
 				3D8F9AA82DDBBE93008BF8DC /* Config.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -633,6 +638,7 @@
 				3DD419D82AF5A51200A4D3AB /* roboscouticon.png in Resources */,
 				3DAFC80E2A2640EB00A0C41A /* CoreML in Resources */,
 				3D50E10829C8915C002FE201 /* Launch Screen.storyboard in Resources */,
+				3DFCEDB73020EFC600CE3842 /* RoboScout Icon.icon in Resources */,
 				3DE63FAF2C59A59C0049939C /* Config.plist in Resources */,
 				3DB11E52299543DC001DDB02 /* Assets.xcassets in Resources */,
 			);
@@ -782,7 +788,7 @@
 		3D8F9A752DDBB7FE008BF8DC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "RoboScout Icon";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -818,7 +824,7 @@
 		3D8F9A762DDBB7FE008BF8DC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "RoboScout Icon";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -1130,8 +1136,9 @@
 		3DB11E70299543DC001DDB02 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-Dark AppIcon-ACE AppIcon-Delrin AppIcon-Revision AppIcon-SIGBots AppIcon-P AppIcon-Purple AppIcon-Aqua AppIcon-Blue AppIcon-Cute AppIcon-Century AppIcon-PT AppIcon-2011 AppIcon-LAUNCH AppIcon-Leopard AppIcon-Tempest AppIcon-Kauz AppIcon-Banga AppIcon-TV AppIcon-Tigris AppIcon-Lum AppIcon-KI AppIcon-RVV AppIcon-CW AppIcon-Saurus AppIcon-RSnet AppIcon-Num AppIcon-Riptide AppIcon-Straitis AppIcon-Canes AppIcon-Boogie AppIcon-Mmtm AppIcon-Balls AppIcon-Sketchy AppIcon-Siege AppIcon-Chunger AppIcon-Bull AppIcon-Circuits AppIcon-Gear AppIcon-SS AppIcon-CANs AppIcon-Ranch AppIcon-Bagel AppIcon-Autumn AppIcon-Canada AppIcon-UK AppIcon-India AppIcon-LL AppIcon-WW AppIcon-GS";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-Light AppIcon-Dark AppIcon-ACE AppIcon-Delrin AppIcon-Revision AppIcon-SIGBots AppIcon-P AppIcon-Purple AppIcon-Aqua AppIcon-Blue AppIcon-Cute AppIcon-Century AppIcon-PT AppIcon-2011 AppIcon-LAUNCH AppIcon-Leopard AppIcon-Tempest AppIcon-Kauz AppIcon-Banga AppIcon-TV AppIcon-Tigris AppIcon-Lum AppIcon-KI AppIcon-RVV AppIcon-CW AppIcon-Saurus AppIcon-RSnet AppIcon-Num AppIcon-Riptide AppIcon-Straitis AppIcon-Canes AppIcon-Boogie AppIcon-Mmtm AppIcon-Balls AppIcon-Sketchy AppIcon-Siege AppIcon-Chunger AppIcon-Bull AppIcon-Circuits AppIcon-Gear AppIcon-SS AppIcon-CANs AppIcon-Ranch AppIcon-Bagel AppIcon-Autumn AppIcon-Canada AppIcon-UK AppIcon-India AppIcon-LL AppIcon-WW AppIcon-GS AppIcon-Avengineers AppIcon-Blackout AppIcon-BigCheese AppIcon-Amirite AppIcon-ZigZag AppIcon-Wonderland AppIcon-WakeUp AppIcon-Trash AppIcon-Tesseract AppIcon-Technapwn AppIcon-TastefulGradient AppIcon-Simple AppIcon-Roboreo AppIcon-Purble AppIcon-Plattifornia AppIcon-PinkHavoc AppIcon-Photon AppIcon-PhaseShift AppIcon-Peak AppIcon-PandaScout AppIcon-Nebula AppIcon-MiniMater AppIcon-Metal AppIcon-Kings AppIcon-Inverted AppIcon-ILLINI AppIcon-Havoc AppIcon-GulfRobotics AppIcon-GulfRacing AppIcon-Gremlin AppIcon-Fluid AppIcon-DarkRed AppIcon-Cuties AppIcon-China AppIcon-CarbonFiber AppIcon-Blaze AppIcon-AlterEgo AppIcon-Cartridge";
+				ASSETCATALOG_COMPILER_APPICON_NAME = "RoboScout Icon";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = "VRC RoboScout/VRCRoboScout.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -1186,8 +1193,9 @@
 		3DB11E71299543DC001DDB02 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-Dark AppIcon-ACE AppIcon-Delrin AppIcon-Revision AppIcon-SIGBots AppIcon-P AppIcon-Purple AppIcon-Aqua AppIcon-Blue AppIcon-Cute AppIcon-Century AppIcon-PT AppIcon-2011 AppIcon-LAUNCH AppIcon-Leopard AppIcon-Tempest AppIcon-Kauz AppIcon-Banga AppIcon-TV AppIcon-Tigris AppIcon-Lum AppIcon-KI AppIcon-RVV AppIcon-CW AppIcon-Saurus AppIcon-RSnet AppIcon-Num AppIcon-Riptide AppIcon-Straitis AppIcon-Canes AppIcon-Boogie AppIcon-Mmtm AppIcon-Balls AppIcon-Sketchy AppIcon-Siege AppIcon-Chunger AppIcon-Bull AppIcon-Circuits AppIcon-Gear AppIcon-SS AppIcon-CANs AppIcon-Ranch AppIcon-Bagel AppIcon-Autumn AppIcon-Canada AppIcon-UK AppIcon-India AppIcon-LL AppIcon-WW AppIcon-GS";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-Light AppIcon-Dark AppIcon-ACE AppIcon-Delrin AppIcon-Revision AppIcon-SIGBots AppIcon-P AppIcon-Purple AppIcon-Aqua AppIcon-Blue AppIcon-Cute AppIcon-Century AppIcon-PT AppIcon-2011 AppIcon-LAUNCH AppIcon-Leopard AppIcon-Tempest AppIcon-Kauz AppIcon-Banga AppIcon-TV AppIcon-Tigris AppIcon-Lum AppIcon-KI AppIcon-RVV AppIcon-CW AppIcon-Saurus AppIcon-RSnet AppIcon-Num AppIcon-Riptide AppIcon-Straitis AppIcon-Canes AppIcon-Boogie AppIcon-Mmtm AppIcon-Balls AppIcon-Sketchy AppIcon-Siege AppIcon-Chunger AppIcon-Bull AppIcon-Circuits AppIcon-Gear AppIcon-SS AppIcon-CANs AppIcon-Ranch AppIcon-Bagel AppIcon-Autumn AppIcon-Canada AppIcon-UK AppIcon-India AppIcon-LL AppIcon-WW AppIcon-GS AppIcon-Avengineers AppIcon-Blackout AppIcon-BigCheese AppIcon-Amirite AppIcon-ZigZag AppIcon-Wonderland AppIcon-WakeUp AppIcon-Trash AppIcon-Tesseract AppIcon-Technapwn AppIcon-TastefulGradient AppIcon-Simple AppIcon-Roboreo AppIcon-Purble AppIcon-Plattifornia AppIcon-PinkHavoc AppIcon-Photon AppIcon-PhaseShift AppIcon-Peak AppIcon-PandaScout AppIcon-Nebula AppIcon-MiniMater AppIcon-Metal AppIcon-Kings AppIcon-Inverted AppIcon-ILLINI AppIcon-Havoc AppIcon-GulfRobotics AppIcon-GulfRacing AppIcon-Gremlin AppIcon-Fluid AppIcon-DarkRed AppIcon-Cuties AppIcon-China AppIcon-CarbonFiber AppIcon-Blaze AppIcon-AlterEgo AppIcon-Cartridge";
+				ASSETCATALOG_COMPILER_APPICON_NAME = "RoboScout Icon";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = "VRC RoboScout/VRCRoboScout.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;

@@ -80,8 +80,14 @@ struct Settings: View {
                     }).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(Color.clear)
-                        .background(settings.buttonColor().opacity(0.3))
-                        .cornerRadius(20)
+                        .modify{ view in
+                            if #available(iOS 26.0, *) {
+                                view.glassEffect()
+                            }
+                            else {
+                                view.background(Color.gray.opacity(0.2)).cornerRadius(100)
+                            }
+                        }
                     Section("Competition") {
                         Picker("Competition", selection: $grade_level) {
                             Text("V5RC MS").tag("Middle School")
@@ -249,7 +255,7 @@ struct Settings: View {
                     .padding()
                     .modify{ view in
                         if #available(iOS 26.0, *) {
-                            view.glassEffect()
+                            view.buttonStyle(.glass)
                         }
                         else {
                             view.background(Color(UIColor.systemBackground).opacity(0.5), in: RoundedRectangle(cornerRadius: 100))

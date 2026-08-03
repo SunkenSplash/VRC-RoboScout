@@ -138,7 +138,9 @@ struct RootView: View {
                                 // Filter button
                                 ToolbarItem(placement: .navigationBarTrailing) {
                                     Button(action: {
-                                        wsShowFilters = !wsShowFilters
+                                        withAnimation(.easeInOut) {
+                                            wsShowFilters.toggle()
+                                        }
                                     }, label: {
                                         Image(systemName: "line.3.horizontal.decrease.circle")
                                     })

@@ -80,6 +80,16 @@ extension Collection where Indices.Iterator.Element == Index {
     }
 }
 
+extension UIImage {
+    /// Resizes an image to a specific target size preserving aspect ratio
+    func resized(to targetSize: CGSize) -> UIImage {
+        let renderer = UIGraphicsImageRenderer(size: targetSize)
+        return renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: targetSize))
+        }
+    }
+}
+
 struct LazyView<Content: View>: View {
     private let build: () -> Content
     
