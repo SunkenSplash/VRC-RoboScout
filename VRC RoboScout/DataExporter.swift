@@ -283,6 +283,9 @@ struct DataExporter: View {
                                     return
                                 }
                                 data += number
+                                if event.teams.first(where: { $0.number == number }) == nil {
+                                    continue
+                                }
                                 let team = event.teams.first(where: { $0.number == number })!
                                 let world_skills = API.world_skills_for(team: team) ?? WorldSkills(team: team, data: [String: Any]())
                                 let vrc_data_analysis = API.vrc_data_analysis_for(team: team, fetch_re_match_statistics: false)

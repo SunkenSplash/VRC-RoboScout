@@ -27,9 +27,7 @@
 		<true/>
 	</dict>
 	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
-	</array>
+	<array/>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>

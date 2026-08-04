@@ -53,7 +53,9 @@ struct EventTeams: View {
                 
                 if self.division != nil && !self.event.rankings[self.division!]!.isEmpty { // 8
                     for ranking in self.event.rankings[self.division!]! { // 9
-                        self.event_teams_list.append(self.teams_map[String(ranking.team.id)] ?? "")
+                        if self.teams_map[String(ranking.team.id)] != nil {
+                            self.event_teams_list.append(self.teams_map[String(ranking.team.id)] ?? "")
+                        }
                     }
                 }
                 else if self.division != nil {
