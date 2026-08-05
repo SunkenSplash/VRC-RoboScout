@@ -541,9 +541,18 @@ public class RoboScoutAPI {
         
         let task = URLSession.shared.dataTask(with: request as URLRequest) { (response_data, response, error) in
             if response_data != nil {
+
+                if (response as? HTTPURLResponse)?.statusCode != 200 {
+                    print("VRC Data Analysis returned status \((response as? HTTPURLResponse)?.statusCode ?? -1)")
+                    print("Trying to load old VRC Data Analysis cache")
+                    self.load_vrc_data_analysis_from_disk()
+                    semaphore.signal()
+                    return
+                }
+
                 // Decode
                 let data: VRCDataAnalysisCache
-                
+
                 do {
                     data = VRCDataAnalysisCache(responses:  try JSONDecoder().decode([VRCDataAnalysisResponse].self, from: response_data!))
                     self.vrc_data_analysis_cache = data
@@ -551,21 +560,54 @@ public class RoboScoutAPI {
                         self.vrc_data_analysis_regions_map.append(team.loc_region)
                     }
                     self.vrc_data_analysis_regions_map = Array(Set(self.vrc_data_analysis_regions_map))
+                    self.save_vrc_data_analysis_to_disk(response_data!)
                     print("VRC Data Analysis cache updated")
                 }
                 catch let error as NSError {
                     print("NSERROR " + error.description)
                     print("Failed to update VRC Data Analysis cache")
+                    print("Trying to load old VRC Data Analysis cache")
+                    self.load_vrc_data_analysis_from_disk()
                 }
                 semaphore.signal()
             } else if let error = error {
-                print(error.localizedDescription)
+                print("ERROR " + error.localizedDescription)
+                print("Trying to load old VRC Data Analysis cache")
+                self.load_vrc_data_analysis_from_disk()
                 semaphore.signal()
             }
         }
         task.resume()
         _ = semaphore.wait(timeout: DispatchTime.distantFuture)
         self.imported_trueskill = true
+    }
+    
+    private func save_vrc_data_analysis_to_disk(_ data : Data){
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("vrc_data_analysis_cache.json")
+        try? data.write(to: url)
+        print("Wrote vrc data analysis data to disk")
+    }
+    
+    private func load_vrc_data_analysis_from_disk() {
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("vrc_data_analysis_cache.json")
+        guard let data = try? Data(contentsOf: url) else {
+            print("No cached VRC Data Analysis data on disk")
+            return
+        }
+        do {
+            let decoded = try JSONDecoder().decode([VRCDataAnalysisResponse].self, from: data)
+            self.vrc_data_analysis_cache = VRCDataAnalysisCache(responses: decoded)
+            
+            for team in self.vrc_data_analysis_cache.teams {
+                self.vrc_data_analysis_regions_map.append(team.loc_region)
+            }
+            self.vrc_data_analysis_regions_map = Array(Set(self.vrc_data_analysis_regions_map))
+            print ("VRC Data Analysis loaded from disk")
+        } catch{
+            print("failed")
+        }
     }
     
     public func vrc_data_analysis_for(team: Team, fetch_re_match_statistics: Bool = false) -> VRCDataAnalysis {
